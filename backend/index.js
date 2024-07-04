@@ -21,6 +21,6 @@ mongoose.connect(process.env.MONGO_URI, {
 }).catch(err => console.error(err));
 
 app.use('/api/vendors', require('./routes/vendorRoutes'));
-app.use('/api/project-orders', require('./routes/ProjectOrderRoutes'));
+app.use('/api/project-orders', require('./routes/projectOrderRoutes'));
 app.use('/api/users', userRoutes);
 // app.use('/api/users', require('./routes/userRoutes'));
