@@ -1,0 +1,58 @@
+/* Navbar Styles */
+.sidebar {
+  background-color: #383d42; /* Dark grey background */
+  padding: 20px; /* Padding around the navbar */
+  display: flex;
+  flex-direction: column; /* Stack the links vertically */
+  align-items: flex-start; /* Align items to the start of the container */
+  width: 200px; /* Set a fixed width */
+  height: 100vh; /* Full height of the viewport */
+  position: fixed; /* Fix the sidebar to the left side */
+  top: 0; /* Align to the top of the viewport */
+  left: 0; /* Align to the left of the viewport */
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+  z-index: 1000; /* Ensure it stays on top */
+}
+
+/* Logo Styles */
+.logo {
+  margin-bottom: 20px; /* Space between logo and navigation links */
+}
+
+.logo a {
+  text-decoration: none; /* Remove underline from logo */
+  color: #ffffff; /* White text color */
+  font-weight: bold; /* Make the font bold */
+  font-size: 1.5em; /* Adjust font size */
+}
+
+.nav-link {
+  margin: 15px 0; /* Space between links */
+  width: 100%; /* Full width of the sidebar */
+  text-align: left; /* Align text to the left */
+}
+
+.nav-link a {
+  text-decoration: none; /* Remove underline from links */
+  color: #ffffff; /* White text color */
+  font-weight: bold; /* Make the font bold */
+  display: block; /* Make the link a block element */
+  padding: 10px; /* Padding inside the link */
+  transition: all 0.3s ease; /* Smooth transition for color change and zoom */
+}
+
+/* Hover Effect */
+.nav-link:hover a {
+  color: #ffffff; /* White text color on hover */
+  background-color: #34495e; /* Darker background on hover */
+  transform: scale(1.1); /* Zoom effect */
+}
+
+/* Opaque Effect */
+.nav-link a:hover {
+  opacity: 1; /* Full opacity on hover */
+}
+
+.sidebar .nav-link:not(:hover) a:hover {
+  opacity: 0.5; /* Reduce opacity for non-hovered links */
+}
