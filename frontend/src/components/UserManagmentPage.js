@@ -8,7 +8,7 @@ const UserManagement = () => {
 
   const handleAddUser = async () => {
     try {
-      const response = await axios.post('http://0.0.0.0:5000/api/users/login', { username: newUsername });
+      const response = await axios.post('http://127.0.0.1:5000/api/users/login', { username: newUsername });
       // Handle successful user addition
       console.log(response.data);
     } catch (error) {
