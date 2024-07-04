@@ -19,7 +19,7 @@ const VendorManagement = () => {
 
   const fetchVendors = async () => {
     try {
-      const response = await axios.get('http://http://ec2-15-207-87-2.ap-south-1.compute.amazonaws.com/:5000/api/vendors');
+      const response = await axios.get('http://ec2-15-207-87-2.ap-south-1.compute.amazonaws.com:5000/api/vendors');
       setVendors(response.data);
     } catch (error) {
       console.error('Error fetching vendors:', error);
@@ -36,9 +36,9 @@ const VendorManagement = () => {
       if (formData.vendorCode) {
         const existingVendor = vendors.find(vendor => vendor.vendorCode === formData.vendorCode);
         if (existingVendor) {
-          await axios.put(`http://http://ec2-15-207-87-2.ap-south-1.compute.amazonaws.com/:5000/api/vendors/${formData.vendorCode}`, formData);
+          await axios.put(`http://ec2-15-207-87-2.ap-south-1.compute.amazonaws.com:5000/api/vendors/${formData.vendorCode}`, formData);
         } else {
-          await axios.post('http://http://ec2-15-207-87-2.ap-south-1.compute.amazonaws.com/:5000/api/vendors', formData);
+          await axios.post('http:/ec2-15-207-87-2.ap-south-1.compute.amazonaws.com:5000/api/vendors', formData);
         }
       } else {
         console.error('Vendor code is required.');
