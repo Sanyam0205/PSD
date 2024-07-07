@@ -86,7 +86,7 @@ const Form = () => {
     const fetchVendor = async () => {
       try {
         if (vendorCode) {
-          const response = await axios.get(`http://ec2-15-207-87-2.ap-south-1.compute.amazonaws.com:5000/api/vendors/${vendorCode}`);
+          const response = await axios.get(`http://ec2-13-201-68-74.ap-south-1.compute.amazonaws.com:5000/api/vendors/${vendorCode}`);
           const vendor = response.data;
           setError('');
           // Set vendor details to corresponding state variables
@@ -436,7 +436,7 @@ const Form = () => {
         tnc
       };
       // Submit project order
-      await axios.post('http://ec2-15-207-87-2.ap-south-1.compute.amazonaws.com:5000/api/project-orders', projectOrder);
+      await axios.post('http://ec2-13-201-68-74.ap-south-1.compute.amazonaws.com:5000/api/project-orders', projectOrder);
       // Generate PDF
       const doc = generatePDF();
       doc.save('project_orders.pdf');

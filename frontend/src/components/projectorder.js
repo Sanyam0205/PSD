@@ -180,7 +180,7 @@ const generatePDF = () => {
   const handleSearchProjectOrder = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.get(`http://localhost:5000/api/project-orders/${searchedPoNumber}`);
+      const response = await axios.get(`http://ec2-13-201-68-74.ap-south-1.compute.amazonaws.com:5000/api/project-orders/${searchedPoNumber}`);
       const formattedProjectOrder = {
         ...response.data,
         poDate: response.data.poDate.split('T')[0] // Format date to "yyyy-MM-dd"
@@ -227,7 +227,7 @@ const generatePDF = () => {
     };
 
     try {
-      await axios.put(`http://localhost:5000/api/project-orders/${searchedPoNumber}`, updatedProjectOrder);
+      await axios.put(`http://ec2-13-201-68-74.ap-south-1.compute.amazonaws.com:5000/api/project-orders/${searchedPoNumber}`, updatedProjectOrder);
       alert('Project order updated successfully');
       const doc = generatePDF();
       doc.save('project_orders.pdf');
