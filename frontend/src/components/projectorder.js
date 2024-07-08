@@ -448,6 +448,8 @@ const generatePDF = () => {
                             <option value="cubicMetre">Cubic Metre (m³)</option>
                             <option value="litre">Litre (L)</option>
                             <option value="gallon">Gallon</option>
+                            <option value="pcs">PCS</option>
+                            <option value="nos">Nos</option>
                           </select>
                         </div>
                         <div className="item-field">
@@ -546,6 +548,8 @@ const generatePDF = () => {
                             <option value="cubicMetre">Cubic Metre (m³)</option>
                             <option value="litre">Litre (L)</option>
                             <option value="gallon">Gallon</option>
+                            <option value="pcs">PCS</option>
+                            <option value="nos">Nos</option>
                           </select>
                 </div>
               <div className="item-field">
