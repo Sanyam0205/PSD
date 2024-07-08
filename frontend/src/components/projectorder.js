@@ -162,14 +162,22 @@ const ProjectOrd = () => {
       // Add heading for Terms and Conditions section
       const tncHeading = "Terms and Conditions:";
       const tncHeadingHeight = doc.getTextDimensions(tncHeading).h;
-      checkSpaceAndAddPage(tncHeadingHeight + 10);
+      if (textY + tncHeadingHeight + 10 > pageHeight - footerHeight - marginBottom) {
+        addNewPage();
+        textY = headerHeight + 10; // Start after the header on the new page
+      }
       doc.text(tncHeading, textX, textY);
       textY += tncHeadingHeight + 5;
   
       // Terms and Conditions section
       const tncLines = doc.splitTextToSize(searchedProjectOrder.tnc, pageWidth - 2 * textX);
       const tncHeight = doc.getTextDimensions(tncLines).h;
-      checkSpaceAndAddPage(tncHeight + 10);
+      if (textY + tncHeight + 10 > pageHeight - footerHeight - marginBottom) {
+        addNewPage();
+        textY = headerHeight + 10; // Start after the header on the new page
+        doc.text(tncHeading, textX, textY); // Add the heading again on the new page
+        textY += tncHeadingHeight + 5; // Adjust for the heading height
+      }
       doc.text(tncLines, textX, textY);
       drawBorder(); // Draw border after adding header, footer, and content on the last page
   
@@ -179,6 +187,7 @@ const ProjectOrd = () => {
       throw error; // Re-throw error to propagate it
     }
   };
+  
   
   
   const handleSearchPoNumberChange = (e) => {
