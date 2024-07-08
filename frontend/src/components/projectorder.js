@@ -21,157 +21,165 @@ const ProjectOrd = () => {
     amount: 0
   });
 
-const generatePDF = () => {
-  try {
-    const doc = new jsPDF();
-    const imagedata = letterhead;
-    const footerdata = footer;
-
-    doc.setFontSize(11);
-    doc.setFont('Times', 'normal');
-
-    const pageHeight = doc.internal.pageSize.getHeight();
-    const pageWidth = doc.internal.pageSize.getWidth();
-    const imageWidth = 50;
-    const imageHeight = 25; // Adjusted height for the image
-    const imageX = (pageWidth - imageWidth) / 2;
-    const imageY = 10;
-
-    const textX = 12;
-    const footerHeight = 30; // Approximate height of the footer image
-    const headerHeight = 40; // Approximate height for the header section
-    const marginBottom = 10; // Margin from bottom of the page
-
-    const drawBorder = () => {
-      doc.rect(10, 10, pageWidth - 20, pageHeight - 20); // Draw border around content
-    };
-
-    const addHeader = () => {
-      doc.addImage(imagedata, 'PNG', imageX, imageY, imageWidth, imageHeight);
-      doc.text(`PO Number: ${searchedProjectOrder.poNumber}`, textX, 35); // Use searchedProjectOrder.poNumber instead of searchedPoNumber
-      doc.text(`PO Date: ${searchedProjectOrder.poDate}`, textX, 40); // Use searchedProjectOrder.poDate instead of searchedProjectOrder.poDate
-      drawBorder(); // Draw border after adding header
-    };
-
-    const addFooter = () => {
-      doc.addImage(footerdata, 'PNG', 10, pageHeight - footerHeight - 10, pageWidth - 20, footerHeight);
-      // Add page number at the bottom corner
-      const pageNumber = doc.internal.getNumberOfPages();
-      doc.text(`Page ${pageNumber}`, pageWidth - 20, pageHeight - 10);
-      drawBorder(); // Draw border after adding footer
-    };
-
-    const addNewPage = () => {
-      doc.addPage();
+  const generatePDF = () => {
+    try {
+      const doc = new jsPDF();
+      const imagedata = letterhead;
+      const footerdata = footer;
+  
+      doc.setFontSize(11);
+      doc.setFont('Times', 'normal');
+  
+      const pageHeight = doc.internal.pageSize.getHeight();
+      const pageWidth = doc.internal.pageSize.getWidth();
+      const imageWidth = 50;
+      const imageHeight = 25; // Adjusted height for the image
+      const imageX = (pageWidth - imageWidth) / 2;
+      const imageY = 10;
+  
+      const textX = 12;
+      const footerHeight = 30; // Approximate height of the footer image
+      const headerHeight = 40; // Approximate height for the header section
+      const marginBottom = 10; // Margin from bottom of the page
+  
+      const drawBorder = () => {
+        doc.rect(10, 10, pageWidth - 20, pageHeight - 20); // Draw border around content
+      };
+  
+      const addHeader = () => {
+        doc.addImage(imagedata, 'PNG', imageX, imageY, imageWidth, imageHeight);
+        doc.text(`PO Number: ${searchedProjectOrder.poNumber}`, textX, 35); // Use searchedProjectOrder.poNumber instead of searchedPoNumber
+        doc.text(`PO Date: ${searchedProjectOrder.poDate}`, textX, 40); // Use searchedProjectOrder.poDate instead of searchedProjectOrder.poDate
+        drawBorder(); // Draw border after adding header
+      };
+  
+      const addFooter = () => {
+        doc.addImage(footerdata, 'PNG', 10, pageHeight - footerHeight - 10, pageWidth - 20, footerHeight);
+        // Add page number at the bottom corner
+        const pageNumber = doc.internal.getNumberOfPages();
+        doc.text(`Page ${pageNumber}`, pageWidth - 20, pageHeight - 10);
+        drawBorder(); // Draw border after adding footer
+      };
+  
+      const addNewPage = () => {
+        doc.addPage();
+        addHeader();
+        addFooter();
+      };
+  
+      const checkSpaceAndAddPage = (requiredHeight) => {
+        if (doc.internal.pageSize.getHeight() - doc.autoTable.previous.finalY - footerHeight - marginBottom < requiredHeight) {
+          addNewPage();
+        }
+      };
+  
       addHeader();
       addFooter();
-    };
-
-    const checkSpaceAndAddPage = (requiredHeight) => {
-      if (doc.internal.pageSize.getHeight() - doc.autoTable.previous.finalY - footerHeight - marginBottom < requiredHeight) {
-        addNewPage();
-      }
-    };
-
-    addHeader();
-    addFooter();
-
-    let textY = 50; // Initial textY to give space for the header image and details
-
-    // Vendor Details Table
-    doc.autoTable({
-      startY: textY,
-      head: [['Vendor Details', 'Bill to Details', 'Ship to Details']],
-      body: [
-        [`Name: ${searchedProjectOrder.name}`, `Address: ${searchedProjectOrder.billToAddress}`, `Address: ${searchedProjectOrder.shippingAddress}`],
-        [`Address: ${searchedProjectOrder.address}`, `GST Number: ${searchedProjectOrder.billToGstNumber}`, `Pin Code: ${searchedProjectOrder.pinCode}`],
-        [`Email: ${searchedProjectOrder.email}`, '', `State: ${searchedProjectOrder.state}`],
-        [`GST Number: ${searchedProjectOrder.gstNumber}`, '', `Phone Number: ${searchedProjectOrder.shippingPhoneNumber}`]
-      ],
-      theme: 'plain',
-      styles: { lineColor: [0, 0, 0], lineWidth: 0.1 },
-      headStyles: { fillColor: [255, 255, 255], textColor: [0, 0, 0], fontStyle: 'bold' },
-      bodyStyles: { textColor: [0, 0, 0] },
-      didDrawPage: function (data) {
-        drawBorder(); // Draw border after adding header and footer on each page
-      }
-    });
-
-    textY = doc.autoTable.previous.finalY + 10; // Adjust for the end of the vendor table
-
-    // Top Section or items table
-    const topsectionLines = doc.splitTextToSize(searchedProjectOrder.topsection, pageWidth - 2 * textX);
-    const topsectionHeight = doc.getTextDimensions(topsectionLines).h;
-    checkSpaceAndAddPage(topsectionHeight + 10);
-    doc.text(topsectionLines, textX, textY);
-    textY += topsectionHeight + 10;
-
-    // Generate table for items
-    const tableData = searchedProjectOrder.items.map(item => [
-      item.sno,
-      item.description,
-      item.unit,
-      item.quantity,
-      item.ratePerUnit,
-      item.gstPercentage,
-      item.discount,
-      item.amount
-    ]);
-    const tableHead = [['S.No.', 'Description', 'Unit', 'Quantity', 'Rate Per Unit', 'GST %', 'Discount %', 'Amount']];
-
-    doc.autoTable({
-      startY: textY,
-      head: tableHead,
-      body: tableData,
-      theme: 'plain',
-      styles: { lineColor: [0, 0, 0], lineWidth: 0.1 },
-      headStyles: { fillColor: [255, 255, 255], textColor: [0, 0, 0], fontStyle: 'bold' },
-      bodyStyles: { textColor: [0, 0, 0] },
-      didDrawPage: function (data) {
-        addFooter();
-        drawBorder(); // Draw border after adding header and footer on each page
-      },
-      willDrawCell: function (data) {
-        // Adjust y position for multiline cells to keep rows together
-        if (data.cell && data.cell.textPos && data.cell.raw && typeof data.cell.raw === 'object' && data.cell.raw.styles && data.cell.raw.styles.valign === 'middle') {
-          const textPos = data.cell.textPos;
-          const lineHeight = data.doc.internal.getLineHeight();
-          const cellHeight = data.cell.height || lineHeight * data.row.raw.length;
-          const cellHeightOffset = (cellHeight - lineHeight) / 2;
-          textPos.y += cellHeightOffset;
+  
+      let textY = 50; // Initial textY to give space for the header image and details
+  
+      // Vendor Details Table
+      doc.autoTable({
+        startY: textY,
+        head: [['Vendor Details', 'Bill to Details', 'Ship to Details']],
+        body: [
+          [`Name: ${searchedProjectOrder.name}`, `Address: ${searchedProjectOrder.billToAddress}`, `Address: ${searchedProjectOrder.shippingAddress}`],
+          [`Address: ${searchedProjectOrder.address}`, `GST Number: ${searchedProjectOrder.billToGstNumber}`, `Pin Code: ${searchedProjectOrder.pinCode}`],
+          [`Email: ${searchedProjectOrder.email}`, '', `State: ${searchedProjectOrder.state}`],
+          [`GST Number: ${searchedProjectOrder.gstNumber}`, '', `Phone Number: ${searchedProjectOrder.shippingPhoneNumber}`]
+        ],
+        theme: 'plain',
+        styles: { lineColor: [0, 0, 0], lineWidth: 0.1 },
+        headStyles: { fillColor: [255, 255, 255], textColor: [0, 0, 0], fontStyle: 'bold' },
+        bodyStyles: { textColor: [0, 0, 0] },
+        didDrawPage: function (data) {
+          drawBorder(); // Draw border after adding header and footer on each page
         }
-      }
-    });
-
-    textY = doc.autoTable.previous.finalY + 10; // Adjust for the end of the items table
-
-    // Notes the items table
-    const NotesLines = doc.splitTextToSize(searchedProjectOrder.Notes, pageWidth - 2 * textX);
-    const NotesHeight = doc.getTextDimensions(NotesLines).h;
-    if (doc.internal.pageSize.getHeight() - textY - footerHeight - marginBottom < NotesHeight + 10) {
-      addNewPage();
-      textY = headerHeight + 10; // Start after the header on the new page
+      });
+  
+      textY = doc.autoTable.previous.finalY + 10; // Adjust for the end of the vendor table
+  
+      // Top Section or items table
+      const topsectionLines = doc.splitTextToSize(searchedProjectOrder.topsection, pageWidth - 2 * textX);
+      const topsectionHeight = doc.getTextDimensions(topsectionLines).h;
+      checkSpaceAndAddPage(topsectionHeight + 10);
+      doc.text(topsectionLines, textX, textY);
+      textY += topsectionHeight + 10;
+  
+      // Generate table for items
+      const tableData = searchedProjectOrder.items.map(item => [
+        item.sno,
+        item.description,
+        item.unit,
+        item.quantity,
+        item.ratePerUnit,
+        item.gstPercentage,
+        item.discount,
+        item.amount
+      ]);
+      const tableHead = [['S.No.', 'Description', 'Unit', 'Quantity', 'Rate Per Unit', 'GST %', 'Discount %', 'Amount']];
+  
+      doc.autoTable({
+        startY: textY,
+        head: tableHead,
+        body: tableData,
+        theme: 'plain',
+        styles: { lineColor: [0, 0, 0], lineWidth: 0.1 },
+        headStyles: { fillColor: [255, 255, 255], textColor: [0, 0, 0], fontStyle: 'bold' },
+        bodyStyles: { textColor: [0, 0, 0] },
+        didDrawPage: function (data) {
+          addFooter();
+          drawBorder(); // Draw border after adding header and footer on each page
+        },
+        willDrawCell: function (data) {
+          // Adjust y position for multiline cells to keep rows together
+          if (data.cell && data.cell.textPos && data.cell.raw && typeof data.cell.raw === 'object' && data.cell.raw.styles && data.cell.raw.styles.valign === 'middle') {
+            const textPos = data.cell.textPos;
+            const lineHeight = data.doc.internal.getLineHeight();
+            const cellHeight = data.cell.height || lineHeight * data.row.raw.length;
+            const cellHeightOffset = (cellHeight - lineHeight) / 2;
+            textPos.y += cellHeightOffset;
+          }
+        }
+      });
+  
+      textY = doc.autoTable.previous.finalY + 10; // Adjust for the end of the items table
+  
+      // Add heading for Notes section
+      const notesHeading = "Notes:";
+      const notesHeadingHeight = doc.getTextDimensions(notesHeading).h;
+      checkSpaceAndAddPage(notesHeadingHeight + 10);
+      doc.text(notesHeading, textX, textY);
+      textY += notesHeadingHeight + 5;
+  
+      // Notes section
+      const NotesLines = doc.splitTextToSize(searchedProjectOrder.Notes, pageWidth - 2 * textX);
+      const NotesHeight = doc.getTextDimensions(NotesLines).h;
+      checkSpaceAndAddPage(NotesHeight + 10);
+      doc.text(NotesLines, textX, textY);
+      textY += NotesHeight + 10;
+  
+      // Add heading for Terms and Conditions section
+      const tncHeading = "Terms and Conditions:";
+      const tncHeadingHeight = doc.getTextDimensions(tncHeading).h;
+      checkSpaceAndAddPage(tncHeadingHeight + 10);
+      doc.text(tncHeading, textX, textY);
+      textY += tncHeadingHeight + 5;
+  
+      // Terms and Conditions section
+      const tncLines = doc.splitTextToSize(searchedProjectOrder.tnc, pageWidth - 2 * textX);
+      const tncHeight = doc.getTextDimensions(tncLines).h;
+      checkSpaceAndAddPage(tncHeight + 10);
+      doc.text(tncLines, textX, textY);
+      drawBorder(); // Draw border after adding header, footer, and content on the last page
+  
+      return doc;
+    } catch (error) {
+      console.error('Error generating PDF:', error);
+      throw error; // Re-throw error to propagate it
     }
-    doc.text(NotesLines, textX, textY);
-
-    textY += NotesHeight + 10; // Adjust for the end of the notes section
-
-    // Terms and Conditions section
-    const tncLines = doc.splitTextToSize(searchedProjectOrder.tnc, pageWidth - 2 * textX);
-    const tncHeight = doc.getTextDimensions(tncLines).h;
-    if (doc.internal.pageSize.getHeight() - textY - footerHeight - marginBottom < tncHeight + 10) {
-      addNewPage();
-      textY = headerHeight + 10; // Start after the header on the new page
-    }
-    doc.text(tncLines, textX, textY);
-    drawBorder(); // Draw border after adding header, footer, and content on the last page
-
-    return doc;
-  } catch (error) {
-    console.error('Error generating PDF:', error);
-    throw error; // Re-throw error to propagate it
-  }
-};
+  };
+  
   
   const handleSearchPoNumberChange = (e) => {
     setSearchedPoNumber(e.target.value);

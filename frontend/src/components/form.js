@@ -261,6 +261,7 @@ const Form = () => {
       const footerHeight = 30; // Approximate height of the footer image
       const headerHeight = 40; // Approximate height for the header section
       const marginBottom = 10; // Margin from bottom of the page
+  
       const drawBorder = () => {
         doc.rect(10, 10, pageWidth - 20, pageHeight - 20); // Draw border around content
       };
@@ -279,7 +280,7 @@ const Form = () => {
         doc.text(`Page ${pageNumber}`, pageWidth - 20, pageHeight - 5);
         drawBorder(); // Draw border after adding footer
       };
-
+  
       const addNewPage = () => {
         doc.addPage();
         addHeader();
@@ -291,9 +292,11 @@ const Form = () => {
           addNewPage();
         }
       };
+  
       addHeader();
       addFooter();
       let textY = 50; // Initial textY to give space for the header image and details
+  
       // Vendor Details Table
       doc.autoTable({
         startY: textY,
@@ -316,6 +319,7 @@ const Form = () => {
       });
   
       textY = doc.autoTable.previous.finalY + 10; // Adjust for the end of the vendor table
+  
       // Top Section the items table
       const topsectionLines = doc.splitTextToSize(topsection, pageWidth - 2 * textX);
       const topsectionHeight = doc.getTextDimensions(topsectionLines).h;
@@ -359,6 +363,13 @@ const Form = () => {
         }
       });
       textY = doc.autoTable.previous.finalY + 10; // Adjust for the end of the items table
+      
+      // Add heading for Notes section
+      const notesHeading = "Notes:";
+      const notesHeadingHeight = doc.getTextDimensions(notesHeading).h;
+      checkSpaceAndAddPage(notesHeadingHeight + 10);
+      doc.text(notesHeading, textX, textY);
+      textY += notesHeadingHeight + 5;
       // Notes for the items table
       const NotesLines = doc.splitTextToSize(Notes, pageWidth - 2 * textX);
       const NotesHeight = doc.getTextDimensions(NotesLines).h;
@@ -368,12 +379,26 @@ const Form = () => {
       }
       doc.text(NotesLines, textX, textY);
       textY += NotesHeight + 10; // Adjust for the end of the notes section
+      
+      // Add heading for Terms and Conditions section
+      const tncHeading = "Terms and Conditions:";
+      const tncHeadingHeight = doc.getTextDimensions(tncHeading).h;
+      checkSpaceAndAddPage(tncHeadingHeight + 10);
+      if (textY + tncHeadingHeight + 10 > doc.internal.pageSize.getHeight() - footerHeight - marginBottom) {
+        addNewPage();
+        textY = headerHeight + 10; // Start after the header on the new page
+      }
+      doc.text(tncHeading, textX, textY);
+      textY += tncHeadingHeight + 5;
+      
       // Terms and Conditions section
       const tncLines = doc.splitTextToSize(tnc, pageWidth - 2 * textX);
       const tncHeight = doc.getTextDimensions(tncLines).h;
       if (doc.internal.pageSize.getHeight() - textY - footerHeight - marginBottom < tncHeight + 10) {
         addNewPage();
         textY = headerHeight + 10; // Start after the header on the new page
+        doc.text(tncHeading, textX, textY); // Add the heading again on the new page
+        textY += tncHeadingHeight + 5; // Adjust for the heading height
       }
       doc.text(tncLines, textX, textY);
       drawBorder(); // Draw border after adding header, footer, and content on the last page
