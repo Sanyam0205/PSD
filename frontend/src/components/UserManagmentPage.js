@@ -8,7 +8,7 @@ const UserManagement = () => {
 
   const handleAddUser = async () => {
     try {
-      const response = await axios.post('http://ec2-13-201-175-136.ap-south-1.compute.amazonaws.com:5000/api/users/login', { username: newUsername });
+      const response = await axios.post('http://ec2-13-234-47-87.ap-south-1.compute.amazonaws.com:5000/api/users/login', { username: newUsername });
       // Handle successful user addition
       console.log(response.data);
     } catch (error) {
