@@ -62,7 +62,7 @@ const VendorManagement = () => {
     const confirmDelete = window.confirm("Are you sure you want to delete this vendor?");
     if (confirmDelete) {
       try {
-        await axios.delete(`http://http://ec2-15-207-87-2.ap-south-1.compute.amazonaws.com/:5000/api/vendors/${code}`);
+        await axios.delete(`http://http://ec2-15-207-87-2.ap-south-1.compute.amazonaws.com:5000/api/vendors/${code}`);
         fetchVendors();
       } catch (error) {
         console.error('Error deleting vendor:', error);
