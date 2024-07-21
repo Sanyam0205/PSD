@@ -188,8 +188,6 @@ const ProjectOrd = () => {
     }
   };
   
-  
-  
   const handleSearchPoNumberChange = (e) => {
     setSearchedPoNumber(e.target.value);
   };
