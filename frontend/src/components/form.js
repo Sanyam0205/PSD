@@ -2,11 +2,9 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrash } from '@fortawesome/free-solid-svg-icons';
+import { PDFViewer } from '@react-pdf/renderer';
+import ProjectOrderPDF from './ProjectOrderPdf';
 import './custom.css';
-import { jsPDF } from 'jspdf';
-import letterhead from '../assets/images.png';
-import footer from '../assets/footer.png';
-import 'jspdf-autotable';
 
 const Form = () => {
   const [vendorCode, setVendorCode] = useState('');
@@ -34,8 +32,6 @@ const Form = () => {
     amount: 0
   });
   const [totalAmount, setTotalAmount] = useState(0);
-  const [pdfUrl, setPdfUrl] = useState('');
-  const [isPreviewOpen, setIsPreviewOpen] = useState(false);
   const [shippingAddress, setShippingAddress] = useState('');
   const [pinCode, setPinCode] = useState('');
   const [state, setState] = useState('');
@@ -80,6 +76,7 @@ const Form = () => {
 12. Warranty: 1 year from the date of Invoice if any manufacturing defect.
 13. Rate inclusive of transportation, loading, unloading and handover at site.
 14. Delivery Schedule: urgent basis.`);
+const [showPDFPreview, setShowPDFPreview] = useState(false);  // Add this line
 
   // Fetch vendor details when vendor code changes
   useEffect(() => {
@@ -244,196 +241,6 @@ const Form = () => {
     setTotalAmount(totalAmount - removedItem.amount);
   }
 
-  const generatePDF = () => {
-    try {
-      const doc = new jsPDF();
-      const imagedata = letterhead;
-      const footerdata = footer;
-      doc.setFontSize(11);
-      doc.setFont('Times', 'normal');
-      const pageHeight = doc.internal.pageSize.getHeight();
-      const pageWidth = doc.internal.pageSize.getWidth();
-      const imageWidth = 50;
-      const imageHeight = 22;
-      const imageX = (pageWidth - imageWidth) / 2;
-      const imageY = 10;
-      const textX = 12;
-      const footerHeight = 30; // Approximate height of the footer image
-      const headerHeight = 40; // Approximate height for the header section
-      const marginBottom = 10; // Margin from bottom of the page
-  
-      const drawBorder = () => {
-        doc.rect(10, 10, pageWidth - 20, pageHeight - 20); // Draw border around content
-      };
-  
-      const addHeader = () => {
-        doc.addImage(imagedata, 'PNG', imageX, imageY, imageWidth, imageHeight);
-        doc.text(`PO Number: ${poNumber}`, textX, 35);
-        doc.text(`PO Date: ${poDate}`, textX, 40);
-        drawBorder(); // Draw border after adding header
-      };
-  
-      const addFooter = () => {
-        doc.addImage(footerdata, 'PNG', 10, pageHeight - footerHeight - 10, pageWidth - 20, footerHeight);
-        // Add page number at the bottom corner
-        const pageNumber = doc.internal.getNumberOfPages();
-        doc.text(`Page ${pageNumber}`, pageWidth - 20, pageHeight - 5);
-        drawBorder(); // Draw border after adding footer
-      };
-  
-      const addNewPage = () => {
-        doc.addPage();
-        addHeader();
-        addFooter();
-      };
-  
-      const checkSpaceAndAddPage = (requiredHeight) => {
-        if (doc.internal.pageSize.getHeight() - doc.autoTable.previous.finalY - footerHeight - marginBottom < requiredHeight) {
-          addNewPage();
-        }
-      };
-  
-      addHeader();
-      addFooter();
-      let textY = 50; // Initial textY to give space for the header image and details
-  
-      // Vendor Details Table
-      doc.autoTable({
-        startY: textY,
-        head: [['Vendor Details', 'Bill to Details', 'Ship to Details']],
-        body: [
-          [`Name: ${name}`, `Address: ${billToAddress}`, `Address: ${shippingAddress}`],
-          ['Contact Person: ' + contactperson, `GST Number: ${billToGstNumber}`, `Pin Code: ${pinCode}`],
-          [`Address: ${address}`, ``, ``],
-          [`Email: ${email}`, '', `State: ${state}`],
-          ['Contact Number: ' + contact, '', `Phone Number: ${shippingPhoneNumber}`],
-          [`GST Number: ${gstNumber}`, '', '']
-        ],
-        theme: 'plain',
-        styles: { lineColor: [0, 0, 0], lineWidth: 0.1 },
-        headStyles: { fillColor: [255, 255, 255], textColor: [0, 0, 0], fontStyle: 'bold' },
-        bodyStyles: { textColor: [0, 0, 0] },
-        didDrawPage: function (data) {
-          drawBorder(); // Draw border after adding header and footer on each page
-        }
-      });
-  
-      textY = doc.autoTable.previous.finalY + 10; // Adjust for the end of the vendor table
-  
-      // Top Section the items table
-      const topsectionLines = doc.splitTextToSize(topsection, pageWidth - 2 * textX);
-      const topsectionHeight = doc.getTextDimensions(topsectionLines).h;
-      checkSpaceAndAddPage(topsectionHeight + 10);
-      doc.text(topsectionLines, textX, textY);
-      textY += topsectionHeight + 10;
-  
-      // Generate table for items
-      const tableData = items.map(item => [
-        { content: item.sno, styles: { valign: 'middle' } },
-        item.description,
-        item.unit,
-        item.quantity,
-        item.ratePerUnit,
-        item.gstPercentage,
-        item.discount,
-        item.amount
-      ]);
-      const tableHead = [['S.No.', 'Description', 'Unit', 'Quantity', 'Rate Per Unit', 'GST %', 'Discount %', 'Amount']];
-      doc.autoTable({
-        startY: textY,
-        head: tableHead,
-        body: tableData,
-        theme: 'plain',
-        styles: { lineColor: [0, 0, 0], lineWidth: 0.1 },
-        headStyles: { fillColor: [255, 255, 255], textColor: [0, 0, 0], fontStyle: 'bold' },
-        bodyStyles: { textColor: [0, 0, 0] },
-        didDrawPage: function (data) {
-          addFooter();
-          drawBorder(); // Draw border after adding header and footer on each page
-        },
-        willDrawCell: function (data) {
-          // Adjust y position for multiline cells to keep rows together
-          if (data.cell && data.cell.textPos && data.cell.raw && typeof data.cell.raw === 'object' && data.cell.raw.styles && data.cell.raw.styles.valign === 'middle') {
-            const textPos = data.cell.textPos;
-            const lineHeight = data.doc.internal.getLineHeight();
-            const cellHeight = data.cell.height || lineHeight * data.row.raw.length;
-            const cellHeightOffset = (cellHeight - lineHeight) / 2;
-            textPos.y += cellHeightOffset;
-          }
-        }
-      });
-      textY = doc.autoTable.previous.finalY + 10; // Adjust for the end of the items table
-      
-      // Add heading for Notes section
-      const notesHeading = "Notes:";
-      const notesHeadingHeight = doc.getTextDimensions(notesHeading).h;
-      checkSpaceAndAddPage(notesHeadingHeight + 10);
-      doc.text(notesHeading, textX, textY);
-      textY += notesHeadingHeight + 5;
-      // Notes for the items table
-      const NotesLines = doc.splitTextToSize(Notes, pageWidth - 2 * textX);
-      const NotesHeight = doc.getTextDimensions(NotesLines).h;
-      if (doc.internal.pageSize.getHeight() - textY - footerHeight - marginBottom < NotesHeight + 10) {
-        addNewPage();
-        textY = headerHeight + 10; // Start after the header on the new page
-      }
-      doc.text(NotesLines, textX, textY);
-      textY += NotesHeight + 10; // Adjust for the end of the notes section
-      
-      // Add heading for Terms and Conditions section
-      const tncHeading = "Terms and Conditions:";
-      const tncHeadingHeight = doc.getTextDimensions(tncHeading).h;
-      checkSpaceAndAddPage(tncHeadingHeight + 10);
-      if (textY + tncHeadingHeight + 10 > doc.internal.pageSize.getHeight() - footerHeight - marginBottom) {
-        addNewPage();
-        textY = headerHeight + 10; // Start after the header on the new page
-      }
-      doc.text(tncHeading, textX, textY);
-      textY += tncHeadingHeight + 5;
-      
-      // Terms and Conditions section
-      const tncLines = doc.splitTextToSize(tnc, pageWidth - 2 * textX);
-      const tncHeight = doc.getTextDimensions(tncLines).h;
-      if (doc.internal.pageSize.getHeight() - textY - footerHeight - marginBottom < tncHeight + 10) {
-        addNewPage();
-        textY = headerHeight + 10; // Start after the header on the new page
-        doc.text(tncHeading, textX, textY); // Add the heading again on the new page
-        textY += tncHeadingHeight + 5; // Adjust for the heading height
-      }
-      doc.text(tncLines, textX, textY);
-      drawBorder(); // Draw border after adding header, footer, and content on the last page
-  
-      return doc;
-    } catch (error) {
-      console.error('Error generating PDF:', error);
-      throw error; // Re-throw error to propagate it
-    }
-  };
-  
-  const handlePreviewPDF = () => {
-    try {
-      const doc = generatePDF();
-      if (!doc) {
-        throw new Error('Failed to generate PDF document.');
-      }
-      const pdfBlob = doc.output('blob');
-      const pdfUrl = URL.createObjectURL(pdfBlob);
-      setPdfUrl(pdfUrl);
-      setIsPreviewOpen(true);
-    } catch (error) {
-      console.error('Error generating PDF preview:', error);
-      // Handle or log the error further as needed
-    }
-  };
-  
-  const handleClosePreview = () => {
-    setIsPreviewOpen(false);
-    if (pdfUrl) {
-      URL.revokeObjectURL(pdfUrl);
-      setPdfUrl('');
-    }
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -463,8 +270,6 @@ const Form = () => {
       // Submit project order
       await axios.post('http://ec2-13-234-47-87.ap-south-1.compute.amazonaws.com:5000/api/project-orders', projectOrder);
       // Generate PDF
-      const doc = generatePDF();
-      doc.save('project_orders.pdf');
       alert('Project order submitted successfully');
     } catch (error) {
       console.error(error);
@@ -671,20 +476,37 @@ const Form = () => {
           <label>Terms And Condition: </label>
           <textarea value={tnc} onChange={(e) => settnc(e.target.value)} />
         </div>
-        <div>
-        <button type="button" onClick={handlePreviewPDF}>Preview PDF</button>
-        </div>
+        <button type="button" onClick={() => setShowPDFPreview(true)}>Preview PDF</button>
         <div>
         <button type="submit">Submit</button>
         </div>
       </form>
-      {isPreviewOpen && (
-        <div className="pdf-preview-modal">
-          <div className="pdf-preview-content">
-            <button className="close-preview-button" onClick={handleClosePreview}>Close Preview</button>
-            <iframe src={pdfUrl} width="100%" height="600px" title="PDF Preview"></iframe>
-          </div>
-        </div>
+      {showPDFPreview && (
+        <PDFViewer width="100%" height="600">
+          <ProjectOrderPDF
+            vendorCode={vendorCode}
+            name={name}
+            contactperson={contactperson}
+            address={address}
+            email={email}
+            contact={contact}
+            gstNumber={gstNumber}
+            billToAddress={billToAddress}
+            billToGstNumber={billToGstNumber}
+            shippingAddress={shippingAddress}
+            pinCode={pinCode}
+            state={state}
+            shippingPhoneNumber={shippingPhoneNumber}
+            poNumber={poNumber}
+            poDate={poDate}
+            type={type}
+            items={items}
+            totalAmount={totalAmount}
+            topsection={topsection}
+            Notes={Notes}
+            tnc={tnc}
+          />
+        </PDFViewer>
       )}
     </div>
   );
