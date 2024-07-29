@@ -37,7 +37,7 @@ const Form = () => {
   const [state, setState] = useState('');
   const [shippingPhoneNumber, setShippingPhoneNumber] = useState('');
   const [topsection, settopsection] = useState(
-    'SUBJECT: Collection, Transportation, Recycling of Post-Consumer Plastic Waste on Behalf of Rekart Innovations Pvt. Ltd.\n' +
+    '\nCollection, Transportation, Recycling of Post-Consumer Plastic Waste on Behalf of Rekart Innovations Pvt. Ltd.\n' +
     'Dear Sir,\n' +
     'This is in reference to Work Order for Rekart Innovations Pvt Ltd. We hereby offer you to Fulfillment of Collection,\n' +
     'Transportation, Recycling of Post-Consumer Plastic Waste on Behalf of Rekart Innovations Pvt. Ltd as per\n' +
@@ -45,7 +45,7 @@ const Form = () => {
     'and Disposal of Post- Consumers at below mentioned.'
   );
   const [Notes, setNotes] = useState(
-    'It may be noted that the above work will be carried out to our complete satisfaction if any amendment or alteration\n' +
+    '\nIt may be noted that the above work will be carried out to our complete satisfaction if any amendment or alteration\n' +
     'are to be carried out due to mistakes or violation of any Rules on your parts, no extra payment will be payable for\n' +
     'that.\n' +
     'You will be paid Service Charges as specified against the quantity of plastic Waste (N-MLP) collected and recycled as\n' +
@@ -460,6 +460,7 @@ const [showPDFPreview, setShowPDFPreview] = useState(false);  // Add this line
               </button>
             </div>
           ))}
+
         </div>
         <div className="total-amount-section">
           <h2>Total Amount</h2>

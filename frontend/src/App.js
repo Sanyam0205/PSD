@@ -12,7 +12,7 @@ function App() {
   return (
     <div className="App">
       <Router>
-        <Navbar />
+        {/* <Navbar /> */}
         <Routes>
           <Route path="/form" element={<Form />} />
           <Route path="/projectorder" element={<ProjectOrd />} />
