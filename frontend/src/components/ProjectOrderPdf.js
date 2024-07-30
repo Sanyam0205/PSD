@@ -118,8 +118,8 @@ const ProjectOrderPDF = (props) => {
         <Text style={styles.tableCell}>{item.unit}</Text>
         <Text style={styles.tableCell}>{item.quantity}</Text>
         <Text style={styles.tableCell}>{item.ratePerUnit}</Text>
-        <Text style={styles.tableCell}>{item.gstPercentage}</Text>
         <Text style={styles.tableCell}>{item.discount}</Text>
+        <Text style={styles.tableCell}>{item.gstPercentage}</Text>
         <Text style={styles.tableCell}>{item.amount}</Text>
       </View>
     ));
@@ -145,8 +145,8 @@ const ProjectOrderPDF = (props) => {
               <Text style={[styles.tableCell, styles.tableHeader]}>Unit</Text>
               <Text style={[styles.tableCell, styles.tableHeader]}>Quantity</Text>
               <Text style={[styles.tableCell, styles.tableHeader]}>Rate Per Unit</Text>
-              <Text style={[styles.tableCell, styles.tableHeader]}>GST %</Text>
               <Text style={[styles.tableCell, styles.tableHeader]}>Discount %</Text>
+              <Text style={[styles.tableCell, styles.tableHeader]}>GST %</Text>
               <Text style={[styles.tableCell, styles.tableHeader]}>Amount</Text>
             </View>
             {rows.slice(i, i + rowsPerPage)}

@@ -401,12 +401,12 @@ const [showPDFPreview, setShowPDFPreview] = useState(false);  // Add this line
               <input type="number" name="ratePerUnit" value={item.ratePerUnit} onChange={handleItemChange} />
             </div>
             <div className="item-field">
-              <label>GST: </label>
-              <input type="number" name="gstPercentage" value={item.gstPercentage} onChange={handleItemChange} />
-            </div>
-            <div className="item-field">
               <label>Discount: </label>
               <input type="number" name="discount" value={item.discount} onChange={handleItemChange} />
+            </div>
+            <div className="item-field">
+              <label>GST: </label>
+              <input type="number" name="gstPercentage" value={item.gstPercentage} onChange={handleItemChange} />
             </div>
             <div className="item-field">
               <label>Amount:</label>
@@ -440,13 +440,14 @@ const [showPDFPreview, setShowPDFPreview] = useState(false);  // Add this line
                 <input type="number" value={item.ratePerUnit} readOnly />
               </div>
               <div className="item-field">
-                <label>GST:</label>
-                <input type="number" value={item.gstPercentage} readOnly />
-              </div>
-              <div className="item-field">
                 <label>Discount</label>
                 <input type="number" value={item.discount} readOnly />
               </div>
+              <div className="item-field">
+                <label>GST:</label>
+                <input type="number" value={item.gstPercentage} readOnly />
+              </div>
+              
               <div className="item-field">
                 <label>Amount:</label>
                 <input type="number" value={item.amount} readOnly />
@@ -512,5 +513,4 @@ const [showPDFPreview, setShowPDFPreview] = useState(false);  // Add this line
     </div>
   );
 };
-
 export default Form;
