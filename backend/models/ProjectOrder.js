@@ -1,5 +1,15 @@
 const mongoose = require('mongoose');
 
+const subItemschema = new mongoose.Schema({
+  sno: Number,
+  description: String,
+  unit: String,
+  quantity: Number,
+  ratePerUnit: Number,
+  gstPercentage: Number,
+  discount: Number,
+  amount: Number,
+});
 const itemSchema = new mongoose.Schema({
   sno: Number,
   description: String,
@@ -8,7 +18,8 @@ const itemSchema = new mongoose.Schema({
   ratePerUnit: Number,
   gstPercentage: Number,
   discount: Number,
-  amount: Number // amount is calculated as quantity * ratePerUnit
+  amount: Number,
+  subItems:[subItemschema] 
 });
 
 const projectOrderSchema = new mongoose.Schema({
@@ -28,12 +39,18 @@ const projectOrderSchema = new mongoose.Schema({
   poNumber: String,
   poDate: Date,
   items: [itemSchema],
-  totalAmount: Number, // totalAmount is the sum of all item amounts
+  totalAmount: Number, 
   topsection: String,
   Notes: String,
   tnc: String,
-  // additionalSections: String,
-  // additionalTables: [itemSchema]
+  signature: {
+    fileName: { type: String },
+    filePath: { type: String },
+    fileSize: { type: Number },
+    mimeType: { type: String },
+    uploadDate: { type: Date, default: Date.now },
+  },
+
 });
 
 module.exports = mongoose.model('ProjectOrder', projectOrderSchema);

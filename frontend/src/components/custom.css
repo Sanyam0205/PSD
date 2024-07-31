@@ -53,20 +53,46 @@
   cursor: pointer; /* Pointer cursor on hover */
   margin-bottom: 10px; /* Add margin between sections */
 }
-/* 
-.vendor-section:hover,
-.po-number-section:hover,
-.bill-to-section:hover,
-.add-item-section:hover,
-.items-section:hover,
-.total-amount-section:hover,
-.search-section:hover,
-.edit-section:hover,
-.underline:hover,
-.custom-text-section:hover {
-  transform: scale(1.02); 
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); 
-} */
+
+.sub-item {
+  display: flex;               /* Use flexbox layout */
+  flex-wrap: wrap;             /* Allow wrapping to new lines if necessary */
+  gap: 10px;                   /* Space between items */
+  margin-bottom: 15px;         /* Space below each sub-item */
+  padding: 10px;
+  border: 1px solid #ccc;      /* Optional border for better visibility */
+  border-radius: 5px;          /* Optional rounded corners */
+}
+
+.sub-item .item-field {
+  flex: 1;                     /* Allow fields to grow equally */
+  min-width: 120px;            /* Minimum width for each field */
+}
+
+.sub-item .item-field label {
+  display: block;              /* Display labels above inputs */
+  margin-bottom: 5px;          /* Space below labels */
+  font-weight: bold;           /* Bold labels for better readability */
+}
+
+.sub-item .item-field input {
+  width: 100%;                 /* Full width for input fields */
+  padding: 5px;                /* Padding inside input fields */
+  box-sizing: border-box;      /* Include padding and border in the element's total width and height */
+}
+
+/* Optional: Media query for responsiveness */
+@media (max-width: 768px) {
+  .sub-item {
+    flex-direction: column;    /* Stack fields vertically on small screens */
+  }
+
+  .sub-item .item-field {
+    min-width: auto;          /* Remove minimum width on smaller screens */
+  }
+}
+
+
 
 /* Form styling */
 .form {

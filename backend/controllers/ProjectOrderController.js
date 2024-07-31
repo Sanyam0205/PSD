@@ -8,7 +8,7 @@ const calculateTotalAmount = (items) => {
 exports.createProjectOrder = async (req, res) => {
   const { vendorCode, name,contactperson, address, email,contact, gstNumber, billToAddress,billToGstNumber,shippingAddress,pinCode,state,shippingPhoneNumber, poNumber, poDate, items,topsection,
     Notes,
-    tnc,additionalSections,additionalTables } = req.body;
+    tnc,signature} = req.body;
   const totalAmount = calculateTotalAmount(items);
 
   const projectOrder = new ProjectOrder({
@@ -32,8 +32,7 @@ exports.createProjectOrder = async (req, res) => {
     topsection,
     Notes,
     tnc,
-    // additionalSections,
-    additionalTables
+    signature,
   });
 
   try {
@@ -61,7 +60,8 @@ exports.addItemToProjectOrder = async (req, res) => {
       ratePerUnit,
       gstPercentage,
       discount,
-      amount: quantity * ratePerUnit * (1 + gstPercentage / 100) * (1 - discount/100) // Calculate the amount
+      amount: quantity * ratePerUnit * (1 + gstPercentage / 100) * (1 - discount/100),
+      subItems: subItems || []
     };
   
     // Add the new item to the project order's items array
@@ -123,21 +123,19 @@ exports.editItemInProjectOrder = async (req, res) => {
 
   try {
     const projectOrder = await ProjectOrder.findOne({ poNumber });
-    const itemIndex = projectOrder.items.findIndex(item => item._id == itemId);
+    const itemIndex = projectOrder.items.findIndex(item => item._id.toString() === itemId);
 
     if (itemIndex !== -1) {
-      // Update the item
       projectOrder.items[itemIndex] = {
-        ...projectOrder.items[itemIndex],
+        ...projectOrder.items[itemIndex]._doc,
         ...updatedItem,
-        amount: updatedItem.quantity * updatedItem.ratePerUnit // Recalculate the amount
+        amount: updatedItem.quantity * updatedItem.ratePerUnit, // Recalculate the amount
       };
 
-      // Recalculate the total amount
       projectOrder.totalAmount = calculateTotalAmount(projectOrder.items);
 
-      await projectOrder.save();
-      res.json(projectOrder);
+      const updatedProjectOrder = await projectOrder.save();
+      res.json(updatedProjectOrder);
     } else {
       res.status(404).json({ message: 'Item not found' });
     }
@@ -145,3 +143,4 @@ exports.editItemInProjectOrder = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+
