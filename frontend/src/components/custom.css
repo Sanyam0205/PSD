@@ -93,49 +93,52 @@
 }
 
 .signature-section {
-  display: flex;
+  display:grid;
   flex-direction: column;
   align-items: flex-start;
-  border: 1px solid #ccc;
-  padding: 20px;
-  border-radius: 8px;
+  border: 2px ; /* Increased border width and changed color */
+  padding: 25px; /* Increased padding for better spacing */
+  border-radius: 12px; /* Increased border radius for a smoother look */
   background-color: #f9f9f9;
-  max-width: 400px;
-  margin: 20px auto;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  max-width: 450px; /* Slightly increased max-width */
+  margin: 30px auto; /* Increased margin for more spacing */
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1); /* Slightly larger shadow */
 }
 
 .signature-section label {
-  font-size: 16px;
+  font-size: 18px; /* Increased font size */
   font-weight: bold;
-  margin-bottom: 10px;
+  margin-bottom: 12px; /* Increased margin-bottom */
   color: #333;
 }
 
 .signature-section input[type="file"] {
-  margin-bottom: 15px;
+  margin-bottom: 20px; /* Increased margin-bottom */
+  font-size: 14px; /* Added font size */
 }
 
 .signature-section button {
   background-color: #007bff;
   color: #fff;
   border: none;
-  padding: 10px 20px;
-  border-radius: 4px;
+  padding: 12px 25px; /* Increased padding */
+  border-radius: 6px; /* Slightly increased border radius */
   cursor: pointer;
-  font-size: 14px;
-  transition: background-color 0.3s ease;
+  font-size: 15px; /* Increased font size */
+  transition: background-color 0.3s ease, transform 0.3s ease; /* Added transform transition */
 }
 
 .signature-section button:hover {
   background-color: #0056b3;
+  transform: scale(1.05); /* Slight scale effect on hover */
 }
 
 .signature-section img {
   max-width: 200px;
-  margin-top: 10px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
+  margin-top: 15px; /* Increased margin-top */
+  border: 2px solid #ccc; /* Increased border width */
+  border-radius: 8px; /* Slightly increased border radius */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Added shadow to image */
 }
 
 

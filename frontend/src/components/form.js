@@ -720,6 +720,7 @@ const [signatureUrl, setSignatureUrl] = useState('');
         <input type="file" accept="image/*" onChange={handleSignatureChange} />
         <button type="button" onClick={handlesignUpload}>Upload Signature</button>
         {signatureUrl && <img src={`http://localhost:5000${signatureUrl}`} alt="Signature"  />}
+        
         </div>
         <button type="button" onClick={() => setShowPDFPreview(true)}>Preview PDF</button>
         <div>
