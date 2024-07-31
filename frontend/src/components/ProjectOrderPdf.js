@@ -32,22 +32,22 @@ const styles = StyleSheet.create({
     backgroundColor: '#ffffff',
     paddingTop: 80, // Increased space for header
     paddingBottom: 80, // Increased space for footer
-    paddingLeft: 0,
-    paddingRight: 0,
+    paddingLeft: 20,
+    paddingRight: 20,
     position: 'relative',
   },
   header: {
     position: 'absolute',
     top: 10,
-    left: 0,
-    right: 0,
+    left: 10,
+    right: 10,
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'center',
   },
   image: {
     width: '50%',
-    height: '75%',
+    height: '82%',
   },
   footer: {
     position: 'absolute',
@@ -61,7 +61,7 @@ const styles = StyleSheet.create({
   },
   footerimage: {
     width: '85%',
-    height: '85%',
+    height: '92%',
   },
   headerRight: {
     position: 'absolute',
