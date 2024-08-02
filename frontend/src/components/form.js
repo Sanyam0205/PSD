@@ -311,15 +311,32 @@ const Form = () => {
     }
   };
 
-  const handleTypeChange = (e) => {
-    const selectedType = e.target.value;
-    setType(selectedType);
-    // Generate a PO number based on the selected type
-    if (selectedType) {
-      const prefix = selectedType === 'material' ? 'M' : 'S';
-      setPoNumber(`${prefix}-${new Date().getTime()}`); // Example PO number generation logic
+  const getNextSeriesPoNumber = async () => {
+    try {
+      const response = await fetch('http://13.234.47.87:5000/api/series/next-po-number');
+      const data = await response.json();
+      return data.seriesNumber;
+    } catch (error) {
+      console.error('Error fetching next PO number:', error);
+      return '00000001'; // Fallback value
     }
   };
+  
+  // Use in handleTypeChange
+  const handleTypeChange = async (e) => {
+    const selectedType = e.target.value;
+    setType(selectedType);
+  
+    if (selectedType) {
+      const prefix = selectedType === 'material' ? 'GE-12' : 'GE-22';
+  
+      const year = new Date().getFullYear().toString().slice(-2); // Get last two digits of the year
+      const seriesNumber = await getNextSeriesPoNumber(); // Fetch the next series number
+  
+      setPoNumber(`${prefix}-${year}-${seriesNumber}`);
+    }
+  };
+  
 
   const calculateAmount = (item) => {
     if (item.subItems && item.subItems.length > 0) {

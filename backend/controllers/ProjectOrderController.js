@@ -187,3 +187,28 @@ exports.editItemInProjectOrder = async (req, res) => {
   }
 };
 
+const getNextSeriesPoNumber = async (req, res) => {
+  try {
+    // Fetch the highest PO number from the database
+    const latestOrder = await ProjectOrder.findOne().sort({ poNumber: -1 }).limit(1);
+
+    let newSeriesNumber = 1; // Default to 1 if no orders exist
+
+    if (latestOrder) {
+      // Extract the series number from the latest PO number
+      const lastPoNumber = latestOrder.poNumber;
+      const seriesNumber = parseInt(lastPoNumber.split('-')[2], 10);
+      newSeriesNumber = seriesNumber + 1; // Increment series number
+    }
+
+    // Format the series number to 8 digits with leading zeros
+    const formattedSeriesNumber = newSeriesNumber.toString().padStart(8, '0');
+
+    res.json({ seriesNumber: formattedSeriesNumber });
+  } catch (error) {
+    console.error('Error getting next PO number:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+};
+
+module.exports = { getNextSeriesPoNumber };
