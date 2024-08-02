@@ -32,6 +32,7 @@ const Form = () => {
   const [deliveryPinCode, setDeliveryPinCode] = useState('');
   const [deliveryContact, setDeliveryContact] = useState('');
   const [deliveryEmail, setDeliveryEmail] = useState('');
+  const [deliveryGstNumber, setDeliveryGstNumber] = useState('');
   const [poNumber, setPoNumber] = useState('');
   const [poDate, setPoDate] = useState(new Date().toISOString().substring(0, 10));
   const [type, setType] = useState('');
@@ -129,7 +130,7 @@ const Form = () => {
     const fetchBillingDetails = async () => {
       try {
         if (locationCode) {
-          const response = await axios.get(`http://localhost:5000/api/billing/${locationCode}`);
+          const response = await axios.get(`http://localhost:5000/api/location/${locationCode}`);
           const billing = response.data;
           setError('');
           // Set billing details to corresponding state variables
@@ -139,6 +140,7 @@ const Form = () => {
           setBillToPinCode(billing.billToPinCode || '');
           setBillToContact(billing.billToContact || '');
           setBillToEmail(billing.billToEmail || '');
+          setBillToGstNumber(billing.billToGstNumber || '');
         } else {
           // Reset billing fields when locationCode is empty
           setbilltoname('');
@@ -147,6 +149,7 @@ const Form = () => {
           setBillToPinCode('');
           setBillToContact('');
           setBillToEmail('');
+          setBillToGstNumber('');
         }
       } catch (error) {
         setError('Billing details not found');
@@ -160,16 +163,17 @@ const Form = () => {
     const fetchDeliveryDetails = async () => {
       try {
         if (deliveryLocationCode) {
-          const response = await axios.get(`http://localhost:5000/api/delivery/${deliveryLocationCode}`);
+          const response = await axios.get(`http://localhost:5000/api/location/${deliveryLocationCode}`);
           const delivery = response.data;
           setError('');
           // Set delivery details to corresponding state variables
-          setDeliveryName(delivery.deliveryName || '');
-          setshippingAddress(delivery.shippingAddress || '');
-          setDeliveryDistrict(delivery.deliveryDistrict || '');
-          setDeliveryPinCode(delivery.deliveryPinCode || '');
-          setDeliveryContact(delivery.deliveryContact || '');
-          setDeliveryEmail(delivery.deliveryEmail || '');
+          setDeliveryName(delivery.billtoname || '');
+          setshippingAddress(delivery.billToAddress || '');
+          setDeliveryDistrict(delivery.billToDistrict || '');
+          setDeliveryPinCode(delivery.billToPinCode || '');
+          setDeliveryContact(delivery.billToContact || '');
+          setDeliveryEmail(delivery.billToEmail || '');
+          setDeliveryGstNumber(delivery.billToGstNumber || '');
         } else {
           // Reset delivery fields when deliveryLocationCode is empty
           setDeliveryName('');
@@ -178,6 +182,7 @@ const Form = () => {
           setDeliveryPinCode('');
           setDeliveryContact('');
           setDeliveryEmail('');
+          setDeliveryGstNumber('');
         }
       } catch (error) {
         setError('Delivery details not found');
@@ -317,29 +322,79 @@ const Form = () => {
   };
 
   const calculateAmount = (item) => {
-    const discountAmount = (item.ratePerUnit * item.quantity * item.discount) / 100;
-    const amountAfterDiscount = item.ratePerUnit * item.quantity - discountAmount;
-    const gstAmount = (amountAfterDiscount * item.gstPercentage) / 100;
-    return amountAfterDiscount + gstAmount;
+    if (item.subItems && item.subItems.length > 0) {
+      return item.subItems.reduce((total, subItem) => {
+        const discountAmount = (subItem.ratePerUnit * subItem.quantity * subItem.discount) / 100;
+        const amountAfterDiscount = subItem.ratePerUnit * subItem.quantity - discountAmount;
+        const gstAmount = (amountAfterDiscount * subItem.gstPercentage) / 100;
+        return total + amountAfterDiscount + gstAmount;
+      }, 0);
+    } else {
+      const discountAmount = (item.ratePerUnit * item.quantity * item.discount) / 100;
+      const amountAfterDiscount = item.ratePerUnit * item.quantity - discountAmount;
+      const gstAmount = (amountAfterDiscount * item.gstPercentage) / 100;
+      return amountAfterDiscount + gstAmount;
+    }
   };
+  
 
+  const calculateQuantity = (item) => {
+    if (item.subItems && item.subItems.length > 0) {
+      return item.subItems.reduce((total, subItem) => total + parseFloat(subItem.quantity), 0);
+    } else {
+      return parseFloat(item.quantity);
+    }
+  };
+  
+  const calculateDiscountAmount = (item) => {
+    if (item.subItems && item.subItems.length > 0) {
+      return item.subItems.reduce((total, subItem) => {
+        const discountAmount = (subItem.ratePerUnit * subItem.quantity * subItem.discount) / 100;
+        return total + discountAmount;
+      }, 0);
+    } else {
+      return (item.ratePerUnit * item.quantity * item.discount) / 100;
+    }
+  };
+  
+  const calculateGSTAmount = (item) => {
+    if (item.subItems && item.subItems.length > 0) {
+      return item.subItems.reduce((total, subItem) => {
+        const discountAmount = (subItem.ratePerUnit * subItem.quantity * subItem.discount) / 100;
+        const amountAfterDiscount = subItem.ratePerUnit * subItem.quantity - discountAmount;
+        const gstAmount = (amountAfterDiscount * subItem.gstPercentage) / 100;
+        return total + gstAmount;
+      }, 0);
+    } else {
+      const discountAmount = (item.ratePerUnit * item.quantity * item.discount) / 100;
+      const amountAfterDiscount = item.ratePerUnit * item.quantity - discountAmount;
+      return (amountAfterDiscount * item.gstPercentage) / 100;
+    }
+  };
+  
   const calculateTotalAmount = useCallback(() => {
-    let total = 0;
-    items.forEach((item) => {
-      total += item.amount;
-      if (item.subItems) {
-        item.subItems.forEach((subItem) => {
-          total += subItem.amount;
-        });
-      }
-    });
+    const total = items.reduce((sum, item) => sum + item.amount, 0);
     setTotalAmount(Math.round(total)); // Round off the total amount
   }, [items]);
-
+  
+  useEffect(() => {
+    const updatedItems = items.map((item) => ({
+      ...item,
+      quantity: calculateQuantity(item),
+      discountAmount: calculateDiscountAmount(item),
+      gstAmount: calculateGSTAmount(item),
+      amount: calculateAmount(item),
+    }));
+    setItems(updatedItems);
+  }, []);
+  
   useEffect(() => {
     calculateTotalAmount();
-  }, [items, calculateTotalAmount]);
-
+  }, [items]);
+  
+  
+    
+  
   const handleAddItem = () => {
     setItems((prevItems) => [...prevItems, { ...item, sno: prevItems.length + 1 }]);
     setItem({
@@ -363,11 +418,19 @@ const Form = () => {
 
   const handleItemChange = (e) => {
     const { name, value } = e.target;
-    setItem((prevItem) => ({
-      ...prevItem,
-      [name]: value,
-      amount: calculateAmount({ ...prevItem, [name]: value }),
-    }));
+    setItem((prevItem) => {
+      const updatedItem = {
+        ...prevItem,
+        [name]: value,
+      };
+      return {
+        ...updatedItem,
+        quantity: calculateQuantity(updatedItem),
+        discountAmount: calculateDiscountAmount(updatedItem),
+        gstAmount: calculateGSTAmount(updatedItem),
+        amount: calculateAmount(updatedItem),
+      };
+    });
   };
 
   const handleSubItemChange = (e, index) => {
@@ -375,20 +438,33 @@ const Form = () => {
     setItem((prevItem) => {
       const newSubItems = [...prevItem.subItems];
       const updatedSubItem = { ...newSubItems[index], [name]: value };
-
-      // Calculate amount for the updated sub-item
-      const updatedSubItemWithAmount = {
+  
+      // Calculate values for the updated sub-item
+      const updatedSubItemWithAmounts = {
         ...updatedSubItem,
+        quantity: calculateQuantity(updatedSubItem),
+        discountAmount: calculateDiscountAmount(updatedSubItem),
+        gstAmount: calculateGSTAmount(updatedSubItem),
         amount: calculateAmount(updatedSubItem),
       };
-
+  
       // Update the subItems array with the recalculated sub-item
-      newSubItems[index] = updatedSubItemWithAmount;
-
-      // Recalculate the total amount for the main item, if needed
-      return { ...prevItem, subItems: newSubItems };
+      newSubItems[index] = updatedSubItemWithAmounts;
+  
+      // Recalculate the total values for the main item, if needed
+      const updatedMainItem = {
+        ...prevItem,
+        subItems: newSubItems,
+        quantity: calculateQuantity({ ...prevItem, subItems: newSubItems }),
+        discountAmount: calculateDiscountAmount({ ...prevItem, subItems: newSubItems }),
+        gstAmount: calculateGSTAmount({ ...prevItem, subItems: newSubItems }),
+        amount: calculateAmount({ ...prevItem, subItems: newSubItems }),
+      };
+  
+      return updatedMainItem;
     });
   };
+
   const handleAddSubItem = () => {
     setItem((prevItem) => ({
       ...prevItem,
@@ -479,6 +555,7 @@ const Form = () => {
         deliveryPinCode,
         deliveryContact,
         deliveryEmail,
+        deliveryGstNumber,
         poNumber,
         poDate,
         type,
@@ -558,18 +635,6 @@ const Form = () => {
               <input type="text" name="address" value={address} onChange={handleProjectOrderChange} />
             </div>
             <div>
-              <label>Email:</label>
-              <input type="email" name="email" value={email} onChange={handleProjectOrderChange} />
-            </div>
-            <div>
-              <label>Contact Number:</label>
-              <input type="text" name="contact" value={contact} onChange={handleProjectOrderChange} />
-            </div>
-            <div>
-              <label>GST Number:</label>
-              <input type="text" name="gstNumber" value={gstNumber} onChange={handleProjectOrderChange} />
-            </div>
-            <div>
               <label>District:</label>
               <input type="text" name="district" value={district} onChange={handleProjectOrderChange} />
             </div>
@@ -577,6 +642,19 @@ const Form = () => {
               <label>Pin Code:</label>
               <input type="text" name="pinCode" value={pinCode} onChange={handleProjectOrderChange} />
             </div>
+            <div>
+              <label>Contact Number:</label>
+              <input type="text" name="contact" value={contact} onChange={handleProjectOrderChange} />
+            </div>
+            <div>
+              <label>Email:</label>
+              <input type="email" name="email" value={email} onChange={handleProjectOrderChange} />
+            </div>
+            <div>
+              <label>GST Number:</label>
+              <input type="text" name="gstNumber" value={gstNumber} onChange={handleProjectOrderChange} />
+            </div>
+
 
           </div>
           
@@ -587,7 +665,7 @@ const Form = () => {
               <input type="text" value={locationCode} onChange={handleLocationCodeChange} />
             </div>
             <div>
-              <label>Bill To Name:</label>
+              <label>Name:</label>
               <input type="text" name="billtoname" value={billtoname} onChange={handleProjectOrderChange} />
             </div>
             <div>
@@ -610,21 +688,25 @@ const Form = () => {
               <label>Email:</label>
               <input type="email" name="billToEmail" value={billToEmail} onChange={handleProjectOrderChange} />
             </div>
+            <div>
+              <label>GST:</label>
+              <input type="text" name="billToGstNumber" value={billToGstNumber} onChange={handleProjectOrderChange} />
+            </div>
           </div>
 
         <div classname="delivery-section">
           <h2>Delivery </h2>
-            <div>
-              <label>Shipping Address:</label>
-              <input type="text" name="shippingAddress" value={shippingAddress} onChange={handleProjectOrderChange} />
-            </div>
-            <div>
+          <div>
               <label>Delivery Location Code:</label>
               <input type="text" value={deliveryLocationCode} onChange={handleDeliveryLocationCodeChange} />
             </div>
             <div>
-              <label>Delivery Name:</label>
+              <label>Name:</label>
               <input type="text" name="deliveryName" value={deliveryName} onChange={handleProjectOrderChange} />
+            </div>
+            <div>
+              <label>Delivery Address:</label>
+              <input type="text" name="shippingAddress" value={shippingAddress} onChange={handleProjectOrderChange} />
             </div>
             <div>
               <label>District:</label>
@@ -641,6 +723,10 @@ const Form = () => {
             <div>
               <label>Email:</label>
               <input type="email" name="deliveryEmail" value={deliveryEmail} onChange={handleProjectOrderChange} />
+            </div>
+            <div>
+              <label>GST:</label>
+              <input type="text" name="DeliveryGstNumber" value={deliveryGstNumber} onChange={handleProjectOrderChange} />
             </div>
           </div>
 
@@ -668,7 +754,7 @@ const Form = () => {
                 <option value="nos">Nos</option>
               </select>
             </div>
-            <div className="item-field">
+            {/* <div className="item-field">
               <label>Quantity:</label>
               <input type="number" name="quantity" value={item.quantity} onChange={handleItemChange} />
             </div>
@@ -687,7 +773,7 @@ const Form = () => {
             <div className="item-field">
               <label>Amount:</label>
               <input type="number" name="amount" value={item.amount} readOnly />
-            </div>
+            </div> */}
           </div>
           <button type="button" onClick={handleAddItem}>Add Item</button>
         </div>
@@ -764,6 +850,15 @@ const Form = () => {
                   type="number"
                   name="discount"
                   value={subItem.discount || 0}
+                  onChange={(e) => handleSubItemChange(e, index)}
+                />
+              </div>
+              <div>
+                <label>GST (%):</label>
+                <input
+                  type="number"
+                  name="gstPercentage"
+                  value={subItem.gstPercentage || 0}
                   onChange={(e) => handleSubItemChange(e, index)}
                 />
               </div>
@@ -938,6 +1033,7 @@ const Form = () => {
             deliveryPinCode={deliveryPinCode}
             deliveryContact={deliveryContact}
             deliveryEmail={deliveryEmail}
+            deliveryGstNumber={deliveryGstNumber}
             poNumber={poNumber}
             poDate={poDate}
             type={type}

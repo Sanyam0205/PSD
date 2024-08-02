@@ -9,7 +9,6 @@ const fs = require('fs');
 const uploadRoutes = require('./routes/uploadRoutes');
 const purchaseOrderRoutes = require('./routes/projectOrderRoutes');
 const locationRoutes = require('./routes/locationRoutes');
-const deliveryRoutes = require('./routes/deliveryRoutes');
 // Load environment variables
 dotenv.config();
 const app = express();
@@ -37,5 +36,4 @@ app.use('/api/users', userRoutes);
 app.use(uploadRoutes);
 app.use(purchaseOrderRoutes);
 app.use('/api/location', locationRoutes);
-app.use('/api/delivery', deliveryRoutes);
 

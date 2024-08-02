@@ -8,6 +8,8 @@ const VendorManagement = () => {
     vendorCode: '',
     contactperson: '',
     address: '',
+    district: '',
+    pinCode: '',
     email: '',
     contact: '',
     gstNumber: ''
@@ -49,6 +51,8 @@ const VendorManagement = () => {
         vendorCode: '',
         contactperson: '',
         address: '',
+        district: '',
+        pinCode: '',
         email: '',
         contact: '',
         gstNumber: ''
@@ -62,7 +66,7 @@ const VendorManagement = () => {
     const confirmDelete = window.confirm("Are you sure you want to delete this vendor?");
     if (confirmDelete) {
       try {
-        await axios.delete(`localhost:5000/api/vendors/${code}`);
+        await axios.delete(`http://localhost:5000/api/vendors/${code}`);
         fetchVendors();
       } catch (error) {
         console.error('Error deleting vendor:', error);
@@ -78,6 +82,8 @@ const VendorManagement = () => {
         vendorCode: existingVendor.vendorCode,
         contactperson: existingVendor.contactperson,
         address: existingVendor.address,
+        district: existingVendor.district,
+        pinCode: existingVendor.pinCode,
         email: existingVendor.email,
         contact: existingVendor.contact,
         gstNumber: existingVendor.gstNumber
@@ -108,6 +114,14 @@ const VendorManagement = () => {
           <input type="text" name="address" value={formData.address} onChange={handleChange} />
         </div>
         <div className="item-field">
+          <label>District:</label>
+          <input type="text" name="district" value={formData.district} onChange={handleChange} />
+        </div>
+        <div className="item-field">
+          <label>Pin Code:</label>
+          <input type="text" name="pinCode" value={formData.pinCode} onChange={handleChange} />
+        </div>
+        <div className="item-field">
           <label>Email:</label>
           <input type="email" name="email" value={formData.email} onChange={handleChange} />
         </div>
@@ -129,6 +143,9 @@ const VendorManagement = () => {
               <div className="item-field"><strong>Name:</strong> {vendor.name}</div>
               <div className="item-field"><strong>Code:</strong> {vendor.vendorCode}</div>
               <div className="item-field"><strong>Contact Person:</strong> {vendor.contactperson}</div>
+              <div className="item-field"><strong>Address:</strong> {vendor.address}</div>
+              <div className="item-field"><strong>District:</strong> {vendor.district}</div>
+              <div className="item-field"><strong>Pin Code:</strong> {vendor.pinCode}</div>
               <div className="item-field"><strong>Email:</strong> {vendor.email}</div>
               <div className="item-field"><strong>Contact:</strong> {vendor.contact}</div>
               <div className="item-field"><strong>GST Number:</strong> {vendor.gstNumber}</div>

@@ -7,15 +7,15 @@ const mongoURI = 'mongodb://localhost:27017/test';
 
 // Sample data for Locations and Deliveries
 const sampleLocations = [
-  { locationCode: 'LOC001', district: 'District A', pinCode: '123456' },
-  { locationCode: 'LOC002', district: 'District B', pinCode: '654321' },
-  { locationCode: 'LOC003', district: 'District C', pinCode: '789012' },
+  { locationCode: 'LOC001', billToDistrict: 'District A', billToPinCode: '123456' },
+  { locationCode: 'LOC002', billToDistrict: 'District B', billToPinCode: '654321' },
+  { locationCode: 'LOC003', billToDistrict: 'District C', billToPinCode: '789012' },
 ];
 
 const sampleDeliveries = [
-  { deliveryLocationCode: 'DEL001', district: 'District X', pinCode: '234567' },
-  { deliveryLocationCode: 'DEL002', district: 'District Y', pinCode: '765432' },
-  { deliveryLocationCode: 'DEL003', district: 'District Z', pinCode: '890123' },
+  { deliveryLocationCode: 'DEL001', billToDistrict: 'District X', billToPinCode: '234567' },
+  { deliveryLocationCode: 'DEL002', billToDistrict: 'District Y', billToPinCode: '765432' },
+  { deliveryLocationCode: 'DEL003', billToDistrict: 'District Z', billToPinCode: '890123' },
 ];
 
 // Connect to MongoDB
