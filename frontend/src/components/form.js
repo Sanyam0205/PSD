@@ -35,6 +35,7 @@ const Form = () => {
   const [deliveryGstNumber, setDeliveryGstNumber] = useState('');
   const [poNumber, setPoNumber] = useState('');
   const [poDate, setPoDate] = useState(new Date().toISOString().substring(0, 10));
+  const [podeliverydate, setPoDeliveryDate] = useState(new Date().toISOString().substring(0, 10)); 
   const [type, setType] = useState('');
   const [items, setItems] = useState([]);
   const [item, setItem] = useState({
@@ -210,6 +211,7 @@ const Form = () => {
     setBillToEmail('');
     setPoNumber('');
     setPoDate(new Date().toISOString().substring(0, 10));
+    setPoDeliveryDate(new Date().toISOString().substring(0, 10));
     setType('');
     setItems([]);
     setTotalAmount(0);
@@ -305,6 +307,9 @@ const Form = () => {
         break;
       case 'poDate':
         setPoDate(value);
+        break;
+      case 'podeliverydate':
+        setPoDeliveryDate(value);
         break;
       default:
         break;
@@ -574,6 +579,7 @@ const Form = () => {
         deliveryGstNumber,
         poNumber,
         poDate,
+        podeliverydate,
         type,
         items,
         totalAmount,
@@ -611,6 +617,10 @@ const Form = () => {
             <div>
               <label>PO Date:</label>
               <input type="date" name="poDate" value={poDate} onChange={handleProjectOrderChange} />
+            </div>
+            <div>
+              <label>PO Delivery Date:</label>
+              <input type="date" name="podeliverydate" value={podeliverydate} onChange={handleProjectOrderChange} />
             </div>
             <div className="type-section">
               <label>Type:</label>
@@ -1052,6 +1062,7 @@ const Form = () => {
             deliveryGstNumber={deliveryGstNumber}
             poNumber={poNumber}
             poDate={poDate}
+            podeliverydate={podeliverydate}
             type={type}
             items={items}
             totalAmount={totalAmount}

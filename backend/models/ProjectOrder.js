@@ -49,6 +49,7 @@ const projectOrderSchema = new mongoose.Schema({
   deliveryEmail: String,
   poNumber: String,
   poDate: Date,
+  podeliverydate: Date,
   items: [itemSchema],
   totalAmount: Number, 
   topsection: String,
