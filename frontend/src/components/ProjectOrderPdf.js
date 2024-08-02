@@ -230,13 +230,21 @@ const ProjectOrderPDF = (props) => {
               <Text style={[styles.tableCell, styles.tableHeader]}>Vendor Name</Text>
               <Text style={styles.tableCell}>{props.name}</Text>
             </View>
-            <View style={styles.tableRow}>
+            {/* <View style={styles.tableRow}>
               <Text style={[styles.tableCell, styles.tableHeader]}>Contact Person</Text>
               <Text style={styles.tableCell}>{props.contactperson}</Text>
-            </View>
+            </View> */}
             <View style={styles.tableRow}>
               <Text style={[styles.tableCell, styles.tableHeader]}>Address</Text>
               <Text style={styles.tableCell}>{props.address}</Text>
+            </View>
+            <View style={styles.tableRow}>
+              <Text style={[styles.tableCell, styles.tableHeader]}>District</Text>
+              <Text style={styles.tableCell}>{props.district}</Text>  
+            </View>
+            <View style={styles.tableRow}>
+              <Text style={[styles.tableCell, styles.tableHeader]}>Pincode</Text>
+              <Text style={styles.tableCell}>{props.pinCode}</Text> 
             </View>
             <View style={styles.tableRow}>
               <Text style={[styles.tableCell, styles.tableHeader]}>Email</Text>
@@ -246,35 +254,75 @@ const ProjectOrderPDF = (props) => {
               <Text style={[styles.tableCell, styles.tableHeader]}>Contact</Text>
               <Text style={styles.tableCell}>{props.contact}</Text>
             </View>
-            <View style={styles.tableRow}>
+            {/* <View style={styles.tableRow}>
               <Text style={[styles.tableCell, styles.tableHeader]}>GST Number</Text>
               <Text style={styles.tableCell}>{props.gstNumber}</Text>
-            </View>
+            </View> */}
           </View>
           <View style={styles.table}>
             <Text style={[styles.text, { fontWeight: 'bold' }]}>Billing Details</Text>
+            <View style={styles.tableRow}>
+              <Text style={[styles.tableCell, styles.tableHeader]}>Location Code</Text>
+              <Text style={styles.tableCell}>{props.locationCode}</Text>
+            </View>
+            <View style={styles.tableRow}>
+              <Text style={[styles.tableCell, styles.tableHeader]}>Contact Person</Text>
+              <Text style={styles.tableCell}>{props.billtoname}</Text>
+            </View>
             <View style={styles.tableRow}>
               <Text style={[styles.tableCell, styles.tableHeader]}>Billing Address</Text>
               <Text style={styles.tableCell}>{props.billToAddress}</Text>
             </View>
             <View style={styles.tableRow}>
+              <Text style={[styles.tableCell, styles.tableHeader]}>District</Text>
+              <Text style={styles.tableCell}>{props.billToDistrict}</Text>
+            </View>
+            <View style={styles.tableRow}>
+              <Text style={[styles.tableCell, styles.tableHeader]}>Pincode</Text>
+              <Text style={styles.tableCell}>{props.billToPinCode}</Text>
+            </View>
+            <View style={styles.tableRow}>
+              <Text style={[styles.tableCell, styles.tableHeader]}>Phone Number</Text>
+              <Text style={styles.tableCell}>{props.billToContact}</Text>
+            </View>
+            <View style={styles.tableRow}>
+              <Text style={[styles.tableCell, styles.tableHeader]}>Email</Text>
+              <Text style={styles.tableCell}>{props.billToEmail}</Text>
+            </View>
+            {/* <View style={styles.tableRow}>
               <Text style={[styles.tableCell, styles.tableHeader]}>GST Number</Text>
               <Text style={styles.tableCell}>{props.billToGstNumber}</Text>
-            </View>
+            </View> */}
           </View>
           <View style={styles.table}>
             <Text style={[styles.text, { fontWeight: 'bold' }]}>Shipping Details</Text>
+            <View style={styles.tableRow}>
+              <Text style={[styles.tableCell, styles.tableHeader]}>location Code</Text>
+              <Text style={styles.tableCell}>{props.deliveryLocationCode}</Text>  
+            </View>
+            <View style={styles.tableRow}>
+              <Text style={[styles.tableCell, styles.tableHeader]}>Name</Text>
+              <Text style={styles.tableCell}>{props.deliveryName}</Text>
+            </View>
             <View style={styles.tableRow}>
               <Text style={[styles.tableCell, styles.tableHeader]}>Shipping Address</Text>
               <Text style={styles.tableCell}>{props.shippingAddress}</Text>
             </View>
             <View style={styles.tableRow}>
-              <Text style={[styles.tableCell, styles.tableHeader]}>Pincode</Text>
-              <Text style={styles.tableCell}>{props.pinCode}</Text>
+              <Text style={[styles.tableCell, styles.tableHeader]}>District</Text>
+              <Text style={styles.tableCell}>{props.deliveryDistrict}</Text>
+            </View>
+            <View style={styles.tableRow}>
+              <Text style={[styles.tableCell, styles.tableHeader]}>Pin Code</Text>
+              <Text style={styles.tableCell}>{props.deliveryPinCode}</Text>
             </View>
             <View style={styles.tableRow}>
               <Text style={[styles.tableCell, styles.tableHeader]}>Phone Number</Text>
-              <Text style={styles.tableCell}>{props.shippingPhoneNumber}</Text>
+              <Text style={styles.tableCell}>{props.deliveryContact}</Text>
+            </View>
+            <View style={styles.tableRow}>
+              <Text style={[styles.tableCell, styles.tableHeader]}>Email</Text>
+              <Text style={styles.tableCell}>{props.deliveryEmail}</Text>
             </View>
           </View>
         </View>
