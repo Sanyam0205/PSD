@@ -332,7 +332,7 @@ const Form = () => {
       const year = new Date().getFullYear().toString().slice(-2);
       const seriesNumber = await getNextSeriesPoNumber();
       console.log('Generated PO Number:', `${prefix}-${year}-${seriesNumber}`);
-      setPoNumber(`${prefix}-${year}-${seriesNumber}`);
+      setPoNumber(`${prefix}-${seriesNumber}`);
     }
   };
     
