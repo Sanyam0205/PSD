@@ -292,7 +292,7 @@ const ProjectOrderPDF = (props) => {
         <View style={styles.headerRight}>
           <Text style={styles.text}>PO Number: {props.poNumber}</Text>
           <Text style={styles.text}>PO Date: {props.poDate}</Text>
-          <Text style={styles.text}>Delivery Date: {props.deliveryDate}</Text>
+          <Text style={styles.text}>Delivery Date: {props.podeliveryDate}</Text>
         </View>
         <View style={styles.tableContainer}>
           <View style={styles.table}>
