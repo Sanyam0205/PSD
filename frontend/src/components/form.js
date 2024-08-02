@@ -102,7 +102,7 @@ const Form = () => {
     const fetchVendor = async () => {
       try {
         if (vendorCode) {
-          const response = await axios.get(`http://localhost:5000/api/vendors/${vendorCode}`);
+          const response = await axios.get(`http://13.234.47.87:5000/api/vendors/${vendorCode}`);
           const vendor = response.data;
           setError('');
           // Set vendor details to corresponding state variables
@@ -130,7 +130,7 @@ const Form = () => {
     const fetchBillingDetails = async () => {
       try {
         if (locationCode) {
-          const response = await axios.get(`http://localhost:5000/api/location/${locationCode}`);
+          const response = await axios.get(`http://13.234.47.87:5000/api/location/${locationCode}`);
           const billing = response.data;
           setError('');
           // Set billing details to corresponding state variables
@@ -163,7 +163,7 @@ const Form = () => {
     const fetchDeliveryDetails = async () => {
       try {
         if (deliveryLocationCode) {
-          const response = await axios.get(`http://localhost:5000/api/location/${deliveryLocationCode}`);
+          const response = await axios.get(`http://13.234.47.87:5000/api/location/${deliveryLocationCode}`);
           const delivery = response.data;
           setError('');
           // Set delivery details to corresponding state variables
@@ -511,7 +511,7 @@ const Form = () => {
 
     try {
       console.log('Uploading signature...');
-      const response = await axios.post('http://localhost:5000/upload', formData, {
+      const response = await axios.post('http://13.234.47.87:5000/upload', formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
       console.log('Upload response:', response);
@@ -572,7 +572,7 @@ const Form = () => {
         },
       };
       // Submit project order
-      await axios.post('http://localhost:5000/api/project-orders', projectOrder);
+      await axios.post('http://13.234.47.87:5000/api/project-orders', projectOrder);
       // Generate PDF
       alert('Project order submitted successfully');
     } catch (error) {
@@ -994,7 +994,7 @@ const Form = () => {
         <label>Signature:</label>
         <input type="file" accept="image/*" onChange={handleSignatureChange} />
         <button type="button" onClick={handlesignUpload}>Upload Signature</button>
-        {signatureUrl && <img src={`http://localhost:5000${signatureUrl}`} alt="Signature"  />}
+        {signatureUrl && <img src={`http://13.234.47.87:5000${signatureUrl}`} alt="Signature"  />}
         
         </div>
         <button type="button" onClick={() => setShowPDFPreview(true)}>Preview PDF</button>

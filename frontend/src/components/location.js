@@ -20,7 +20,7 @@ const LocationManagement = () => {
 
   const fetchlocation = async () => {
     try {
-      const response = await axios.get('http://localhost:5000/api/location');
+      const response = await axios.get('http://13.234.47.87:5000/api/location');
       setlocation(response.data);
     } catch (error) {
       console.error('Error fetching location:', error);
@@ -37,9 +37,9 @@ const LocationManagement = () => {
       if (formData.locationCode) {
         const existingLocation = location.find(loc => loc.locationCode === formData.locationCode);
         if (existingLocation) {
-          await axios.put(`http://localhost:5000/api/location/${formData.locationCode}`, formData);
+          await axios.put(`http://13.234.47.87:5000/api/location/${formData.locationCode}`, formData);
         } else {
-          await axios.post('http://localhost:5000/api/location', formData);
+          await axios.post('http://13.234.47.87:5000/api/location', formData);
         }
       } else {
         console.error('Location code is required.');
@@ -64,7 +64,7 @@ const LocationManagement = () => {
     const confirmDelete = window.confirm("Are you sure you want to delete this location?");
     if (confirmDelete) {
       try {
-        await axios.delete(`http://localhost:5000/api/location/${code}`);
+        await axios.delete(`http://13.234.47.87:5000/api/location/${code}`);
         fetchlocation();
       } catch (error) {
         console.error('Error deleting location:', error);

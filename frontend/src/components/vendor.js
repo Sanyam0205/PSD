@@ -21,7 +21,7 @@ const VendorManagement = () => {
 
   const fetchVendors = async () => {
     try {
-      const response = await axios.get('http://localhost:5000/api/vendors');
+      const response = await axios.get('http://13.234.47.87:5000/api/vendors');
       setVendors(response.data);
     } catch (error) {
       console.error('Error fetching vendors:', error);
@@ -38,9 +38,9 @@ const VendorManagement = () => {
       if (formData.vendorCode) {
         const existingVendor = vendors.find(vendor => vendor.vendorCode === formData.vendorCode);
         if (existingVendor) {
-          await axios.put(`http://localhost:5000/api/vendors/${formData.vendorCode}`, formData);
+          await axios.put(`http://13.234.47.87:5000/api/vendors/${formData.vendorCode}`, formData);
         } else {
-          await axios.post('http://localhost:5000/api/vendors', formData);
+          await axios.post('http://13.234.47.87:5000/api/vendors', formData);
         }
       } else {
         console.error('Vendor code is required.');
@@ -66,7 +66,7 @@ const VendorManagement = () => {
     const confirmDelete = window.confirm("Are you sure you want to delete this vendor?");
     if (confirmDelete) {
       try {
-        await axios.delete(`http://localhost:5000/api/vendors/${code}`);
+        await axios.delete(`http://13.234.47.87:5000/api/vendors/${code}`);
         fetchVendors();
       } catch (error) {
         console.error('Error deleting vendor:', error);
