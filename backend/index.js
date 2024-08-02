@@ -9,7 +9,7 @@ const fs = require('fs');
 const uploadRoutes = require('./routes/uploadRoutes');
 const purchaseOrderRoutes = require('./routes/projectOrderRoutes');
 const locationRoutes = require('./routes/locationRoutes');
-const seriesRoutes = require('./routes/seriesRoutes');
+
 // Load environment variables
 dotenv.config();
 const app = express();
