@@ -315,28 +315,27 @@ const Form = () => {
     try {
       const response = await fetch('http://13.234.47.87:5000/api/series/next-po-number');
       const data = await response.json();
-      return data.seriesNumber;
+      console.log('Fetched series number:', data);
+      return data.seriesNumber || '00000001'; // Fallback if seriesNumber is undefined
     } catch (error) {
       console.error('Error fetching next PO number:', error);
       return '00000001'; // Fallback value
     }
   };
   
-  // Use in handleTypeChange
   const handleTypeChange = async (e) => {
     const selectedType = e.target.value;
     setType(selectedType);
   
     if (selectedType) {
       const prefix = selectedType === 'material' ? 'GE-12' : 'GE-22';
-  
-      const year = new Date().getFullYear().toString().slice(-2); // Get last two digits of the year
-      const seriesNumber = await getNextSeriesPoNumber(); // Fetch the next series number
-  
+      const year = new Date().getFullYear().toString().slice(-2);
+      const seriesNumber = await getNextSeriesPoNumber();
+      console.log('Generated PO Number:', `${prefix}-${year}-${seriesNumber}`);
       setPoNumber(`${prefix}-${year}-${seriesNumber}`);
     }
   };
-  
+    
 
   const calculateAmount = (item) => {
     if (item.subItems && item.subItems.length > 0) {

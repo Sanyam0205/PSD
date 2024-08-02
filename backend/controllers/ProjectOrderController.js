@@ -189,7 +189,7 @@ exports.editItemInProjectOrder = async (req, res) => {
 
 exports.getNextSeriesPoNumber = async (req, res) => {
   try {
-    // Fetch the highest PO number from the database
+    // Fetch the latest project order by PO number
     const latestOrder = await ProjectOrder.findOne().sort({ poNumber: -1 }).limit(1);
 
     let newSeriesNumber = 1; // Default to 1 if no orders exist
@@ -210,5 +210,4 @@ exports.getNextSeriesPoNumber = async (req, res) => {
     res.status(500).json({ message: 'Internal server error' });
   }
 };
-
 
