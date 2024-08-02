@@ -35,7 +35,7 @@ const Form = () => {
   const [deliveryGstNumber, setDeliveryGstNumber] = useState('');
   const [poNumber, setPoNumber] = useState('');
   const [poDate, setPoDate] = useState(new Date().toISOString().substring(0, 10));
-  const [podeliverydate, setPoDeliveryDate] = useState(new Date().toISOString().substring(0, 10)); 
+  const [podeliverydate, setpodeliverydate] = useState(new Date().toISOString().substring(0, 10)); 
   const [type, setType] = useState('');
   const [items, setItems] = useState([]);
   const [item, setItem] = useState({
@@ -211,7 +211,7 @@ const Form = () => {
     setBillToEmail('');
     setPoNumber('');
     setPoDate(new Date().toISOString().substring(0, 10));
-    setPoDeliveryDate(new Date().toISOString().substring(0, 10));
+    setpodeliverydate(new Date().toISOString().substring(0, 10));
     setType('');
     setItems([]);
     setTotalAmount(0);
@@ -309,7 +309,7 @@ const Form = () => {
         setPoDate(value);
         break;
       case 'podeliverydate':
-        setPoDeliveryDate(value);
+        setpodeliverydate(value);
         break;
       default:
         break;
