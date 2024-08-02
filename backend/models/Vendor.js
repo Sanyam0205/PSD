@@ -8,6 +8,8 @@ const vendorSchema = new mongoose.Schema({
   email: String,
   contact: String,
   gstNumber: String,
+  district: String,
+  pinCode: String,
 });
 
 module.exports = mongoose.model('Vendor', vendorSchema);
