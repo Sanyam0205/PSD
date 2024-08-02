@@ -8,7 +8,7 @@ const {
   addItemToProjectOrder,
   editProjectOrder,
   editItemInProjectOrder,
-  getNextSeriesPoNumber,
+  getNextSeriesPoNumber
 } = require('../controllers/ProjectOrderController');
 
 router.post('/', createProjectOrder);

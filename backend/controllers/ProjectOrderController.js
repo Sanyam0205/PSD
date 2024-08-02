@@ -187,7 +187,7 @@ exports.editItemInProjectOrder = async (req, res) => {
   }
 };
 
-const getNextSeriesPoNumber = async (req, res) => {
+exports.getNextSeriesPoNumber = async (req, res) => {
   try {
     // Fetch the highest PO number from the database
     const latestOrder = await ProjectOrder.findOne().sort({ poNumber: -1 }).limit(1);
@@ -211,4 +211,4 @@ const getNextSeriesPoNumber = async (req, res) => {
   }
 };
 
-module.exports = { getNextSeriesPoNumber };
+
