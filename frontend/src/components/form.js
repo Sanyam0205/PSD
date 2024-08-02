@@ -331,7 +331,7 @@ const Form = () => {
       const prefix = selectedType === 'material' ? 'GE-12' : 'GE-22';
       const year = new Date().getFullYear().toString().slice(-2);
       const seriesNumber = await getNextSeriesPoNumber();
-      console.log('Generated PO Number:', `${prefix}-${year}-${seriesNumber}`);
+      console.log('Generated PO Number:', `${prefix}-${seriesNumber}`);
       setPoNumber(`${prefix}-${seriesNumber}`);
     }
   };
