@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
@@ -9,6 +10,7 @@ const VendorManagement = () => {
     contactperson: '',
     address: '',
     district: '',
+    state: '',
     pinCode: '',
     email: '',
     contact: '',
@@ -32,18 +34,24 @@ const VendorManagement = () => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
+  const generateVendorCode = () => {
+    if (vendors.length === 0) return 'VEN00001';
+    const codes = vendors.map(vendor => parseInt(vendor.vendorCode.replace('VEN', '')));
+    const maxCode = Math.max(...codes);
+    return `VEN${String(maxCode + 1).padStart(5, '0')}`;
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      if (formData.vendorCode) {
-        const existingVendor = vendors.find(vendor => vendor.vendorCode === formData.vendorCode);
-        if (existingVendor) {
-          await axios.put(`http://13.234.47.87:5000/api/vendors/${formData.vendorCode}`, formData);
-        } else {
-          await axios.post('http://13.234.47.87:5000/api/vendors', formData);
-        }
+      if (!formData.vendorCode) {
+        formData.vendorCode = generateVendorCode();
+      }
+      const existingVendor = vendors.find(vendor => vendor.vendorCode === formData.vendorCode);
+      if (existingVendor) {
+        await axios.put(`http://13.234.47.87:5000/api/vendors/${formData.vendorCode}`, formData);
       } else {
-        console.error('Vendor code is required.');
+        await axios.post('http://13.234.47.87:5000/api/vendors', formData);
       }
       fetchVendors();
       setFormData({
@@ -52,6 +60,7 @@ const VendorManagement = () => {
         contactperson: '',
         address: '',
         district: '',
+        state: '',
         pinCode: '',
         email: '',
         contact: '',
@@ -83,6 +92,7 @@ const VendorManagement = () => {
         contactperson: existingVendor.contactperson,
         address: existingVendor.address,
         district: existingVendor.district,
+        state: existingVendor.state,
         pinCode: existingVendor.pinCode,
         email: existingVendor.email,
         contact: existingVendor.contact,
@@ -102,10 +112,6 @@ const VendorManagement = () => {
           <input type="text" name="name" value={formData.name} onChange={handleChange} />
         </div>
         <div className="item-field">
-          <label>Vendor Code:</label>
-          <input type="text" name="vendorCode" value={formData.vendorCode} onChange={handleChange} />
-        </div>
-        <div className="item-field">
           <label>Contact Person:</label>
           <input type="text" name="contactperson" value={formData.contactperson} onChange={handleChange} />
         </div>
@@ -116,6 +122,10 @@ const VendorManagement = () => {
         <div className="item-field">
           <label>District:</label>
           <input type="text" name="district" value={formData.district} onChange={handleChange} />
+        </div>
+        <div className="item-field">
+          <label>State:</label>
+          <input type="text" name="state" value={formData.state} onChange={handleChange} />
         </div>
         <div className="item-field">
           <label>Pin Code:</label>
@@ -145,6 +155,7 @@ const VendorManagement = () => {
               <div className="item-field"><strong>Contact Person:</strong> {vendor.contactperson}</div>
               <div className="item-field"><strong>Address:</strong> {vendor.address}</div>
               <div className="item-field"><strong>District:</strong> {vendor.district}</div>
+              <div className="item-field"><strong>State:</strong> {vendor.state}</div>
               <div className="item-field"><strong>Pin Code:</strong> {vendor.pinCode}</div>
               <div className="item-field"><strong>Email:</strong> {vendor.email}</div>
               <div className="item-field"><strong>Contact:</strong> {vendor.contact}</div>
@@ -162,3 +173,5 @@ const VendorManagement = () => {
 };
 
 export default VendorManagement;
+
+

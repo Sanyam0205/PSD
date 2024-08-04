@@ -14,6 +14,7 @@ const Form = () => {
   const [contactperson, setPerson] = useState('');
   const [address, setAddress] = useState('');
   const [district, setDistrict] = useState('');
+  // const [state, setState] = useState('');
   const [pinCode, setPinCode] = useState('');
   const [email, setEmail] = useState('');
   const [contact, setContact] = useState('');
@@ -22,6 +23,7 @@ const Form = () => {
   const [billToAddress, setBillToAddress] = useState('');
   const [billToGstNumber, setBillToGstNumber] = useState('');
   const [billToDistrict, setBillToDistrict] = useState('');
+  const [billToState, setBillToState] = useState('');
   const [billToPinCode, setBillToPinCode] = useState('');
   const [billToContact, setBillToContact] = useState('');
   const [billToEmail, setBillToEmail] = useState('');
@@ -29,6 +31,7 @@ const Form = () => {
   const [deliveryName, setDeliveryName] = useState('');
   const [shippingAddress, setshippingAddress] = useState('');
   const [deliveryDistrict, setDeliveryDistrict] = useState('');
+  const [deliveryState, setDeliveryState] = useState('');
   const [deliveryPinCode, setDeliveryPinCode] = useState('');
   const [deliveryContact, setDeliveryContact] = useState('');
   const [deliveryEmail, setDeliveryEmail] = useState('');
@@ -111,6 +114,7 @@ const Form = () => {
           setPerson(vendor.contactperson || '');
           setAddress(vendor.address || '');
           setDistrict(vendor.district || '');
+          setState(vendor.state || '');
           setPinCode(vendor.pinCode || '');
           setEmail(vendor.email || '');
           setContact(vendor.contact || '');
@@ -138,6 +142,7 @@ const Form = () => {
           setbilltoname(billing.billtoname || '');
           setBillToAddress(billing.billToAddress || '');
           setBillToDistrict(billing.billToDistrict || '');
+          setBillToState(billing.billToState || '');
           setBillToPinCode(billing.billToPinCode || '');
           setBillToContact(billing.billToContact || '');
           setBillToEmail(billing.billToEmail || '');
@@ -147,6 +152,7 @@ const Form = () => {
           setbilltoname('');
           setBillToAddress('');
           setBillToDistrict('');
+          setBillToState('');
           setBillToPinCode('');
           setBillToContact('');
           setBillToEmail('');
@@ -171,6 +177,7 @@ const Form = () => {
           setDeliveryName(delivery.billtoname || '');
           setshippingAddress(delivery.billToAddress || '');
           setDeliveryDistrict(delivery.billToDistrict || '');
+          setDeliveryState(delivery.billToState || '');
           setDeliveryPinCode(delivery.billToPinCode || '');
           setDeliveryContact(delivery.billToContact || '');
           setDeliveryEmail(delivery.billToEmail || '');
@@ -180,6 +187,7 @@ const Form = () => {
           setDeliveryName('');
           setshippingAddress('');
           setDeliveryDistrict('');
+          setDeliveryState('');
           setDeliveryPinCode('');
           setDeliveryContact('');
           setDeliveryEmail('');
@@ -198,6 +206,7 @@ const Form = () => {
     setPerson('');
     setAddress('');
     setDistrict('');
+    setState('');
     setPinCode('');
     setEmail('');
     setContact('');
@@ -206,6 +215,7 @@ const Form = () => {
     setBillToAddress('');
     setBillToGstNumber('');
     setBillToDistrict('');
+    setBillToState('');    
     setBillToPinCode('');
     setBillToContact('');
     setBillToEmail('');
@@ -218,6 +228,7 @@ const Form = () => {
     setDeliveryName('');
     setshippingAddress('');
     setDeliveryDistrict('');
+    setDeliveryState('');
     setDeliveryPinCode('');
     setDeliveryContact('');
     setDeliveryEmail('');
@@ -251,6 +262,9 @@ const Form = () => {
       case 'district':
         setDistrict(value);
         break;
+      case 'state':
+          setState(value);
+          break;
       case 'pinCode':
         setPinCode(value);
         break;
@@ -275,6 +289,9 @@ const Form = () => {
       case 'billToDistrict':
         setBillToDistrict(value);
         break;
+      case 'billToState':
+          setBillToState(value);
+          break;
       case 'billToPinCode':
         setBillToPinCode(value);
         break;
@@ -293,6 +310,9 @@ const Form = () => {
       case 'deliveryDistrict':
         setDeliveryDistrict(value);
         break;
+      case 'deliveryState':
+          setDeliveryState(value);
+          break;
       case 'deliveryPinCode':
         setDeliveryPinCode(value);
         break;
@@ -559,6 +579,7 @@ const Form = () => {
         contactperson,
         address,
         district,
+        state,
         pinCode,
         email,
         contact,
@@ -567,12 +588,14 @@ const Form = () => {
         billToAddress,
         billToGstNumber,
         billToDistrict,
+        billToState,
         billToPinCode,
         billToContact,
         billToEmail,
         deliveryName,
         shippingAddress,
         deliveryDistrict,
+        deliveryState,
         deliveryPinCode,
         deliveryContact,
         deliveryEmail,
@@ -665,6 +688,10 @@ const Form = () => {
               <input type="text" name="district" value={district} onChange={handleProjectOrderChange} />
             </div>
             <div>
+              <label>State:</label>
+              <input type="text" name="state" value={state} onChange={handleProjectOrderChange} />
+            </div>
+            <div>
               <label>Pin Code:</label>
               <input type="text" name="pinCode" value={pinCode} onChange={handleProjectOrderChange} />
             </div>
@@ -703,6 +730,10 @@ const Form = () => {
               <input type="text" name="billToDistrict" value={billToDistrict} onChange={handleProjectOrderChange} />
             </div>
             <div>
+              <label>State:</label>
+              <input type="text" name="billToState" value={billToState} onChange={handleProjectOrderChange} />
+            </div>
+            <div>
               <label>Pin Code:</label>
               <input type="text" name="billToPinCode" value={billToPinCode} onChange={handleProjectOrderChange} />
             </div>
@@ -737,6 +768,10 @@ const Form = () => {
             <div>
               <label>District:</label>
               <input type="text" name="deliveryDistrict" value={deliveryDistrict} onChange={handleProjectOrderChange} />
+            </div>
+            <div>
+              <label>State:</label>
+              <input type="text" name="deliveryState" value={deliveryState} onChange={handleProjectOrderChange} />
             </div>
             <div>
               <label>Pin Code:</label>
@@ -1040,6 +1075,7 @@ const Form = () => {
             contactperson={contactperson}
             address={address}
             district={district}
+            state={state}
             pinCode={pinCode}
             email={email}
             contact={contact}
@@ -1048,6 +1084,7 @@ const Form = () => {
             billtoname={billtoname}
             billToAddress={billToAddress}
             billToDistrict={billToDistrict}
+            billToState={billToState}
             billToPinCode={billToPinCode}
             billToContact={billToContact}
             billToEmail={billToEmail}
@@ -1056,6 +1093,7 @@ const Form = () => {
             deliveryLocationCode={deliveryLocationCode}
             deliveryName={deliveryName}
             deliveryDistrict={deliveryDistrict}
+            deliveryState={deliveryState}
             deliveryPinCode={deliveryPinCode}
             deliveryContact={deliveryContact}
             deliveryEmail={deliveryEmail}

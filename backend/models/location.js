@@ -18,6 +18,10 @@ const locationSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  billToState: {
+    type: String,
+    required: true,
+  },
   billToPinCode: {
     type: String,
     required: true,
