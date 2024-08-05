@@ -9,7 +9,7 @@ const vendorSchema = new mongoose.Schema({
   contact: String,
   gstNumber: String,
   district: String,
-  stt: String,
+  state: String,
   pinCode: String,
 });
 
