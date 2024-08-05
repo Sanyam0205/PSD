@@ -137,19 +137,24 @@ const Form = () => {
           const billing = response.data;
           setError('');
           // Set billing details to corresponding state variables
-
+          setbilltoname(billing.billtoname || '');
+          setBillToAddress(billing.billToAddress || '');
           setBillToDistrict(billing.billToDistrict || '');
           setbillToState(billing.billToState || '');
           setBillToPinCode(billing.billToPinCode || '');
           setBillToContact(billing.billToContact || '');
           setBillToEmail(billing.billToEmail || '');
+          setBillToGstNumber(billing.billToGstNumber || '');
         } else {
           // Reset billing fields when locationCode is empty
+          setbilltoname('');
+          setBillToAddress('');
           setBillToDistrict('');
           setbillToState('');
           setBillToPinCode('');
           setBillToContact('');
           setBillToEmail('');
+          setBillToGstNumber('');
         }
       } catch (error) {
         setError('Billing details not found');
