@@ -1,7 +1,5 @@
 import React from 'react';
 import { Page, Text, View, Image, Document, StyleSheet, Font } from '@react-pdf/renderer';
-// import header from '../assets/images.png';
-// import footer from '../assets/footer.png';
 import { toWords } from 'number-to-words'; // Importing from number-to-words
 import times from '../assets/Times New Roman.ttf'; // Importing the font file
 
@@ -104,12 +102,13 @@ const styles = StyleSheet.create({
     bottom: 0,
     left: 0,
     right: 0,
-    height: 80, // Adjusted height for text
+    // top: 1,
+    height: 46, // Adjusted height for text
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'center',
     alignItems: 'center',
-    paddingBottom: 10,
+    // paddingBottom: 10,
 
   },
   headerRight: {
@@ -138,20 +137,16 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     borderBottomWidth: 1,
     borderBottomColor: '#000',
+    height: '60%',
   },
   tableCell: {
-    flex: 1,
     fontSize: 10,
-    // borderBottom: '1px solid #000',
-    padding: 2,
-    wrap: 'wrap',
-    flexShrink: 1,
+    width:'55%',
+    padding: '5'
   },
-  itemstable: {
-    padding: 7,
-    flex: 1,
-    textAlign: 'center',
-    fontSize: 9,
+
+  wideColumn: {
+    width: '100%', // Example width
   },
 
   tableHeader: {
@@ -160,6 +155,7 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontFamily: 'TimesNewRoman',
     fontWeight: 'bold',
+    paddingTop: '15'
   },
   text: {
     fontSize: 11, // Adjusted font size to 11
@@ -182,6 +178,10 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     wordWrap: 'break-word',
     marginTop: 10,
+    padding: 7,
+    flex: 1,
+    textAlign: 'center',
+    fontSize: 9
   },
   signatureWrapper: {
     marginTop: 20,
@@ -333,126 +333,144 @@ const ProjectOrderPDF = (props) => {
             <Text style={[styles.texthead]}>Vendor Details</Text>
             <View style={styles.tableRow}>
               <Text style={[styles.tableCell, styles.tableHeader]}>Vendor Code</Text>
-              <Text style={styles.tableCell}>{props.vendorCode}</Text>
+              <Text style={[styles.tableCell, styles.wideColumn]}>{props.vendorCode}</Text>
             </View>
             <View style={styles.tableRow}>
               <Text style={[styles.tableCell, styles.tableHeader]}>Vendor Name</Text>
-              <Text style={styles.tableCell}>{props.name}</Text>
+              <Text style={[styles.tableCell, styles.wideColumn]}>{props.name}</Text>
             </View>
             <View style={styles.tableRow}>
               <Text style={[styles.tableCell, styles.tableHeader]}>Contact Person</Text>
-              <Text style={styles.tableCell}>{props.contactperson}</Text>
+              <Text style={[styles.tableCell, styles.wideColumn]}>{props.contactperson}</Text>
             </View>
             <View style={styles.tableRow}>
               <Text style={[styles.tableCell, styles.tableHeader]}>Address</Text>
-              <Text style={styles.tableCell}>{props.address}</Text>
+              <Text style={[styles.tableCell, styles.wideColumn]}>{props.address}</Text>
             </View>
             <View style={styles.tableRow}>
               <Text style={[styles.tableCell, styles.tableHeader]}>District</Text>
-              <Text style={styles.tableCell}>{props.district}</Text>  
+              <Text style={[styles.tableCell, styles.wideColumn]}>{props.district}</Text>  
             </View>
             <View style={styles.tableRow}>
               <Text style={[styles.tableCell, styles.tableHeader]}>State</Text>
-              <Text style={styles.tableCell}>{props.state}</Text>
+              <Text style={[styles.tableCell, styles.wideColumn]}>{props.state}</Text>
             </View>
             <View style={styles.tableRow}>
               <Text style={[styles.tableCell, styles.tableHeader]}>Pincode</Text>
-              <Text style={styles.tableCell}>{props.pinCode}</Text> 
+              <Text style={[styles.tableCell, styles.wideColumn]}>{props.pinCode}</Text> 
             </View>
             <View style={styles.tableRow}>
               <Text style={[styles.tableCell, styles.tableHeader]}>Email</Text>
-              <Text style={styles.tableCell}>{props.email}</Text>
+              <Text style={[styles.tableCell, styles.wideColumn]}>{props.email}</Text>
             </View>
             <View style={styles.tableRow}>
               <Text style={[styles.tableCell, styles.tableHeader]}>Contact</Text>
-              <Text style={styles.tableCell}>{props.contact}</Text>
+              <Text style={[styles.tableCell, styles.wideColumn]}>{props.contact}</Text>
             </View>
             <View style={styles.tableRow}>
               <Text style={[styles.tableCell, styles.tableHeader]}>GST Number</Text>
-              <Text style={styles.tableCell}>{props.gstNumber}</Text>
+              <Text style={[styles.tableCell, styles.wideColumn]}>{props.gstNumber}</Text>
             </View>
           </View>
           <View style={styles.table}>
             <Text style={[styles.texthead]}>Billing Details</Text>
             <View style={styles.tableRow}>
               <Text style={[styles.tableCell, styles.tableHeader]}>Location Code</Text>
-              <Text style={styles.tableCell}>{props.locationCode}</Text>
+              <Text style={[styles.tableCell, styles.wideColumn]}>{props.locationCode}</Text>
             </View>
             <View style={styles.tableRow}>
               <Text style={[styles.tableCell, styles.tableHeader]}>Contact Person</Text>
-              <Text style={styles.tableCell}>{props.billtoname}</Text>
+              <Text style={[styles.tableCell, styles.wideColumn]}>{props.billtoname}</Text>
             </View>
             <View style={styles.tableRow}>
               <Text style={[styles.tableCell, styles.tableHeader]}>Billing Address</Text>
-              <Text style={styles.tableCell}>{props.billToAddress}</Text>
+              <Text style={[styles.tableCell, styles.wideColumn]}>{props.billToAddress}</Text>
             </View>
             <View style={styles.tableRow}>
               <Text style={[styles.tableCell, styles.tableHeader]}>District</Text>
-              <Text style={styles.tableCell}>{props.billToDistrict}</Text>
+              <Text style={[styles.tableCell, styles.wideColumn]}>{props.billToDistrict}</Text>
             </View>
             <View style={styles.tableRow}>
               <Text style={[styles.tableCell, styles.tableHeader]}>State</Text>
-              <Text style={styles.tableCell}>{props.billToState}</Text>
+              <Text style={[styles.tableCell, styles.wideColumn]}>{props.billToState}</Text>
             </View>
             <View style={styles.tableRow}>
               <Text style={[styles.tableCell, styles.tableHeader]}>Pincode</Text>
-              <Text style={styles.tableCell}>{props.billToPinCode}</Text>
+              <Text style={[styles.tableCell, styles.wideColumn]}>{props.billToPinCode}</Text>
             </View>
             <View style={styles.tableRow}>
               <Text style={[styles.tableCell, styles.tableHeader]}>Phone Number</Text>
-              <Text style={styles.tableCell}>{props.billToContact}</Text>
+              <Text style={[styles.tableCell, styles.wideColumn]}>{props.billToContact}</Text>
             </View>
             <View style={styles.tableRow}>
               <Text style={[styles.tableCell, styles.tableHeader]}>Email</Text>
-              <Text style={styles.tableCell}>{props.billToEmail}</Text>
+              <Text style={[styles.tableCell, styles.wideColumn]}>{props.billToEmail}</Text>
             </View>
             <View style={styles.tableRow}>
               <Text style={[styles.tableCell, styles.tableHeader]}>GST Number</Text>
-              <Text style={styles.tableCell}>{props.billToGstNumber}</Text>
+              <Text style={[styles.tableCell, styles.wideColumn]}>{props.billToGstNumber}</Text>
+            </View>
+            <View style={styles.tableRow}>
+              <Text style={[styles.tableCell, styles.tableHeader]}></Text>
+              <Text style={[styles.tableCell, styles.wideColumn]}></Text>
             </View>
           </View>
           <View style={styles.table}>
             <Text style={[styles.texthead]}>Delivery Details</Text>
             <View style={styles.tableRow}>
               <Text style={[styles.tableCell, styles.tableHeader]}>location Code</Text>
-              <Text style={styles.tableCell}>{props.deliveryLocationCode}</Text>  
+              <Text style={[styles.tableCell, styles.wideColumn]}>{props.deliveryLocationCode}</Text>  
             </View>
             <View style={styles.tableRow}>
               <Text style={[styles.tableCell, styles.tableHeader]}>Name</Text>
-              <Text style={styles.tableCell}>{props.deliveryName}</Text>
+              <Text style={[styles.tableCell, styles.wideColumn]}>{props.deliveryName}</Text>
             </View>
             <View style={styles.tableRow}>
               <Text style={[styles.tableCell, styles.tableHeader]}>Shipping Address</Text>
-              <Text style={styles.tableCell}>{props.shippingAddress}</Text>
+              <Text style={[styles.tableCell, styles.wideColumn]}>{props.shippingAddress}</Text>
             </View>
             <View style={styles.tableRow}>
               <Text style={[styles.tableCell, styles.tableHeader]}>District</Text>
-              <Text style={styles.tableCell}>{props.deliveryDistrict}</Text>
+              <Text style={[styles.tableCell, styles.wideColumn]}>{props.deliveryDistrict}</Text>
             </View>
             <View style={styles.tableRow}>
               <Text style={[styles.tableCell, styles.tableHeader]}>State</Text>
-              <Text style={styles.tableCell}>{props.billToState}</Text>
+              <Text style={[styles.tableCell, styles.wideColumn]}>{props.billToStatestate}</Text>
             </View>
             <View style={styles.tableRow}>
               <Text style={[styles.tableCell, styles.tableHeader]}>Pin Code</Text>
-              <Text style={styles.tableCell}>{props.deliveryPinCode}</Text>
+              <Text style={[styles.tableCell, styles.wideColumn]}>{props.deliveryPinCode}</Text>
             </View>
             <View style={styles.tableRow}>
               <Text style={[styles.tableCell, styles.tableHeader]}>Phone Number</Text>
-              <Text style={styles.tableCell}>{props.deliveryContact}</Text>
+              <Text style={[styles.tableCell, styles.wideColumn]}>{props.deliveryContact}</Text>
             </View>
             <View style={styles.tableRow}>
               <Text style={[styles.tableCell, styles.tableHeader]}>Email</Text>
-              <Text style={styles.tableCell}>{props.deliveryEmail}</Text>
+              <Text style={[styles.tableCell, styles.wideColumn]}>{props.deliveryEmail}</Text>
             </View>
             <View style={styles.tableRow}>
               <Text style={[styles.tableCell, styles.tableHeader]}>GST Number</Text>
-              <Text style={styles.tableCell}>{props.deliveryGstNumber}</Text>
+              <Text style={[styles.tableCell, styles.wideColumn]}>{props.deliveryGstNumber}</Text>
+            </View>
+            <View style={styles.tableRow}>
+              <Text style={[styles.tableCell, styles.tableHeader]}></Text>
+              <Text style={[styles.tableCell, styles.wideColumn]}></Text>
             </View>
           </View>
         </View>
+        <View style={styles.footer}>
+          <Text style={styles.footerTextBoldUnderline}>GIRIK ENTERPRISES</Text>
+          <Text style={styles.footerText}>736A/5, PATEL NAGAR, JHARSA ROAD, POLICE LINE, BACK GATE, GURGAON, HARYANA 122006</Text>
+        </View>
         </Page>
         <Page size="A4" orientation="landscape" style={styles.page}>
+          <View style={styles.header}>
+          <Text style={styles.headerTitle}>GIRIK ENTERPRISES</Text>
+          <Text style={styles.headerText}>
+            Email id:- girik.enterprices24@gmail.com | Contact number:- 9560666158
+          </Text>
+        </View>
         <View style={styles.section}>
           <Text style={styles.texthead}>Subject:</Text>
           <Text style={styles.text}>{props.topsection}</Text>
@@ -475,9 +493,18 @@ const ProjectOrderPDF = (props) => {
           <Text style={[styles.texthead]}>Notes:</Text>
           <Text style={styles.text}>{props.Notes}</Text>
         </View>
+        <View style={styles.footer}>
+          <Text style={styles.footerTextBoldUnderline}>GIRIK ENTERPRISES</Text>
+          <Text style={styles.footerText}>736A/5, PATEL NAGAR, JHARSA ROAD, POLICE LINE, BACK GATE, GURGAON, HARYANA 122006</Text>
+        </View>
         </Page>
         <Page size="A4" orientation="landscape" style={styles.page}>
-
+        <View style={styles.header}>
+          <Text style={styles.headerTitle}>GIRIK ENTERPRISES</Text>
+          <Text style={styles.headerText}>
+            Email id:- girik.enterprices24@gmail.com | Contact number:- 9560666158
+          </Text>
+        </View>
         <View style={styles.section}>
           <Text style={[styles.texthead]}>Terms and Conditions</Text>
           <Text style={styles.text}>{props.tnc}</Text>
