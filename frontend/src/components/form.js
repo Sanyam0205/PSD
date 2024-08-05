@@ -129,24 +129,18 @@ const Form = () => {
     const fetchBillingDetails = async () => {
       try {
         if (locationCode) {
-          const response = await axios.get(`http://localhost:5000/api/billing/${locationCode}`);
+          const response = await axios.get(`http://localhost:5000/api/location/${locationCode}`);
           const billing = response.data;
           setError('');
           // Set billing details to corresponding state variables
-          setbilltoname(billing.billtoname || '');
-          setBillToAddress(billing.billToAddress || '');
+
           setBillToDistrict(billing.billToDistrict || '');
           setBillToPinCode(billing.billToPinCode || '');
-          setBillToContact(billing.billToContact || '');
-          setBillToEmail(billing.billToEmail || '');
+
         } else {
           // Reset billing fields when locationCode is empty
-          setbilltoname('');
-          setBillToAddress('');
           setBillToDistrict('');
           setBillToPinCode('');
-          setBillToContact('');
-          setBillToEmail('');
         }
       } catch (error) {
         setError('Billing details not found');
@@ -164,20 +158,13 @@ const Form = () => {
           const delivery = response.data;
           setError('');
           // Set delivery details to corresponding state variables
-          setDeliveryName(delivery.deliveryName || '');
-          setshippingAddress(delivery.shippingAddress || '');
+
           setDeliveryDistrict(delivery.deliveryDistrict || '');
           setDeliveryPinCode(delivery.deliveryPinCode || '');
-          setDeliveryContact(delivery.deliveryContact || '');
-          setDeliveryEmail(delivery.deliveryEmail || '');
+
         } else {
-          // Reset delivery fields when deliveryLocationCode is empty
-          setDeliveryName('');
-          setshippingAddress('');
           setDeliveryDistrict('');
           setDeliveryPinCode('');
-          setDeliveryContact('');
-          setDeliveryEmail('');
         }
       } catch (error) {
         setError('Delivery details not found');
