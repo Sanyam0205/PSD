@@ -392,7 +392,7 @@ const ProjectOrderPDF = (props) => {
             </View>
             <View style={styles.tableRow}>
               <Text style={[styles.tableCell, styles.tableHeader]}>State</Text>
-              <Text style={styles.tableCell}>{props.state}</Text>
+              <Text style={styles.tableCell}>{props.billToState}</Text>
             </View>
             <View style={styles.tableRow}>
               <Text style={[styles.tableCell, styles.tableHeader]}>Pincode</Text>
@@ -431,7 +431,7 @@ const ProjectOrderPDF = (props) => {
             </View>
             <View style={styles.tableRow}>
               <Text style={[styles.tableCell, styles.tableHeader]}>State</Text>
-              <Text style={styles.tableCell}>{props.state}</Text>
+              <Text style={styles.tableCell}>{props.billToState}</Text>
             </View>
             <View style={styles.tableRow}>
               <Text style={[styles.tableCell, styles.tableHeader]}>Pin Code</Text>
