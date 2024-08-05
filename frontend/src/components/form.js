@@ -175,7 +175,7 @@ const Form = () => {
           setDeliveryName(delivery.billtoname || '');
           setshippingAddress(delivery.billToAddress || '');
           setDeliveryDistrict(delivery.billToDistrict || '');
-          setDeliveryContact(delivery.billToState || '') 
+          setDeliveryState(delivery.billToState || '') 
           setDeliveryPinCode(delivery.billToPinCode || '');
           setDeliveryContact(delivery.billToContact || '');
           setDeliveryEmail(delivery.billToEmail || '');
