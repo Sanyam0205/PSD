@@ -3,13 +3,13 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const dotenv = require('dotenv');
 const userRoutes = require('./routes/userRoutes');
-const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
 const uploadRoutes = require('./routes/uploadRoutes');
 const purchaseOrderRoutes = require('./routes/projectOrderRoutes');
 const locationRoutes = require('./routes/locationRoutes');
-const deliveryRoutes = require('./routes/deliveryRoutes');
+const { getNextSeriesPoNumber } = require('./controllers/ProjectOrderController');
+
 // Load environment variables
 dotenv.config();
 const app = express();
@@ -37,5 +37,5 @@ app.use('/api/users', userRoutes);
 app.use(uploadRoutes);
 app.use(purchaseOrderRoutes);
 app.use('/api/location', locationRoutes);
-app.use('/api/delivery', deliveryRoutes);
+app.use('/api/series', getNextSeriesPoNumber);
 

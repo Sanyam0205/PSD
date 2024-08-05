@@ -14,6 +14,7 @@ const Form = () => {
   const [contactperson, setPerson] = useState('');
   const [address, setAddress] = useState('');
   const [district, setDistrict] = useState('');
+  // const [state, setState] = useState('');
   const [pinCode, setPinCode] = useState('');
   const [email, setEmail] = useState('');
   const [contact, setContact] = useState('');
@@ -22,6 +23,7 @@ const Form = () => {
   const [billToAddress, setBillToAddress] = useState('');
   const [billToGstNumber, setBillToGstNumber] = useState('');
   const [billToDistrict, setBillToDistrict] = useState('');
+  const [billToState, setBillToState] = useState('');
   const [billToPinCode, setBillToPinCode] = useState('');
   const [billToContact, setBillToContact] = useState('');
   const [billToEmail, setBillToEmail] = useState('');
@@ -29,11 +31,14 @@ const Form = () => {
   const [deliveryName, setDeliveryName] = useState('');
   const [shippingAddress, setshippingAddress] = useState('');
   const [deliveryDistrict, setDeliveryDistrict] = useState('');
+  const [deliveryState, setDeliveryState] = useState('');
   const [deliveryPinCode, setDeliveryPinCode] = useState('');
   const [deliveryContact, setDeliveryContact] = useState('');
   const [deliveryEmail, setDeliveryEmail] = useState('');
+  const [deliveryGstNumber, setDeliveryGstNumber] = useState('');
   const [poNumber, setPoNumber] = useState('');
   const [poDate, setPoDate] = useState(new Date().toISOString().substring(0, 10));
+  const [podeliverydate, setpodeliverydate] = useState(new Date().toISOString().substring(0, 10)); 
   const [type, setType] = useState('');
   const [items, setItems] = useState([]);
   const [item, setItem] = useState({
@@ -101,7 +106,7 @@ const Form = () => {
     const fetchVendor = async () => {
       try {
         if (vendorCode) {
-          const response = await axios.get(`http://localhost:5000/api/vendors/${vendorCode}`);
+          const response = await axios.get(`http://13.234.47.87:5000/api/vendors/${vendorCode}`);
           const vendor = response.data;
           setError('');
           // Set vendor details to corresponding state variables
@@ -109,6 +114,7 @@ const Form = () => {
           setPerson(vendor.contactperson || '');
           setAddress(vendor.address || '');
           setDistrict(vendor.district || '');
+          setState(vendor.state || '');
           setPinCode(vendor.pinCode || '');
           setEmail(vendor.email || '');
           setContact(vendor.contact || '');
@@ -129,18 +135,23 @@ const Form = () => {
     const fetchBillingDetails = async () => {
       try {
         if (locationCode) {
-          const response = await axios.get(`http://localhost:5000/api/location/${locationCode}`);
+          const response = await axios.get(`http://localhost:5000/api/billing/${locationCode}`);
           const billing = response.data;
           setError('');
           // Set billing details to corresponding state variables
 
           setBillToDistrict(billing.billToDistrict || '');
+          setBillToState(billing.billToState || '');
           setBillToPinCode(billing.billToPinCode || '');
-
+          setBillToContact(billing.billToContact || '');
+          setBillToEmail(billing.billToEmail || '');
         } else {
           // Reset billing fields when locationCode is empty
           setBillToDistrict('');
+          setBillToState('');
           setBillToPinCode('');
+          setBillToContact('');
+          setBillToEmail('');
         }
       } catch (error) {
         setError('Billing details not found');
@@ -154,17 +165,22 @@ const Form = () => {
     const fetchDeliveryDetails = async () => {
       try {
         if (deliveryLocationCode) {
-          const response = await axios.get(`http://localhost:5000/api/delivery/${deliveryLocationCode}`);
+          const response = await axios.get(`http://13.234.47.87:5000/api/location/${deliveryLocationCode}`);
           const delivery = response.data;
           setError('');
           // Set delivery details to corresponding state variables
-
+          setDeliveryName(delivery.deliveryName || '');
+          setshippingAddress(delivery.shippingAddress || '');
           setDeliveryDistrict(delivery.deliveryDistrict || '');
           setDeliveryPinCode(delivery.deliveryPinCode || '');
-
+          setDeliveryContact(delivery.deliveryContact || '');
+          setDeliveryEmail(delivery.deliveryEmail || '');
         } else {
           setDeliveryDistrict('');
+          setDeliveryState('');
           setDeliveryPinCode('');
+          setDeliveryContact('');
+          setDeliveryEmail('');
         }
       } catch (error) {
         setError('Delivery details not found');
@@ -179,6 +195,7 @@ const Form = () => {
     setPerson('');
     setAddress('');
     setDistrict('');
+    setState('');
     setPinCode('');
     setEmail('');
     setContact('');
@@ -187,17 +204,20 @@ const Form = () => {
     setBillToAddress('');
     setBillToGstNumber('');
     setBillToDistrict('');
+    setBillToState('');    
     setBillToPinCode('');
     setBillToContact('');
     setBillToEmail('');
     setPoNumber('');
     setPoDate(new Date().toISOString().substring(0, 10));
+    setpodeliverydate(new Date().toISOString().substring(0, 10));
     setType('');
     setItems([]);
     setTotalAmount(0);
     setDeliveryName('');
     setshippingAddress('');
     setDeliveryDistrict('');
+    setDeliveryState('');
     setDeliveryPinCode('');
     setDeliveryContact('');
     setDeliveryEmail('');
@@ -231,6 +251,9 @@ const Form = () => {
       case 'district':
         setDistrict(value);
         break;
+      case 'state':
+          setState(value);
+          break;
       case 'pinCode':
         setPinCode(value);
         break;
@@ -255,6 +278,9 @@ const Form = () => {
       case 'billToDistrict':
         setBillToDistrict(value);
         break;
+      case 'billToState':
+          setBillToState(value);
+          break;
       case 'billToPinCode':
         setBillToPinCode(value);
         break;
@@ -273,6 +299,9 @@ const Form = () => {
       case 'deliveryDistrict':
         setDeliveryDistrict(value);
         break;
+      case 'deliveryState':
+          setDeliveryState(value);
+          break;
       case 'deliveryPinCode':
         setDeliveryPinCode(value);
         break;
@@ -288,45 +317,114 @@ const Form = () => {
       case 'poDate':
         setPoDate(value);
         break;
+      case 'podeliverydate':
+        setpodeliverydate(value);
+        break;
       default:
         break;
     }
   };
 
-  const handleTypeChange = (e) => {
-    const selectedType = e.target.value;
-    setType(selectedType);
-    // Generate a PO number based on the selected type
-    if (selectedType) {
-      const prefix = selectedType === 'material' ? 'M' : 'S';
-      setPoNumber(`${prefix}-${new Date().getTime()}`); // Example PO number generation logic
+  const getNextSeriesPoNumber = async () => {
+    try {
+      const response = await fetch('http://13.234.47.87:5000/api/series/next-po-number');
+      const data = await response.json();
+      console.log('Fetched series number:', data);
+      return data.seriesNumber || '00000001'; // Fallback if seriesNumber is undefined
+    } catch (error) {
+      console.error('Error fetching next PO number:', error);
+      return '00000001'; // Fallback value
     }
   };
+  
+  const handleTypeChange = async (e) => {
+    const selectedType = e.target.value;
+    setType(selectedType);
+  
+    if (selectedType) {
+      const prefix = selectedType === 'material' ? 'GE-12' : 'GE-22';
+      const year = new Date().getFullYear().toString().slice(-2);
+      const seriesNumber = await getNextSeriesPoNumber();
+      console.log('Generated PO Number:', `${prefix}-${seriesNumber}`);
+      setPoNumber(`${prefix}-${seriesNumber}`);
+    }
+  };
+    
 
   const calculateAmount = (item) => {
-    const discountAmount = (item.ratePerUnit * item.quantity * item.discount) / 100;
-    const amountAfterDiscount = item.ratePerUnit * item.quantity - discountAmount;
-    const gstAmount = (amountAfterDiscount * item.gstPercentage) / 100;
-    return amountAfterDiscount + gstAmount;
+    if (item.subItems && item.subItems.length > 0) {
+      return item.subItems.reduce((total, subItem) => {
+        const discountAmount = (subItem.ratePerUnit * subItem.quantity * subItem.discount) / 100;
+        const amountAfterDiscount = subItem.ratePerUnit * subItem.quantity - discountAmount;
+        const gstAmount = (amountAfterDiscount * subItem.gstPercentage) / 100;
+        return total + amountAfterDiscount + gstAmount;
+      }, 0);
+    } else {
+      const discountAmount = (item.ratePerUnit * item.quantity * item.discount) / 100;
+      const amountAfterDiscount = item.ratePerUnit * item.quantity - discountAmount;
+      const gstAmount = (amountAfterDiscount * item.gstPercentage) / 100;
+      return amountAfterDiscount + gstAmount;
+    }
   };
+  
 
+  const calculateQuantity = (item) => {
+    if (item.subItems && item.subItems.length > 0) {
+      return item.subItems.reduce((total, subItem) => total + parseFloat(subItem.quantity), 0);
+    } else {
+      return parseFloat(item.quantity);
+    }
+  };
+  
+  const calculateDiscountAmount = (item) => {
+    if (item.subItems && item.subItems.length > 0) {
+      return item.subItems.reduce((total, subItem) => {
+        const discountAmount = (subItem.ratePerUnit * subItem.quantity * subItem.discount) / 100;
+        return total + discountAmount;
+      }, 0);
+    } else {
+      return (item.ratePerUnit * item.quantity * item.discount) / 100;
+    }
+  };
+  
+  const calculateGSTAmount = (item) => {
+    if (item.subItems && item.subItems.length > 0) {
+      return item.subItems.reduce((total, subItem) => {
+        const discountAmount = (subItem.ratePerUnit * subItem.quantity * subItem.discount) / 100;
+        const amountAfterDiscount = subItem.ratePerUnit * subItem.quantity - discountAmount;
+        const gstAmount = (amountAfterDiscount * subItem.gstPercentage) / 100;
+        return total + gstAmount;
+      }, 0);
+    } else {
+      const discountAmount = (item.ratePerUnit * item.quantity * item.discount) / 100;
+      const amountAfterDiscount = item.ratePerUnit * item.quantity - discountAmount;
+      return (amountAfterDiscount * item.gstPercentage) / 100;
+    }
+  };
+  
   const calculateTotalAmount = useCallback(() => {
-    let total = 0;
-    items.forEach((item) => {
-      total += item.amount;
-      if (item.subItems) {
-        item.subItems.forEach((subItem) => {
-          total += subItem.amount;
-        });
-      }
-    });
+    const total = items.reduce((sum, item) => sum + item.amount, 0);
     setTotalAmount(Math.round(total)); // Round off the total amount
   }, [items]);
-
+  
+  useEffect(() => {
+    const updatedItems = items.map((item) => ({
+      ...item,
+      quantity: calculateQuantity(item),
+      discountAmount: calculateDiscountAmount(item),
+      gstAmount: calculateGSTAmount(item),
+      amount: calculateAmount(item),
+    }));
+    setItems(updatedItems);
+  }, []);
+  
   useEffect(() => {
     calculateTotalAmount();
-  }, [items, calculateTotalAmount]);
-
+  }, [items]);
+  
+  
+    
+  
   const handleAddItem = () => {
     setItems((prevItems) => [...prevItems, { ...item, sno: prevItems.length + 1 }]);
     setItem({
@@ -350,11 +448,19 @@ const Form = () => {
 
   const handleItemChange = (e) => {
     const { name, value } = e.target;
-    setItem((prevItem) => ({
-      ...prevItem,
-      [name]: value,
-      amount: calculateAmount({ ...prevItem, [name]: value }),
-    }));
+    setItem((prevItem) => {
+      const updatedItem = {
+        ...prevItem,
+        [name]: value,
+      };
+      return {
+        ...updatedItem,
+        quantity: calculateQuantity(updatedItem),
+        discountAmount: calculateDiscountAmount(updatedItem),
+        gstAmount: calculateGSTAmount(updatedItem),
+        amount: calculateAmount(updatedItem),
+      };
+    });
   };
 
   const handleSubItemChange = (e, index) => {
@@ -362,20 +468,33 @@ const Form = () => {
     setItem((prevItem) => {
       const newSubItems = [...prevItem.subItems];
       const updatedSubItem = { ...newSubItems[index], [name]: value };
-
-      // Calculate amount for the updated sub-item
-      const updatedSubItemWithAmount = {
+  
+      // Calculate values for the updated sub-item
+      const updatedSubItemWithAmounts = {
         ...updatedSubItem,
+        quantity: calculateQuantity(updatedSubItem),
+        discountAmount: calculateDiscountAmount(updatedSubItem),
+        gstAmount: calculateGSTAmount(updatedSubItem),
         amount: calculateAmount(updatedSubItem),
       };
-
+  
       // Update the subItems array with the recalculated sub-item
-      newSubItems[index] = updatedSubItemWithAmount;
-
-      // Recalculate the total amount for the main item, if needed
-      return { ...prevItem, subItems: newSubItems };
+      newSubItems[index] = updatedSubItemWithAmounts;
+  
+      // Recalculate the total values for the main item, if needed
+      const updatedMainItem = {
+        ...prevItem,
+        subItems: newSubItems,
+        quantity: calculateQuantity({ ...prevItem, subItems: newSubItems }),
+        discountAmount: calculateDiscountAmount({ ...prevItem, subItems: newSubItems }),
+        gstAmount: calculateGSTAmount({ ...prevItem, subItems: newSubItems }),
+        amount: calculateAmount({ ...prevItem, subItems: newSubItems }),
+      };
+  
+      return updatedMainItem;
     });
   };
+
   const handleAddSubItem = () => {
     setItem((prevItem) => ({
       ...prevItem,
@@ -422,7 +541,7 @@ const Form = () => {
 
     try {
       console.log('Uploading signature...');
-      const response = await axios.post('http://localhost:5000/upload', formData, {
+      const response = await axios.post('http://13.234.47.87:5000/upload', formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
       console.log('Upload response:', response);
@@ -449,6 +568,7 @@ const Form = () => {
         contactperson,
         address,
         district,
+        state,
         pinCode,
         email,
         contact,
@@ -457,17 +577,21 @@ const Form = () => {
         billToAddress,
         billToGstNumber,
         billToDistrict,
+        billToState,
         billToPinCode,
         billToContact,
         billToEmail,
         deliveryName,
         shippingAddress,
         deliveryDistrict,
+        deliveryState,
         deliveryPinCode,
         deliveryContact,
         deliveryEmail,
+        deliveryGstNumber,
         poNumber,
         poDate,
+        podeliverydate,
         type,
         items,
         totalAmount,
@@ -482,7 +606,7 @@ const Form = () => {
         },
       };
       // Submit project order
-      await axios.post('http://localhost:5000/api/project-orders', projectOrder);
+      await axios.post('http://13.234.47.87:5000/api/project-orders', projectOrder);
       // Generate PDF
       alert('Project order submitted successfully');
     } catch (error) {
@@ -505,6 +629,10 @@ const Form = () => {
             <div>
               <label>PO Date:</label>
               <input type="date" name="poDate" value={poDate} onChange={handleProjectOrderChange} />
+            </div>
+            <div>
+              <label>PO Delivery Date:</label>
+              <input type="date" name="podeliverydate" value={podeliverydate} onChange={handleProjectOrderChange} />
             </div>
             <div className="type-section">
               <label>Type:</label>
@@ -545,25 +673,30 @@ const Form = () => {
               <input type="text" name="address" value={address} onChange={handleProjectOrderChange} />
             </div>
             <div>
-              <label>Email:</label>
-              <input type="email" name="email" value={email} onChange={handleProjectOrderChange} />
+              <label>District:</label>
+              <input type="text" name="district" value={district} onChange={handleProjectOrderChange} />
+            </div>
+            <div>
+              <label>State:</label>
+              <input type="text" name="state" value={state} onChange={handleProjectOrderChange} />
+            </div>
+            <div>
+              <label>Pin Code:</label>
+              <input type="text" name="pinCode" value={pinCode} onChange={handleProjectOrderChange} />
             </div>
             <div>
               <label>Contact Number:</label>
               <input type="text" name="contact" value={contact} onChange={handleProjectOrderChange} />
             </div>
             <div>
+              <label>Email:</label>
+              <input type="email" name="email" value={email} onChange={handleProjectOrderChange} />
+            </div>
+            <div>
               <label>GST Number:</label>
               <input type="text" name="gstNumber" value={gstNumber} onChange={handleProjectOrderChange} />
             </div>
-            <div>
-              <label>District:</label>
-              <input type="text" name="district" value={district} onChange={handleProjectOrderChange} />
-            </div>
-            <div>
-              <label>Pin Code:</label>
-              <input type="text" name="pinCode" value={pinCode} onChange={handleProjectOrderChange} />
-            </div>
+
 
           </div>
           
@@ -574,7 +707,7 @@ const Form = () => {
               <input type="text" value={locationCode} onChange={handleLocationCodeChange} />
             </div>
             <div>
-              <label>Bill To Name:</label>
+              <label>Name:</label>
               <input type="text" name="billtoname" value={billtoname} onChange={handleProjectOrderChange} />
             </div>
             <div>
@@ -584,6 +717,10 @@ const Form = () => {
             <div>
               <label>District:</label>
               <input type="text" name="billToDistrict" value={billToDistrict} onChange={handleProjectOrderChange} />
+            </div>
+            <div>
+              <label>State:</label>
+              <input type="text" name="billToState" value={billToState} onChange={handleProjectOrderChange} />
             </div>
             <div>
               <label>Pin Code:</label>
@@ -597,25 +734,33 @@ const Form = () => {
               <label>Email:</label>
               <input type="email" name="billToEmail" value={billToEmail} onChange={handleProjectOrderChange} />
             </div>
+            <div>
+              <label>GST:</label>
+              <input type="text" name="billToGstNumber" value={billToGstNumber} onChange={handleProjectOrderChange} />
+            </div>
           </div>
 
         <div classname="delivery-section">
           <h2>Delivery </h2>
-            <div>
-              <label>Shipping Address:</label>
-              <input type="text" name="shippingAddress" value={shippingAddress} onChange={handleProjectOrderChange} />
-            </div>
-            <div>
+          <div>
               <label>Delivery Location Code:</label>
               <input type="text" value={deliveryLocationCode} onChange={handleDeliveryLocationCodeChange} />
             </div>
             <div>
-              <label>Delivery Name:</label>
+              <label>Name:</label>
               <input type="text" name="deliveryName" value={deliveryName} onChange={handleProjectOrderChange} />
+            </div>
+            <div>
+              <label>Delivery Address:</label>
+              <input type="text" name="shippingAddress" value={shippingAddress} onChange={handleProjectOrderChange} />
             </div>
             <div>
               <label>District:</label>
               <input type="text" name="deliveryDistrict" value={deliveryDistrict} onChange={handleProjectOrderChange} />
+            </div>
+            <div>
+              <label>State:</label>
+              <input type="text" name="deliveryState" value={deliveryState} onChange={handleProjectOrderChange} />
             </div>
             <div>
               <label>Pin Code:</label>
@@ -628,6 +773,10 @@ const Form = () => {
             <div>
               <label>Email:</label>
               <input type="email" name="deliveryEmail" value={deliveryEmail} onChange={handleProjectOrderChange} />
+            </div>
+            <div>
+              <label>GST:</label>
+              <input type="text" name="DeliveryGstNumber" value={deliveryGstNumber} onChange={handleProjectOrderChange} />
             </div>
           </div>
 
@@ -655,7 +804,7 @@ const Form = () => {
                 <option value="nos">Nos</option>
               </select>
             </div>
-            <div className="item-field">
+            {/* <div className="item-field">
               <label>Quantity:</label>
               <input type="number" name="quantity" value={item.quantity} onChange={handleItemChange} />
             </div>
@@ -674,7 +823,7 @@ const Form = () => {
             <div className="item-field">
               <label>Amount:</label>
               <input type="number" name="amount" value={item.amount} readOnly />
-            </div>
+            </div> */}
           </div>
           <button type="button" onClick={handleAddItem}>Add Item</button>
         </div>
@@ -751,6 +900,15 @@ const Form = () => {
                   type="number"
                   name="discount"
                   value={subItem.discount || 0}
+                  onChange={(e) => handleSubItemChange(e, index)}
+                />
+              </div>
+              <div>
+                <label>GST (%):</label>
+                <input
+                  type="number"
+                  name="gstPercentage"
+                  value={subItem.gstPercentage || 0}
                   onChange={(e) => handleSubItemChange(e, index)}
                 />
               </div>
@@ -886,7 +1044,7 @@ const Form = () => {
         <label>Signature:</label>
         <input type="file" accept="image/*" onChange={handleSignatureChange} />
         <button type="button" onClick={handlesignUpload}>Upload Signature</button>
-        {signatureUrl && <img src={`http://localhost:5000${signatureUrl}`} alt="Signature"  />}
+        {signatureUrl && <img src={`http://13.234.47.87:5000${signatureUrl}`} alt="Signature"  />}
         
         </div>
         <button type="button" onClick={() => setShowPDFPreview(true)}>Preview PDF</button>
@@ -906,6 +1064,7 @@ const Form = () => {
             contactperson={contactperson}
             address={address}
             district={district}
+            state={state}
             pinCode={pinCode}
             email={email}
             contact={contact}
@@ -914,6 +1073,7 @@ const Form = () => {
             billtoname={billtoname}
             billToAddress={billToAddress}
             billToDistrict={billToDistrict}
+            billToState={billToState}
             billToPinCode={billToPinCode}
             billToContact={billToContact}
             billToEmail={billToEmail}
@@ -922,11 +1082,14 @@ const Form = () => {
             deliveryLocationCode={deliveryLocationCode}
             deliveryName={deliveryName}
             deliveryDistrict={deliveryDistrict}
+            deliveryState={deliveryState}
             deliveryPinCode={deliveryPinCode}
             deliveryContact={deliveryContact}
             deliveryEmail={deliveryEmail}
+            deliveryGstNumber={deliveryGstNumber}
             poNumber={poNumber}
             poDate={poDate}
+            podeliverydate={podeliverydate}
             type={type}
             items={items}
             totalAmount={totalAmount}

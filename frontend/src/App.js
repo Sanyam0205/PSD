@@ -5,8 +5,7 @@ import Form from './components/form';
 import ProjectOrd from './components/projectorder';
 import VendorManagement from './components/vendor';
 import Homepage from './components/homepage';
-import Login from './components/LoginPage';
-import UserManagementPage from './components/UserManagmentPage.js';
+import LocationManagement from './components/location';
 
 function App() {
   return (
@@ -18,8 +17,7 @@ function App() {
           <Route path="/projectorder" element={<ProjectOrd />} />
           <Route path="/vendor" element={<VendorManagement/>} />
           <Route path="/" element={<Homepage />} />
-          <Route path="/Login" element={<Login />} />
-          <Route path="/user-management" element={<UserManagementPage />} />
+          <Route path="/location" element={<LocationManagement />} />
         </Routes>
       </Router>
     </div>

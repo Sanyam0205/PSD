@@ -6,11 +6,35 @@ const locationSchema = new mongoose.Schema({
     required: true,
     unique: true,
   },
+  billtoname: {
+    type: String,
+    required: true,
+  },
+  billToAddress: {
+    type: String,
+    required: true,
+  },
   billToDistrict: {
     type: String,
     required: true,
   },
+  billToState: {
+    type: String,
+    required: true,
+  },
   billToPinCode: {
+    type: String,
+    required: true,
+  },
+  billToGstNumber: {
+    type: String,
+    required: true,
+  },
+  billToContact: {
+    type: String,
+    required: true,
+  },
+  billToEmail: {
     type: String,
     required: true,
   },

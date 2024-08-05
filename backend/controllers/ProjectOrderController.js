@@ -13,6 +13,7 @@ exports.createProjectOrder = async (req, res) => {
     contactperson,
     address,
     district,
+    state,
     pinCode,
     email,
     contact,
@@ -21,6 +22,7 @@ exports.createProjectOrder = async (req, res) => {
     billToAddress,
     billToGstNumber,
     billToDistrict,
+    billToState,
     billToPinCode,
     billToContact,
     billToEmail,
@@ -30,8 +32,10 @@ exports.createProjectOrder = async (req, res) => {
     deliveryPinCode,
     deliveryContact,
     deliveryEmail,
+    deliveryGstNumber,
     poNumber,
     poDate,
+    podeliverydate,
     type,
     items,
     topsection,
@@ -48,6 +52,7 @@ exports.createProjectOrder = async (req, res) => {
     contactperson,
     address,
     district,
+    state,
     pinCode,
     email,
     contact,
@@ -56,6 +61,7 @@ exports.createProjectOrder = async (req, res) => {
     billToAddress,
     billToGstNumber,
     billToDistrict,
+    billToState,
     billToPinCode,
     billToContact,
     billToEmail,
@@ -65,8 +71,10 @@ exports.createProjectOrder = async (req, res) => {
     deliveryPinCode,
     deliveryContact,
     deliveryEmail,
+    deliveryGstNumber,
     poNumber,
     poDate,
+    podeliverydate,
     type,
     items,
     totalAmount,
@@ -182,6 +190,41 @@ exports.editItemInProjectOrder = async (req, res) => {
     }
   } catch (error) {
     res.status(500).json({ message: error.message });
+  }
+};
+
+exports.getNextSeriesPoNumber = async (req, res) => {
+  try {
+    // Fetch the latest project order by PO number
+    const latestOrder = await ProjectOrder.findOne().sort({ poNumber: -1 }).limit(1);
+    console.log('Latest Order:', latestOrder); // Log the latest order for debugging
+
+    let newSeriesNumber = 1; // Default to 1 if no orders exist
+
+    if (latestOrder) {
+      // Extract the series number from the latest PO number
+      const lastPoNumber = latestOrder.poNumber;
+      console.log('Last PO Number:', lastPoNumber); // Log the last PO number
+
+      const parts = lastPoNumber.split('-');
+      console.log('Parts:', parts); // Log the parts array
+
+      if (parts.length === 3) {
+        const seriesNumber = parseInt(parts[2], 10);
+        console.log('Series Number:', seriesNumber); // Log the series number
+
+        newSeriesNumber = seriesNumber + 1; // Increment series number
+      }
+    }
+
+    // Format the series number to 8 digits with leading zeros
+    const formattedSeriesNumber = newSeriesNumber.toString().padStart(8, '0');
+    console.log('Formatted Series Number:', formattedSeriesNumber); // Log the formatted series number
+
+    res.json({ seriesNumber: formattedSeriesNumber });
+  } catch (error) {
+    console.error('Error getting next PO number:', error);
+    res.status(500).json({ message: 'Internal server error' });
   }
 };
 
