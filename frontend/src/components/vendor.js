@@ -10,7 +10,7 @@ const VendorManagement = () => {
     contactperson: '',
     address: '',
     district: '',
-    stt: '',
+    state: '',
     pinCode: '',
     email: '',
     contact: '',
@@ -60,7 +60,7 @@ const VendorManagement = () => {
         contactperson: '',
         address: '',
         district: '',
-        stt: '',
+        state: '',
         pinCode: '',
         email: '',
         contact: '',
@@ -92,7 +92,7 @@ const VendorManagement = () => {
         contactperson: existingVendor.contactperson,
         address: existingVendor.address,
         district: existingVendor.district,
-        stt: existingVendor.stt,
+        state: existingVendor.state,
         pinCode: existingVendor.pinCode,
         email: existingVendor.email,
         contact: existingVendor.contact,
@@ -124,8 +124,8 @@ const VendorManagement = () => {
           <input type="text" name="district" value={formData.district} onChange={handleChange} />
         </div>
         <div className="item-field">
-          <label>stt:</label>
-          <input type="text" name="stt" value={formData.stt} onChange={handleChange} />
+          <label>state:</label>
+          <input type="text" name="state" value={formData.state} onChange={handleChange} />
         </div>
         <div className="item-field">
           <label>Pin Code:</label>
@@ -155,7 +155,7 @@ const VendorManagement = () => {
               <div className="item-field"><strong>Contact Person:</strong> {vendor.contactperson}</div>
               <div className="item-field"><strong>Address:</strong> {vendor.address}</div>
               <div className="item-field"><strong>District:</strong> {vendor.district}</div>
-              <div className="item-field"><strong>stt:</strong> {vendor.stt}</div>
+              <div className="item-field"><strong>state:</strong> {vendor.state}</div>
               <div className="item-field"><strong>Pin Code:</strong> {vendor.pinCode}</div>
               <div className="item-field"><strong>Email:</strong> {vendor.email}</div>
               <div className="item-field"><strong>Contact:</strong> {vendor.contact}</div>
