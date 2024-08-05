@@ -1,10 +1,12 @@
 const Location = require('../models/location');
 
 exports.createLocation = async (req, res) => {
+  console.log('Request Body:', req.body);
   const location = new Location(req.body);
   try {
     const savedLocation = await location.save();
     res.status(201).json(savedLocation);
+  
   } catch (error) {
     res.status(400).json({ message: error.message });
   }
@@ -41,6 +43,7 @@ exports.updateLocation = async (req, res) => {
     );
     if (updatedLocation) {
       res.json(updatedLocation);
+      console.log('Request Body:', req.body);
     } else {
       res.status(404).json({ message: 'Location not found' });
     }

@@ -14,7 +14,7 @@ const Form = () => {
   const [contactperson, setPerson] = useState('');
   const [address, setAddress] = useState('');
   const [district, setDistrict] = useState('');
-  // const [state, setState] = useState('');
+  const [state, setState] = useState('');
   const [pinCode, setPinCode] = useState('');
   const [email, setEmail] = useState('');
   const [contact, setContact] = useState('');
@@ -23,7 +23,7 @@ const Form = () => {
   const [billToAddress, setBillToAddress] = useState('');
   const [billToGstNumber, setBillToGstNumber] = useState('');
   const [billToDistrict, setBillToDistrict] = useState('');
-  const [billToState, setBillToState] = useState('');
+  const [billToState, setbillToState] = useState('');
   const [billToPinCode, setBillToPinCode] = useState('');
   const [billToContact, setBillToContact] = useState('');
   const [billToEmail, setBillToEmail] = useState('');
@@ -53,8 +53,6 @@ const Form = () => {
     subItems: [],
   });
   const [totalAmount, setTotalAmount] = useState(0);
-  const [state, setState] = useState('');
-  const [shippingPhoneNumber, setShippingPhoneNumber] = useState('');
   const [topsection, settopsection] = useState(
     '\nCollection, Transportation, Recycling of Post-Consumer Plastic Waste on Behalf of Rekart Innovations Pvt. Ltd.\n' +
       'Dear Sir,\n' +
@@ -135,20 +133,20 @@ const Form = () => {
     const fetchBillingDetails = async () => {
       try {
         if (locationCode) {
-          const response = await axios.get(`http://localhost:5000/api/billing/${locationCode}`);
+          const response = await axios.get(`http://localhost:5000/api/location/${locationCode}`);
           const billing = response.data;
           setError('');
           // Set billing details to corresponding state variables
 
           setBillToDistrict(billing.billToDistrict || '');
-          setBillToState(billing.billToState || '');
+          setbillToState(billing.billToState || '');
           setBillToPinCode(billing.billToPinCode || '');
           setBillToContact(billing.billToContact || '');
           setBillToEmail(billing.billToEmail || '');
         } else {
           // Reset billing fields when locationCode is empty
           setBillToDistrict('');
-          setBillToState('');
+          setbillToState('');
           setBillToPinCode('');
           setBillToContact('');
           setBillToEmail('');
@@ -169,18 +167,23 @@ const Form = () => {
           const delivery = response.data;
           setError('');
           // Set delivery details to corresponding state variables
-          setDeliveryName(delivery.deliveryName || '');
-          setshippingAddress(delivery.shippingAddress || '');
-          setDeliveryDistrict(delivery.deliveryDistrict || '');
-          setDeliveryPinCode(delivery.deliveryPinCode || '');
-          setDeliveryContact(delivery.deliveryContact || '');
-          setDeliveryEmail(delivery.deliveryEmail || '');
+          setDeliveryName(delivery.billtoname || '');
+          setshippingAddress(delivery.billToAddress || '');
+          setDeliveryDistrict(delivery.billToDistrict || '');
+          setDeliveryContact(delivery.billToState || '') 
+          setDeliveryPinCode(delivery.billToPinCode || '');
+          setDeliveryContact(delivery.billToContact || '');
+          setDeliveryEmail(delivery.billToEmail || '');
+          setDeliveryGstNumber(delivery.billToGstNumber || '');
         } else {
+          setDeliveryName('');
+          setshippingAddress('');
           setDeliveryDistrict('');
           setDeliveryState('');
           setDeliveryPinCode('');
           setDeliveryContact('');
           setDeliveryEmail('');
+          setDeliveryGstNumber('');
         }
       } catch (error) {
         setError('Delivery details not found');
@@ -204,7 +207,7 @@ const Form = () => {
     setBillToAddress('');
     setBillToGstNumber('');
     setBillToDistrict('');
-    setBillToState('');    
+    setbillToState('');    
     setBillToPinCode('');
     setBillToContact('');
     setBillToEmail('');
@@ -279,7 +282,7 @@ const Form = () => {
         setBillToDistrict(value);
         break;
       case 'billToState':
-          setBillToState(value);
+          setbillToState(value);
           break;
       case 'billToPinCode':
         setBillToPinCode(value);
