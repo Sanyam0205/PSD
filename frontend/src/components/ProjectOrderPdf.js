@@ -445,7 +445,7 @@ const ProjectOrderPDF = (props) => {
             </View>
             <View style={styles.tableRow}>
               <Text style={[styles.tableCell, styles.tableHeader]}>State</Text>
-              <Text style={[styles.tableCell, styles.wideColumn]}>{props.billToState}</Text>
+              <Text style={[styles.tableCell, styles.wideColumn]}>{props.deliveryState}</Text>
             </View>
             <View style={styles.tableRow}>
               <Text style={[styles.tableCell, styles.tableHeader]}>Pin Code</Text>
