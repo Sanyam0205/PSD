@@ -141,7 +141,7 @@ const Form = () => {
     const fetchBillingDetails = async () => {
       try {
         if (locationCode) {
-          const response = await axios.get(`http://localhost:5000/api/location/${locationCode}`);
+          const response = await axios.get(`http://13.234.47.87:5000/api/location/${locationCode}`);
           const billing = response.data;
           setError('');
           // Set billing details to corresponding state variables
