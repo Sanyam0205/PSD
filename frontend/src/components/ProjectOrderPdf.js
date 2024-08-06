@@ -69,9 +69,14 @@ const styles = StyleSheet.create({
     alignItems: 'center', // Center content horizontally
     paddingBottom: 10,
   },
+
+  itemsrow:{
+    borderRight: '1px solid #000',
+    borderLeft:'1px solid #000',
+    paddingBottom: 10,
+  },
   headerTitle: {
     fontSize: 20,
-    fontWeight: 'extrabold',
     fontFamily: 'TimesNewRoman',
     textAlign: 'center',
     fontWeight: 'bold',
@@ -139,6 +144,7 @@ const styles = StyleSheet.create({
     borderBottomColor: '#000',
     height: '60%',
   },
+
   tableCell: {
     fontSize: 10,
     width:'55%',
@@ -154,7 +160,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#ffffff',
     fontSize: 12,
     fontFamily: 'TimesNewRoman',
-    fontWeight: 'bold',
     paddingTop: '15'
   },
   text: {
@@ -177,12 +182,17 @@ const styles = StyleSheet.create({
     borderColor: '#000',
     borderWidth: 1,
     wordWrap: 'break-word',
-    marginTop: 10,
-    padding: 7,
-    flex: 1,
+    flex: 'auto',
     textAlign: 'center',
     fontSize: 9
   },
+
+  itemrow:{
+    flexDirection: 'row',
+    borderBottomWidth: 1,
+    borderBottomColor: '#000',
+  },
+
   signatureWrapper: {
     marginTop: 20,
     flexDirection: 'row',
@@ -221,7 +231,7 @@ const ProjectOrderPDF = (props) => {
       const subItemGSTAmount = item.subItems.reduce((total, subItem) => total + ((subItem.ratePerUnit * subItem.quantity - (subItem.ratePerUnit * subItem.quantity * subItem.discount / 100)) * subItem.gstPercentage / 100), 0);
 
       const subItemRows = item.subItems.map((subItem, subIndex) => (
-        <View style={styles.tableRow} key={`${index}-${subIndex}`}>
+        <View style={styles.itemrow} key={`${index}-${subIndex}`}>
           <Text style={[styles.tableCell, styles.tabletext]}>{`${item.sno}.${subIndex + 1}`}</Text>
           <Text style={[styles.tableCell, styles.tabletext]}>{subItem.description}</Text>
           <Text style={[styles.tableCell, styles.tabletext]}>{subItem.unit}</Text>
@@ -242,7 +252,7 @@ const ProjectOrderPDF = (props) => {
       return (
         <React.Fragment key={index}>
           {subItemRows}
-          <View style={styles.tableRow}>
+          <View style={styles.itemrow}>
             <Text style={[styles.tableCell, styles.tabletext]}>{item.sno}</Text>
             <Text style={[styles.tableCell, styles.tabletext]}>{item.description}</Text>
             <Text style={[styles.tableCell, styles.tabletext]}>{item.unit}</Text>
@@ -283,18 +293,18 @@ const ProjectOrderPDF = (props) => {
               </View>
             </>
           )}
-          <View style={styles.itemsTable}>
-            <View style={styles.tableRow}>
-              <Text style={[styles.itemstable, styles.tableHeader]}>S.No</Text>
-              <Text style={[styles.itemstable, styles.tableHeader]}>Description</Text>
-              <Text style={[styles.itemstable, styles.tableHeader]}>Unit</Text>
-              <Text style={[styles.itemstable, styles.tableHeader]}>Quantity</Text>
-              <Text style={[styles.itemstable, styles.tableHeader]}>Rate Per Unit</Text>
-              <Text style={[styles.itemstable, styles.tableHeader]}>Discount %</Text>
-              <Text style={[styles.itemstable, styles.tableHeader]}>Net Amount</Text>
-              <Text style={[styles.itemstable, styles.tableHeader]}>GST %</Text>
-              <Text style={[styles.itemstable, styles.tableHeader]}>GST Amount</Text>
-              <Text style={[styles.itemstable, styles.tableHeader]}>Amount</Text>
+          <View style={styles.itemsrow}>
+            <View style={styles.itemrow}>
+              <Text style={[styles.itemsTable, styles.tableHeader]}>S.No</Text>
+              <Text style={[styles.itemsTable, styles.tableHeader]}>Description</Text>
+              <Text style={[styles.itemsTable, styles.tableHeader]}>Unit</Text>
+              <Text style={[styles.itemsTable, styles.tableHeader]}>Quantity</Text>
+              <Text style={[styles.itemsTable, styles.tableHeader]}>Rate Per Unit</Text>
+              <Text style={[styles.itemsTable, styles.tableHeader]}>Discount %</Text>
+              <Text style={[styles.itemsTable, styles.tableHeader]}>Net Amount</Text>
+              <Text style={[styles.itemsTable, styles.tableHeader]}>GST %</Text>
+              <Text style={[styles.itemsTable, styles.tableHeader]}>GST Amount</Text>
+              <Text style={[styles.itemsTable, styles.tableHeader]}>Amount</Text>
             </View>
             {rows.slice(i, i + rowsPerPage)}
           </View>

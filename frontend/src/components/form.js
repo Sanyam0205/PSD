@@ -5,6 +5,7 @@ import { faTrash } from '@fortawesome/free-solid-svg-icons';
 import { PDFViewer } from '@react-pdf/renderer';
 import ProjectOrderPDF from './ProjectOrderPdf';
 import './custom.css';
+import Select from 'react-select'; // For searchable dropdown
 
 const Form = () => {
   const [vendorCode, setVendorCode] = useState('');
@@ -98,6 +99,13 @@ const Form = () => {
   const [showsubItems, setShowsubItems] = useState(false);
   const [signature, setSignature] = useState(null);
   const [signatureUrl, setSignatureUrl] = useState('');
+
+  const [vendors, setVendors] = useState([]);
+  const [selectedVendor, setSelectedVendor] = useState(null);
+  const [location, setlocation] = useState([]);
+  const [selectedlocation, setSelectedlocation] = useState(null);
+  const [delivery ,setdelivery] = useState([]);
+  const [selecteddellocation, setSelecteddellocation] = useState(null);
 
   // Fetch vendor details when vendor code changes
   useEffect(() => {
@@ -197,6 +205,47 @@ const Form = () => {
     fetchDeliveryDetails();
   }, [deliveryLocationCode]);
 
+  useEffect(() => {
+    // Fetch vendors from the backend
+    fetch('http://13.234.47.87:5000/api/vendors') // Replace with your API endpoint
+      .then(response => response.json())
+      .then(data => setVendors(data))
+      .catch(error => console.error('Error fetching vendors:', error));
+  }, []);
+
+  useEffect(() => {
+    // Fetch vendors from the backend
+    fetch('http://13.234.47.87:5000/api/location') // Replace with your API endpoint
+      .then(response => response.json())
+      .then(data => setlocation(data))
+      .catch(error => console.error('Error fetching vendors:', error));
+  }, []);
+
+  useEffect(() => {
+    // Fetch vendors from the backend
+    fetch('http://13.234.47.87:5000/api/location') // Replace with your API endpoint
+      .then(response => response.json())
+      .then(data => setdelivery(data))
+      .catch(error => console.error('Error fetching vendors:', error));
+  }, []);
+
+  const getOptionLabel = (option) => `${option.name} - ${option.vendorCode}`;
+  const getOptLabel = (option) => `${option.billtoname} - ${option.locationCode}`;
+  const getLabel = (option) => `${option.billtoname} - ${option.locationCode}`;
+
+  const handleVendorChange = (selectedOption) => {
+    setSelectedVendor(selectedOption);
+    setVendorCode(selectedOption.vendorCode);
+  };
+  const handlelocationChange = (selectedOption) => {
+    setSelectedlocation(selectedOption);
+    setLocationCode(selectedOption.locationCode);
+  };
+  const handledellocationChange = (selectedOption) => {
+    setSelecteddellocation(selectedOption);
+    setDeliveryLocationCode(selectedOption.locationCode);
+  };
+
   // Reset all form fields
   const resetForm = () => {
     setName('');
@@ -229,15 +278,6 @@ const Form = () => {
     setDeliveryPinCode('');
     setDeliveryContact('');
     setDeliveryEmail('');
-  };
-
-  // Event handlers for form fields
-  const handleVendorCodeChange = (e) => {
-    setVendorCode(e.target.value);
-  };
-
-  const handleLocationCodeChange = (e) => {
-    setLocationCode(e.target.value);
   };
 
   const handleDeliveryLocationCodeChange = (e) => {
@@ -565,6 +605,7 @@ const Form = () => {
     }
   }, [signatureUrl]);
 
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -665,8 +706,15 @@ const Form = () => {
           <div className="vendor-section">
             <h2>Vendor Details</h2>
             <div className="vendor-code">
-              <label>Vendor Code:</label>
-              <input type="text" value={vendorCode} onChange={handleVendorCodeChange} />
+            <label htmlFor="vendorCode">Vendor:</label>
+              <Select
+                id="vendorCode"
+                options={vendors}
+                getOptionLabel={getOptionLabel}
+                getOptionValue={(option) => option.vendorCode}
+                onChange={handleVendorChange}
+                placeholder="Select a vendor..."
+              />
             </div>
             <div>
               <label>Name:</label>
@@ -711,8 +759,15 @@ const Form = () => {
           <div className="bill-to-section">
             <h2>Bill to Address</h2>
             <div>
-              <label>Location Code:</label>
-              <input type="text" value={locationCode} onChange={handleLocationCodeChange} />
+            <label htmlFor="locationCode">Location:</label>
+              <Select
+                id="locationCode"
+                options={location}
+                getOptionLabel={getOptLabel}
+                getOptionValue={(option) => option.locationCode}
+                onChange={handlelocationChange}
+                placeholder="Select a Location..."
+              />
             </div>
             <div>
               <label>Name:</label>
@@ -751,8 +806,15 @@ const Form = () => {
         <div classname="delivery-section">
           <h2>Delivery </h2>
           <div>
-              <label>Delivery Location Code:</label>
-              <input type="text" value={deliveryLocationCode} onChange={handleDeliveryLocationCodeChange} />
+          <label htmlFor="deliverLocationCode">Delivery Location:</label>
+              <Select
+                id="deliveryLocationCode"
+                options={delivery}
+                getOptionLabel={getLabel}
+                getOptionValue={(option) => option.deliveryLocationCode}
+                onChange={handledellocationChange}
+                placeholder="Select a Location..."
+              />
             </div>
             <div>
               <label>Name:</label>
