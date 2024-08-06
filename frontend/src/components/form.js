@@ -803,7 +803,7 @@ const Form = () => {
             </div>
           </div>
 
-        <div classname="delivery-section">
+        <div className="delivery-section">
           <h2>Delivery </h2>
           <div>
           <label htmlFor="deliverLocationCode">Delivery Location:</label>
