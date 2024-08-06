@@ -146,9 +146,10 @@ const styles = StyleSheet.create({
   },
 
   tableCell: {
-    fontSize: 10,
+    fontSize: 12,
     width:'55%',
-    padding: '5'
+    padding: '5',
+    justifyContent: 'center'
   },
 
   wideColumn: {
@@ -220,7 +221,7 @@ const styles = StyleSheet.create({
   },
   tabletext: {
     fontFamily: 'TimesNewRoman',
-    textAlign: 'center',
+    justifyContent:'center'
   },
 });
 
