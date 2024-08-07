@@ -5,7 +5,7 @@ import { faTrash } from '@fortawesome/free-solid-svg-icons';
 import { PDFViewer } from '@react-pdf/renderer';
 import ProjectOrderPDF from './ProjectOrderPdf';
 import './custom.css';
-import Select from 'react-select'; // For searchable dropdown
+import Select from 'react-select'; 
 
 const Form = () => {
   const [vendorCode, setVendorCode] = useState('');
@@ -62,6 +62,7 @@ const Form = () => {
       'PWM 2016 (and its amendments) and respective state Rules in connection with collection, storage, Transportation\n' +
       'and Disposal of Post- Consumers at below mentioned.'
   );
+
   const [Notes, setNotes] = useState(
     '\nIt may be noted that the above work will be carried out to our complete satisfaction if any amendment or alteration\n' +
       'are to be carried out due to mistakes or violation of any Rules on your parts, no extra payment will be payable for\n' +
@@ -77,29 +78,30 @@ const Form = () => {
       '  • LR Slip/ Transporter Bill of Transport\n' +
       '  • Un-Loading Weighing Slip'
   );
+
   const [tnc, settnc] = useState(
     `1. This PO Supersedes all previous discussions, offers & documents.
-2. All Above materials must be dispatched as per delivery schedules.
-3. All Pages of this document must be signed individually by authorized signatory.
-4. All Items should be strictly as per specification and quality norms defined and mentioned in said Purchase order by Rekart Innovation PVT. LTD.
-5. All Statutory government requirements, regulations & levies shall be born & adhered by the vendor and agrees to indemnify the client for any liability.
-6. Delivery of material at site should be accompanies with copy of Purchase order, Challan, Test Certificate of material and weighment Slip.
-7. Proper bills have to be submitted along with the certification of the project in charge for the supply completed.
-8. Vendor will seek consent from Project Manager w.r.t. Each material and its quantity before delivery, Vendor will also inform project team at least 1 working day before delivery of material.
-9. All correspondence must have reference to this P.O. and should be directed at the above address only.
-10. This Purchase Order is Subject to Jurisdiction of The Gurgaon Court Only.
-11. Payment: within 0 days after the material deliver at site.
-    - 0% advance, 0% against Proforma Invoice.
-    - 0% advance, pending within 0 days after the material deliver at site.
-12. Warranty: 1 year from the date of Invoice if any manufacturing defect.
-13. Rate inclusive of transportation, loading, unloading and handover at site.
-14. Delivery Schedule: urgent basis.`
+      2. All Above materials must be dispatched as per delivery schedules.
+      3. All Pages of this document must be signed individually by authorized signatory.
+      4. All Items should be strictly as per specification and quality norms defined and mentioned in said Purchase order by Rekart Innovation PVT. LTD.
+      5. All Statutory government requirements, regulations & levies shall be born & adhered by the vendor and agrees to indemnify the client for any liability.
+      6. Delivery of material at site should be accompanies with copy of Purchase order, Challan, Test Certificate of material and weighment Slip.
+      7. Proper bills have to be submitted along with the certification of the project in charge for the supply completed.
+      8. Vendor will seek consent from Project Manager w.r.t. Each material and its quantity before delivery, Vendor will also inform project team at least 1 working day before delivery of material.
+      9. All correspondence must have reference to this P.O. and should be directed at the above address only.
+      10. This Purchase Order is Subject to Jurisdiction of The Gurgaon Court Only.
+      11. Payment: within 0 days after the material deliver at site.
+          - 0% advance, 0% against Proforma Invoice.
+          - 0% advance, pending within 0 days after the material deliver at site.
+      12. Warranty: 1 year from the date of Invoice if any manufacturing defect.
+      13. Rate inclusive of transportation, loading, unloading and handover at site.
+      14. Delivery Schedule: urgent basis.`
   );
+
   const [showPDFPreview, setShowPDFPreview] = useState(false); // Add this line
   const [showsubItems, setShowsubItems] = useState(false);
   const [signature, setSignature] = useState(null);
   const [signatureUrl, setSignatureUrl] = useState('');
-
   const [vendors, setVendors] = useState([]);
   const [selectedVendor, setSelectedVendor] = useState(null);
   const [location, setlocation] = useState([]);
@@ -280,10 +282,6 @@ const Form = () => {
     setDeliveryEmail('');
   };
 
-  const handleDeliveryLocationCodeChange = (e) => {
-    setDeliveryLocationCode(e.target.value);
-  };
-
   const handleProjectOrderChange = (e) => {
     const { name, value } = e.target;
     switch (name) {
@@ -398,7 +396,6 @@ const Form = () => {
     }
   };
     
-
   const calculateAmount = (item) => {
     if (item.subItems && item.subItems.length > 0) {
       return item.subItems.reduce((total, subItem) => {
@@ -415,7 +412,6 @@ const Form = () => {
     }
   };
   
-
   const calculateQuantity = (item) => {
     if (item.subItems && item.subItems.length > 0) {
       return item.subItems.reduce((total, subItem) => total + parseFloat(subItem.quantity), 0);
@@ -470,9 +466,6 @@ const Form = () => {
     calculateTotalAmount();
   }, [items]);
   
-  
-    
-  
   const handleAddItem = () => {
     setItems((prevItems) => [...prevItems, { ...item, sno: prevItems.length + 1 }]);
     setItem({
@@ -525,11 +518,7 @@ const Form = () => {
         gstAmount: calculateGSTAmount(updatedSubItem),
         amount: calculateAmount(updatedSubItem),
       };
-  
-      // Update the subItems array with the recalculated sub-item
       newSubItems[index] = updatedSubItemWithAmounts;
-  
-      // Recalculate the total values for the main item, if needed
       const updatedMainItem = {
         ...prevItem,
         subItems: newSubItems,
@@ -538,7 +527,6 @@ const Form = () => {
         gstAmount: calculateGSTAmount({ ...prevItem, subItems: newSubItems }),
         amount: calculateAmount({ ...prevItem, subItems: newSubItems }),
       };
-  
       return updatedMainItem;
     });
   };
@@ -696,12 +684,10 @@ const Form = () => {
             </div>
           </div>
         </div>
-
         <div className="custom-text-section">
           <label>Top Section:</label>
           <textarea value={topsection} onChange={(e) => settopsection(e.target.value)} />
         </div>
-        
         <div className="grid">              
           <div className="vendor-section">
             <h2>Vendor Details</h2>
@@ -752,10 +738,7 @@ const Form = () => {
               <label>GST Number:</label>
               <input type="text" name="gstNumber" value={gstNumber} onChange={handleProjectOrderChange} />
             </div>
-
-
           </div>
-          
           <div className="bill-to-section">
             <h2>Bill to Address</h2>
             <div>
@@ -802,7 +785,6 @@ const Form = () => {
               <input type="text" name="billToGstNumber" value={billToGstNumber} onChange={handleProjectOrderChange} />
             </div>
           </div>
-
         <div className="delivery-section">
           <h2>Delivery </h2>
           <div>
@@ -849,9 +831,7 @@ const Form = () => {
               <input type="text" name="DeliveryGstNumber" value={deliveryGstNumber} onChange={handleProjectOrderChange} />
             </div>
           </div>
-
         </div>
-
         <div className="add-item-section">
           <h2>Add Item</h2>
           <div className="item-fields">
@@ -897,7 +877,6 @@ const Form = () => {
           </div>
           <button type="button" onClick={handleAddItem}>Add Item</button>
         </div>
-
         <div>
           <label>
             <input
@@ -908,7 +887,6 @@ const Form = () => {
              Add Sub-Items
           </label>
         </div>
-
       {showsubItems && (
         <div className='subitem-section'>
           <h3>Sub-Items</h3>
@@ -923,7 +901,6 @@ const Form = () => {
                   onChange={(e) => handleSubItemChange(e, index)}
                 />
               </div>
-
               <div className="item-field">
                 <label>Unit:</label>
                 <select
@@ -943,7 +920,6 @@ const Form = () => {
                   <option value="nos">Nos</option>
                 </select>
               </div>
-
               <div className="item-field">
                 <label>Quantity:</label>
                 <input
@@ -953,7 +929,6 @@ const Form = () => {
                   onChange={(e) => handleSubItemChange(e, index)}
                 />
               </div>
-
               <div className="item-field">
                 <label>Rate Per Unit:</label>
                 <input
@@ -963,7 +938,6 @@ const Form = () => {
                   onChange={(e) => handleSubItemChange(e, index)}
                 />
               </div>
-
               <div className="item-field">
                 <label>Discount (%):</label>
                 <input
@@ -982,7 +956,6 @@ const Form = () => {
                   onChange={(e) => handleSubItemChange(e, index)}
                 />
               </div>
-
               <div className="item-field">
                 <label>Amount:</label>
                 <input
@@ -992,17 +965,14 @@ const Form = () => {
                   disabled
                 />
               </div>
-
               <div className="item-field">
                 <button type="button" onClick={() => handleRemoveSubItem(index)}>Remove Sub-Item</button>
               </div>
             </div>
-
           ))}
           <button type="button" onClick={handleAddSubItem}>Add Sub-Item</button>
         </div>
       )}
-
       <div className="items-section">
         <h2>Items</h2>
         {items.map((item, index) => (
@@ -1046,13 +1016,12 @@ const Form = () => {
             >
               <FontAwesomeIcon icon={faTrash} />
             </button>
-
             {/* Render sub-items */}
             {item.subItems && item.subItems.length > 0 && (
               <div className="subitem-section">
                 <h3>Sub-Items</h3>
                 {item.subItems.map((subItem, subIndex) => (
-                  <div key={`${index}-${subIndex}`} className="sub-item">
+                  <><div key={`${index}-${subIndex}`} className="sub-item">
                     <div className="item-field">
                       <label>Serial No:</label>
                       <input type="text" value={`${item.sno}.${subIndex + 1}`} readOnly />
@@ -1085,14 +1054,17 @@ const Form = () => {
                       <label>Amount:</label>
                       <input type="number" value={subItem.amount} readOnly />
                     </div>
+                    <div className="item-field">
+                      <button type="button" onClick={() => handleRemoveSubItem(subIndex)}>Remove Sub-Item</button>
                   </div>
+                  </div>
+                    </>
                 ))}
               </div>
             )}
           </div>
         ))}
       </div>    
-
         <div className="total-amount-section">
           <h2>Total Amount</h2>
           <div>
@@ -1100,7 +1072,6 @@ const Form = () => {
             <input type="number" value={totalAmount} readOnly />
           </div>
         </div>
-
         <div className='custom-text-section'>
           <label>Notes:</label>
           <textarea value={Notes} onChange={(e) => setNotes(e.target.value)} />
@@ -1109,17 +1080,14 @@ const Form = () => {
           <label>Terms And Condition: </label>
           <textarea value={tnc} onChange={(e) => settnc(e.target.value)} />
         </div>
-
         <div className="signature-section">
         <label>Signature:</label>
         <input type="file" accept="image/*" onChange={handleSignatureChange} />
         <button type="button" onClick={handlesignUpload}>Upload Signature</button>
         {signatureUrl && <img src={`http://13.234.47.87:5000${signatureUrl}`} alt="Signature"  />}
-        
         </div>
         <button type="button" onClick={() => setShowPDFPreview(true)}>Preview PDF</button>
         <div>
-
         </div>
         <button type="button" onClick={() => setShowPDFPreview(false)}>Close PDF</button>
         <div>
@@ -1173,5 +1141,4 @@ const Form = () => {
     </div>
   );
 };
-
 export default Form;
