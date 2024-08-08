@@ -563,7 +563,7 @@ const ProjectOrderPDF = (props) => {
         </View>
         {props.signature && (
           <View style={styles.signatureWrapper}>
-            <Image style={styles.signature} src={props.signature ? `http://ec2-13-234-47-87.ap-south-1.compute.amazonaws.com:5000${props.signature}` : ''} />
+            <Image style={styles.signature} src={props.signature ? `http://13.234.47.87:5000${props.signature}` : ''} />
           </View>
         )}
         <View style={styles.footer}>
