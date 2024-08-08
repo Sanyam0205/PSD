@@ -10,6 +10,10 @@ const locationSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  billtocp: {
+    type: String,
+    required: true,
+  },
   billToAddress: {
     type: String,
     required: true,
