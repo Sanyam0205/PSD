@@ -124,6 +124,51 @@ const styles = StyleSheet.create({
     border: '1px solid #000',
     padding: 2,
   },
+
+  tableWrapper: {
+    flexDirection: 'row',
+    marginBottom: 10,
+  },
+  dataTable: {
+    flex: 1,
+    borderWidth: 1,
+    borderColor: '#000',
+    marginBottom: 10,
+  },
+  dataRow: {
+    flexDirection: 'row',
+    borderBottomWidth: 1,
+    borderBottomColor: '#000',
+  },
+  dataCell: {
+    flex: 1,
+    fontSize: 10,
+    padding: 2,
+    borderRightWidth: 1,
+    borderRightColor: '#000',
+  },
+  dataHeader: {
+    fontWeight: 'bold',
+    fontSize: 12,
+    padding: 1,
+    borderRightWidth: 1,
+    borderRightColor: '#000',
+  },
+
+  fixedHeightText: {
+    height: 80, // Adjust this height to fit 4 lines
+    padding: 2,
+    textAlign: 'left',
+    fontSize: 10, // Adjust font size as needed
+    overflow: 'hidden', // Hide any overflow text
+    fontFamily: 'TimesNewRoman',
+  },
+  contentText: {
+    fontSize: 11,
+    fontFamily: 'TimesNewRoman',
+    textAlign: 'justify',
+  },
+
   tableContainer: {
     display: 'flex',
     flexDirection: 'row',
@@ -148,7 +193,7 @@ const styles = StyleSheet.create({
   tableCell: {
     fontSize: 12,
     width:'55%',
-    padding: '5',
+    padding: '1',
     justifyContent: 'center'
   },
 
@@ -238,7 +283,7 @@ const ProjectOrderPDF = (props) => {
           <Text style={[styles.tableCell, styles.tabletext]}>{subItem.unit}</Text>
           <Text style={[styles.tableCell, styles.tabletext]}>{subItem.quantity}</Text>
           <Text style={[styles.tableCell, styles.amttext]}>{formatNumber(subItem.ratePerUnit)}</Text>
-          <Text style={[styles.tableCell, styles.tabletext]}>{subItem.discount}</Text>
+          <Text style={[styles.tableCell, styles.tabletext]}>{formatNumber(subItem.discount)}</Text>
           <Text style={[styles.tableCell, styles.amttext]}>
             {formatNumber((subItem.ratePerUnit * subItem.quantity * subItem.discount / 100).toFixed(2))}
           </Text>
@@ -252,7 +297,6 @@ const ProjectOrderPDF = (props) => {
 
       return (
         <React.Fragment key={index}>
-          {subItemRows}
           <View style={styles.itemrow}>
             <Text style={[styles.tableCell, styles.tabletext]}>{item.sno}</Text>
             <Text style={[styles.tableCell, styles.tabletext]}>{item.description}</Text>
@@ -269,6 +313,7 @@ const ProjectOrderPDF = (props) => {
             </Text>
             <Text style={[styles.tableCell, styles.amttext]}>{formatNumber(item.amount)}</Text>
           </View>
+          {subItemRows}
         </React.Fragment>
       );
     });
@@ -329,169 +374,165 @@ const ProjectOrderPDF = (props) => {
   return (
     <Document>
       <Page size="A4" orientation="landscape" style={styles.page}>
-      <View style={styles.header}>
-          <Text style={styles.headerTitle}>GIRIK ENTERPRISES</Text>
-          <Text style={styles.headerText}>
-            Email id:- girik.enterprices24@gmail.com | Contact number:- 9560666158
-          </Text>
-        </View>        <View style={styles.headerRight}>
-          <Text style={styles.text}>PO Number: {props.poNumber}</Text>
-          <Text style={styles.text}>PO Date: {props.poDate}</Text>
-          <Text style={styles.text}>Delivery Date: {props.podeliverydate}</Text>
-        </View>
-        <View style={styles.tableContainer}>
-          <View style={styles.table}>
-            <Text style={[styles.texthead]}>Vendor Details</Text>
-            <View style={styles.tableRow}>
-              <Text style={[styles.tableCell, styles.tableHeader]}>Vendor Code</Text>
-              <Text style={[styles.tableCell, styles.wideColumn]}>{props.vendorCode}</Text>
-            </View>
-            <View style={styles.tableRow}>
-              <Text style={[styles.tableCell, styles.tableHeader]}>Vendor Name</Text>
-              <Text style={[styles.tableCell, styles.wideColumn]}>{props.name}</Text>
-            </View>
-            <View style={styles.tableRow}>
-              <Text style={[styles.tableCell, styles.tableHeader]}>Contact Person</Text>
-              <Text style={[styles.tableCell, styles.wideColumn]}>{props.contactperson}</Text>
-            </View>
-            <View style={styles.tableRow}>
-              <Text style={[styles.tableCell, styles.tableHeader]}>Address</Text>
-              <Text style={[styles.tableCell, styles.wideColumn]}>{props.address}</Text>
-            </View>
-            <View style={styles.tableRow}>
-              <Text style={[styles.tableCell, styles.tableHeader]}>District</Text>
-              <Text style={[styles.tableCell, styles.wideColumn]}>{props.district}</Text>  
-            </View>
-            <View style={styles.tableRow}>
-              <Text style={[styles.tableCell, styles.tableHeader]}>State</Text>
-              <Text style={[styles.tableCell, styles.wideColumn]}>{props.state}</Text>
-            </View>
-            <View style={styles.tableRow}>
-              <Text style={[styles.tableCell, styles.tableHeader]}>Pincode</Text>
-              <Text style={[styles.tableCell, styles.wideColumn]}>{props.pinCode}</Text> 
-            </View>
-            <View style={styles.tableRow}>
-              <Text style={[styles.tableCell, styles.tableHeader]}>Email</Text>
-              <Text style={[styles.tableCell, styles.wideColumn]}>{props.email}</Text>
-            </View>
-            <View style={styles.tableRow}>
-              <Text style={[styles.tableCell, styles.tableHeader]}>Contact</Text>
-              <Text style={[styles.tableCell, styles.wideColumn]}>{props.contact}</Text>
-            </View>
-            <View style={styles.tableRow}>
-              <Text style={[styles.tableCell, styles.tableHeader]}>GST Number</Text>
-              <Text style={[styles.tableCell, styles.wideColumn]}>{props.gstNumber}</Text>
-            </View>
-          </View>
-          <View style={styles.table}>
-            <Text style={[styles.texthead]}>Billing Details</Text>
-            <View style={styles.tableRow}>
-              <Text style={[styles.tableCell, styles.tableHeader]}>Location Code</Text>
-              <Text style={[styles.tableCell, styles.wideColumn]}>{props.locationCode}</Text>
-            </View>
-            <View style={styles.tableRow}>
-              <Text style={[styles.tableCell, styles.tableHeader]}>Contact Person</Text>
-              <Text style={[styles.tableCell, styles.wideColumn]}>{props.billtoname}</Text>
-            </View>
-            <View style={styles.tableRow}>
-              <Text style={[styles.tableCell, styles.tableHeader]}>Billing Address</Text>
-              <Text style={[styles.tableCell, styles.wideColumn]}>{props.billToAddress}</Text>
-            </View>
-            <View style={styles.tableRow}>
-              <Text style={[styles.tableCell, styles.tableHeader]}>District</Text>
-              <Text style={[styles.tableCell, styles.wideColumn]}>{props.billToDistrict}</Text>
-            </View>
-            <View style={styles.tableRow}>
-              <Text style={[styles.tableCell, styles.tableHeader]}>State</Text>
-              <Text style={[styles.tableCell, styles.wideColumn]}>{props.billToState}</Text>
-            </View>
-            <View style={styles.tableRow}>
-              <Text style={[styles.tableCell, styles.tableHeader]}>Pincode</Text>
-              <Text style={[styles.tableCell, styles.wideColumn]}>{props.billToPinCode}</Text>
-            </View>
-            <View style={styles.tableRow}>
-              <Text style={[styles.tableCell, styles.tableHeader]}>Phone Number</Text>
-              <Text style={[styles.tableCell, styles.wideColumn]}>{props.billToContact}</Text>
-            </View>
-            <View style={styles.tableRow}>
-              <Text style={[styles.tableCell, styles.tableHeader]}>Email</Text>
-              <Text style={[styles.tableCell, styles.wideColumn]}>{props.billToEmail}</Text>
-            </View>
-            <View style={styles.tableRow}>
-              <Text style={[styles.tableCell, styles.tableHeader]}>GST Number</Text>
-              <Text style={[styles.tableCell, styles.wideColumn]}>{props.billToGstNumber}</Text>
-            </View>
-            <View style={styles.tableRow}>
-              <Text style={[styles.tableCell, styles.tableHeader]}></Text>
-              <Text style={[styles.tableCell, styles.wideColumn]}></Text>
-            </View>
-          </View>
-          <View style={styles.table}>
-            <Text style={[styles.texthead]}>Delivery Details</Text>
-            <View style={styles.tableRow}>
-              <Text style={[styles.tableCell, styles.tableHeader]}>location Code</Text>
-              <Text style={[styles.tableCell, styles.wideColumn]}>{props.deliveryLocationCode}</Text>  
-            </View>
-            <View style={styles.tableRow}>
-              <Text style={[styles.tableCell, styles.tableHeader]}>Name</Text>
-              <Text style={[styles.tableCell, styles.wideColumn]}>{props.deliveryName}</Text>
-            </View>
-            <View style={styles.tableRow}>
-              <Text style={[styles.tableCell, styles.tableHeader]}>Shipping Address</Text>
-              <Text style={[styles.tableCell, styles.wideColumn]}>{props.shippingAddress}</Text>
-            </View>
-            <View style={styles.tableRow}>
-              <Text style={[styles.tableCell, styles.tableHeader]}>District</Text>
-              <Text style={[styles.tableCell, styles.wideColumn]}>{props.deliveryDistrict}</Text>
-            </View>
-            <View style={styles.tableRow}>
-              <Text style={[styles.tableCell, styles.tableHeader]}>State</Text>
-              <Text style={[styles.tableCell, styles.wideColumn]}>{props.deliveryState}</Text>
-            </View>
-            <View style={styles.tableRow}>
-              <Text style={[styles.tableCell, styles.tableHeader]}>Pin Code</Text>
-              <Text style={[styles.tableCell, styles.wideColumn]}>{props.deliveryPinCode}</Text>
-            </View>
-            <View style={styles.tableRow}>
-              <Text style={[styles.tableCell, styles.tableHeader]}>Phone Number</Text>
-              <Text style={[styles.tableCell, styles.wideColumn]}>{props.deliveryContact}</Text>
-            </View>
-            <View style={styles.tableRow}>
-              <Text style={[styles.tableCell, styles.tableHeader]}>Email</Text>
-              <Text style={[styles.tableCell, styles.wideColumn]}>{props.deliveryEmail}</Text>
-            </View>
-            <View style={styles.tableRow}>
-              <Text style={[styles.tableCell, styles.tableHeader]}>GST Number</Text>
-              <Text style={[styles.tableCell, styles.wideColumn]}>{props.deliveryGstNumber}</Text>
-            </View>
-            <View style={styles.tableRow}>
-              <Text style={[styles.tableCell, styles.tableHeader]}></Text>
-              <Text style={[styles.tableCell, styles.wideColumn]}></Text>
-            </View>
-          </View>
-        </View>
-        <View style={styles.footer}>
-          <Text style={styles.footerTextBoldUnderline}>GIRIK ENTERPRISES</Text>
-          <Text style={styles.footerText}>736A/5, PATEL NAGAR, JHARSA ROAD, POLICE LINE, BACK GATE, GURGAON, HARYANA 122006</Text>
-        </View>
-        </Page>
-        <Page size="A4" orientation="landscape" style={styles.page}>
-          <View style={styles.header}>
-          <Text style={styles.headerTitle}>GIRIK ENTERPRISES</Text>
-          <Text style={styles.headerText}>
-            Email id:- girik.enterprices24@gmail.com | Contact number:- 9560666158
-          </Text>
-        </View>
-        <View style={styles.section}>
+  <View style={styles.header}>
+    <Text style={styles.headerTitle}>GIRIK ENTERPRISES</Text>
+    <Text style={styles.headerText}>
+      Email id:- girik.enterprices24@gmail.com | Contact number:- 9560666158
+    </Text>
+  </View>
+  
+  <View style={styles.headerDetails}>
+    <Text style={styles.contentText}>PO Number: {props.poNumber}</Text>
+    <Text style={styles.contentText}>PO Date: {props.poDate}</Text>
+    <Text style={styles.contentText}>Delivery Date: {props.podeliverydate}</Text>
+  </View>
+
+  <View style={styles.tableWrapper}>
+    <View style={styles.dataTable}>
+      <Text style={styles.dataHeader}>Vendor Details</Text>
+      <View style={styles.dataRow}>
+        <Text style={[styles.dataCell, styles.dataHeader]}>Code</Text>
+        <Text style={styles.dataCell}>{props.vendorCode}</Text>
+      </View>
+      <View style={styles.dataRow}>
+        <Text style={[styles.dataCell, styles.dataHeader]}>Name</Text>
+        <Text style={styles.dataCell}>{props.name}</Text>
+      </View>
+      <View style={styles.dataRow}>
+        <Text style={[styles.dataCell, styles.dataHeader]}>Contact Person</Text>
+        <Text style={styles.dataCell}>{props.contactperson}</Text>
+      </View>
+      <View style={styles.dataRow}>
+        <Text style={[styles.dataCell, styles.dataHeader]}>Address</Text>
+        <Text style={[styles.dataCell, styles.fixedHeightText]}>{props.address}</Text>
+      </View>
+      <View style={styles.dataRow}>
+        <Text style={[styles.dataCell, styles.dataHeader]}>District</Text>
+        <Text style={styles.dataCell}>{props.district}</Text>
+      </View>
+      <View style={styles.dataRow}>
+        <Text style={[styles.dataCell, styles.dataHeader]}>State</Text>
+        <Text style={styles.dataCell}>{props.state}</Text>
+      </View>
+      <View style={styles.dataRow}>
+        <Text style={[styles.dataCell, styles.dataHeader]}>Pincode</Text>
+        <Text style={styles.dataCell}>{props.pinCode}</Text>
+      </View>
+      <View style={styles.dataRow}>
+        <Text style={[styles.dataCell, styles.dataHeader]}>Email</Text>
+        <Text style={styles.dataCell}>{props.email}</Text>
+      </View>
+      <View style={styles.dataRow}>
+        <Text style={[styles.dataCell, styles.dataHeader]}>Contact</Text>
+        <Text style={styles.dataCell}>{props.contact}</Text>
+      </View>
+      <View style={styles.dataRow}>
+        <Text style={[styles.dataCell, styles.dataHeader]}>GST Number</Text>
+        <Text style={styles.dataCell}>{props.gstNumber}</Text>
+      </View>
+    </View>
+
+    <View style={styles.dataTable}>
+      <Text style={styles.dataHeader}>Billing Details</Text>
+      <View style={styles.dataRow}>
+        <Text style={[styles.dataCell, styles.dataHeader]}>Location Code</Text>
+        <Text style={styles.dataCell}>{props.locationCode}</Text>
+      </View>
+      <View style={styles.dataRow}>
+        <Text style={[styles.dataCell, styles.dataHeader]}>Name</Text>
+        <Text style={styles.dataCell}>{props.billtocp}</Text>
+      </View>
+      <View style={styles.dataRow}>
+        <Text style={[styles.dataCell, styles.dataHeader]}>Contact Name</Text>
+        <Text style={styles.dataCell}>{props.billtoname}</Text>
+      </View>
+      <View style={styles.dataRow}>
+        <Text style={[styles.dataCell, styles.dataHeader]}>Billing Address</Text>
+        <Text style={[styles.dataCell, styles.fixedHeightText]}>{props.billToAddress}</Text>
+      </View>
+      <View style={styles.dataRow}>
+        <Text style={[styles.dataCell, styles.dataHeader]}>District</Text>
+        <Text style={styles.dataCell}>{props.billToDistrict}</Text>
+      </View>
+      <View style={styles.dataRow}>
+        <Text style={[styles.dataCell, styles.dataHeader]}>State</Text>
+        <Text style={styles.dataCell}>{props.billToState}</Text>
+      </View>
+      <View style={styles.dataRow}>
+        <Text style={[styles.dataCell, styles.dataHeader]}>Pincode</Text>
+        <Text style={styles.dataCell}>{props.billToPinCode}</Text>
+      </View>
+      <View style={styles.dataRow}>
+        <Text style={[styles.dataCell, styles.dataHeader]}>Phone Number</Text>
+        <Text style={styles.dataCell}>{props.billToContact}</Text>
+      </View>
+      <View style={styles.dataRow}>
+        <Text style={[styles.dataCell, styles.dataHeader]}>Email</Text>
+        <Text style={styles.dataCell}>{props.billToEmail}</Text>
+      </View>
+      <View style={styles.dataRow}>
+        <Text style={[styles.dataCell, styles.dataHeader]}>GST Number</Text>
+        <Text style={styles.dataCell}>{props.billToGstNumber}</Text>
+      </View>
+    </View>
+
+    <View style={styles.dataTable}>
+      <Text style={styles.dataHeader}>Delivery Details</Text>
+      <View style={styles.dataRow}>
+        <Text style={[styles.dataCell, styles.dataHeader]}>Location Code</Text>
+        <Text style={styles.dataCell}>{props.deliveryLocationCode}</Text>
+      </View>
+      <View style={styles.dataRow}>
+        <Text style={[styles.dataCell, styles.dataHeader]}>Name</Text>
+        <Text style={styles.dataCell}>{props.delcp}</Text>
+      </View>
+      <View style={styles.dataRow}>
+        <Text style={[styles.dataCell, styles.dataHeader]}>Contact Name</Text>
+        <Text style={styles.dataCell}>{props.deliveryName}</Text>
+      </View>
+      <View style={styles.dataRow}>
+        <Text style={[styles.dataCell, styles.dataHeader]}>Shipping Address</Text>
+        <Text style={[styles.dataCell, styles.fixedHeightText]}>{props.shippingAddress}</Text>
+      </View>
+      <View style={styles.dataRow}>
+        <Text style={[styles.dataCell, styles.dataHeader]}>District</Text>
+        <Text style={styles.dataCell}>{props.deliveryDistrict}</Text>
+      </View>
+      <View style={styles.dataRow}>
+        <Text style={[styles.dataCell, styles.dataHeader]}>State</Text>
+        <Text style={styles.dataCell}>{props.deliveryState}</Text>
+      </View>
+      <View style={styles.dataRow}>
+        <Text style={[styles.dataCell, styles.dataHeader]}>Pin Code</Text>
+        <Text style={styles.dataCell}>{props.deliveryPinCode}</Text>
+      </View>
+      <View style={styles.dataRow}>
+        <Text style={[styles.dataCell, styles.dataHeader]}>Phone Number</Text>
+        <Text style={styles.dataCell}>{props.deliveryContact}</Text>
+      </View>
+      <View style={styles.dataRow}>
+        <Text style={[styles.dataCell, styles.dataHeader]}>Email</Text>
+        <Text style={styles.dataCell}>{props.deliveryEmail}</Text>
+      </View>
+      <View style={styles.dataRow}>
+        <Text style={[styles.dataCell, styles.dataHeader]}>GST Number</Text>
+        <Text style={styles.dataCell}>{props.deliveryGstNumber}</Text>
+      </View>
+    </View>
+  </View>
+
+  <View style={styles.footer}>
+    <Text style={styles.footerTextBoldUnderline}>GIRIK ENTERPRISES</Text>
+    <Text style={styles.footerText}>
+      736A/5, PATEL NAGAR, JHARSA ROAD, POLICE LINE, BACK GATE, GURGAON, HARYANA 122006
+    </Text>
+  </View>
+  <View style={styles.section}>
           <Text style={styles.texthead}>Subject:</Text>
           <Text style={styles.text}>{props.topsection}</Text>
-          <Text style={styles.textalign}>------------------Intentionally Left Blank------------------</Text>
-        </View>
-        <View style={styles.footer}>
-          <Text style={styles.footerTextBoldUnderline}>GIRIK ENTERPRISES</Text>
-          <Text style={styles.footerText}>736A/5, PATEL NAGAR, JHARSA ROAD, POLICE LINE, BACK GATE, GURGAON, HARYANA 122006</Text>
-        </View>
-      </Page>
+  </View>
+</Page>
+
       {renderItemsTable()}
       <Page size="A4" orientation="landscape" style={styles.page}>
       <View style={styles.header}>
