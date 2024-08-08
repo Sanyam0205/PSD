@@ -525,7 +525,6 @@ const ProjectOrderPDF = (props) => {
             <Image style={styles.signature} src={props.signature ? `http://13.234.47.87:5000${props.signature}` : ''} />
           </View>
         )}
-        
         <View style={styles.footer}>
           <Text style={styles.footerTextBoldUnderline}>GIRIK ENTERPRISES</Text>
           <Text style={styles.footerText}>736A/5, PATEL NAGAR, JHARSA ROAD, POLICE LINE, BACK GATE, GURGAON, HARYANA 122006</Text>
