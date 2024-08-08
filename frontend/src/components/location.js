@@ -6,6 +6,7 @@ const LocationManagement = () => {
   const [formData, setFormData] = useState({
     locationCode: '',
     billtoname: '',
+    billtocp: '',
     billToAddress: '',
     billToDistrict: '',
     billToState: '',
@@ -55,6 +56,7 @@ const LocationManagement = () => {
       setFormData({
         locationCode: '',
         billtoname: '',
+        billtocp:'',
         billToAddress: '',
         billToDistrict: '',
         billToState: '',
@@ -86,6 +88,7 @@ const LocationManagement = () => {
       setFormData({
         locationCode: existingLocation.locationCode,
         billtoname: existingLocation.billtoname,
+        billtocp: existingLocation.billtocp,
         billToAddress: existingLocation.billToAddress,
         billToDistrict: existingLocation.billToDistrict,
         billToState: existingLocation.billToState,
@@ -106,6 +109,10 @@ const LocationManagement = () => {
         <div className="item-field">
           <label>Bill To Name:</label>
           <input type="text" name="billtoname" value={formData.billtoname} onChange={handleChange} required />
+        </div>
+        <div className="item-field">
+          <label>Bill To Contact Name:</label>
+          <input type="text" name="billtocp" value={formData.billtocp} onChange={handleChange} required />
         </div>
         <div className="item-field">
           <label>Bill To Address:</label>
@@ -144,6 +151,7 @@ const LocationManagement = () => {
             <div className="item-fields">
               <div className="item-field"><strong>Code:</strong> {location.locationCode}</div>
               <div className="item-field"><strong>Name:</strong> {location.billtoname}</div>
+              <div className="item-field"><strong>Contact Name:</strong> {location.billtocp}</div>
               <div className="item-field"><strong>Address:</strong> {location.billToAddress}</div>
               <div className="item-field"><strong>District:</strong> {location.billToDistrict}</div>
               <div className="item-field"><strong>State:</strong> {location.billToState}</div>

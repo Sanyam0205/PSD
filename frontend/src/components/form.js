@@ -21,6 +21,7 @@ const Form = () => {
   const [contact, setContact] = useState('');
   const [gstNumber, setGstNumber] = useState('');
   const [billtoname, setbilltoname] = useState('');
+  const [billtocp, setbilltocp]= useState('');
   const [billToAddress, setBillToAddress] = useState('');
   const [billToGstNumber, setBillToGstNumber] = useState('');
   const [billToDistrict, setBillToDistrict] = useState('');
@@ -30,6 +31,7 @@ const Form = () => {
   const [billToEmail, setBillToEmail] = useState('');
   const [deliveryLocationCode, setDeliveryLocationCode] = useState('');
   const [deliveryName, setDeliveryName] = useState('');
+  const [delcp, setdelcp]= useState('');
   const [shippingAddress, setshippingAddress] = useState('');
   const [deliveryDistrict, setDeliveryDistrict] = useState('');
   const [deliveryState, setDeliveryState] = useState('');
@@ -148,6 +150,7 @@ const Form = () => {
           setError('');
           // Set billing details to corresponding state variables
           setbilltoname(billing.billtoname || '');
+          setbilltocp(billing,billtocp || '');
           setBillToAddress(billing.billToAddress || '');
           setBillToDistrict(billing.billToDistrict || '');
           setbillToState(billing.billToState || '');
@@ -158,6 +161,7 @@ const Form = () => {
         } else {
           // Reset billing fields when locationCode is empty
           setbilltoname('');
+          setbilltocp('');
           setBillToAddress('');
           setBillToDistrict('');
           setbillToState('');
@@ -183,6 +187,7 @@ const Form = () => {
           setError('');
           // Set delivery details to corresponding state variables
           setDeliveryName(delivery.billtoname || '');
+          setdelcp(delivery.setbilltocp || '');
           setshippingAddress(delivery.billToAddress || '');
           setDeliveryDistrict(delivery.billToDistrict || '');
           setDeliveryState(delivery.billToState || '') 
@@ -192,6 +197,7 @@ const Form = () => {
           setDeliveryGstNumber(delivery.billToGstNumber || '');
         } else {
           setDeliveryName('');
+          setdelcp('');
           setshippingAddress('');
           setDeliveryDistrict('');
           setDeliveryState('');
@@ -260,6 +266,7 @@ const Form = () => {
     setContact('');
     setGstNumber('');
     setbilltoname('');
+    setbilltocp('');
     setBillToAddress('');
     setBillToGstNumber('');
     setBillToDistrict('');
@@ -274,6 +281,7 @@ const Form = () => {
     setItems([]);
     setTotalAmount(0);
     setDeliveryName('');
+    setdelcp('');
     setshippingAddress('');
     setDeliveryDistrict('');
     setDeliveryState('');
@@ -315,6 +323,9 @@ const Form = () => {
       case 'billtoname':
         setbilltoname(value);
         break;
+      case 'billtocp':
+        setbilltocp(value);
+        break;
       case 'billToAddress':
         setBillToAddress(value);
         break;
@@ -338,6 +349,9 @@ const Form = () => {
         break;
       case 'deliveryName':
         setDeliveryName(value);
+        break;
+      case 'delcp':
+        setdelcp(value);
         break;
       case 'shippingAddress':
         setshippingAddress(value);
@@ -460,11 +474,11 @@ const Form = () => {
       amount: calculateAmount(item),
     }));
     setItems(updatedItems);
-  }, []);
+  }, [items]);
   
   useEffect(() => {
     calculateTotalAmount();
-  }, [items]);
+  }, [calculateTotalAmount,items]);
   
   const handleAddItem = () => {
     setItems((prevItems) => [...prevItems, { ...item, sno: prevItems.length + 1 }]);
@@ -611,6 +625,7 @@ const Form = () => {
         contact,
         gstNumber,
         billtoname,
+        billtocp,
         billToAddress,
         billToGstNumber,
         billToDistrict,
@@ -619,6 +634,7 @@ const Form = () => {
         billToContact,
         billToEmail,
         deliveryName,
+        delcp,
         shippingAddress,
         deliveryDistrict,
         deliveryState,
@@ -757,6 +773,10 @@ const Form = () => {
               <input type="text" name="billtoname" value={billtoname} onChange={handleProjectOrderChange} />
             </div>
             <div>
+              <label>Contact Name:</label>
+              <input type="text" name="billtocp" value={billtocp} onChange={handleProjectOrderChange} />
+            </div>
+            <div>
               <label>Address:</label>
               <input type="text" name="billToAddress" value={billToAddress} onChange={handleProjectOrderChange} />
             </div>
@@ -801,6 +821,10 @@ const Form = () => {
             <div>
               <label>Name:</label>
               <input type="text" name="deliveryName" value={deliveryName} onChange={handleProjectOrderChange} />
+            </div>
+            <div>
+              <label>Contact Name:</label>
+              <input type="text" name="delcp" value={delcp} onChange={handleProjectOrderChange} />
             </div>
             <div>
               <label>Delivery Address:</label>
@@ -1109,6 +1133,7 @@ const Form = () => {
             gstNumber={gstNumber}
             locationCode={locationCode}
             billtoname={billtoname}
+            billtocp={billtocp}
             billToAddress={billToAddress}
             billToDistrict={billToDistrict}
             billToState={billToState}
@@ -1119,6 +1144,7 @@ const Form = () => {
             shippingAddress={shippingAddress}
             deliveryLocationCode={deliveryLocationCode}
             deliveryName={deliveryName}
+            delcp={delcp}
             deliveryDistrict={deliveryDistrict}
             deliveryState={deliveryState}
             deliveryPinCode={deliveryPinCode}
