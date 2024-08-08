@@ -73,14 +73,15 @@ const styles = StyleSheet.create({
   itemsrow:{
     borderRight: '1px solid #000',
     borderLeft:'1px solid #000',
-    paddingBottom: 10,
   },
+
   headerTitle: {
     fontSize: 20,
     fontFamily: 'TimesNewRoman',
     textAlign: 'center',
     fontWeight: 'bold',
   },
+
   headerText: {
     fontSize: 11,
     fontFamily: 'TimesNewRoman',
@@ -190,24 +191,10 @@ const styles = StyleSheet.create({
     height: '60%',
   },
 
-  tableCell: {
-    fontSize: 12,
-    width:'55%',
-    padding: '1',
-    justifyContent: 'center'
-  },
-
   wideColumn: {
     width: '100%', // Example width
   },
 
-  tableHeader: {
-    fontWeight: 'bold',
-    backgroundColor: '#ffffff',
-    fontSize: 12,
-    fontFamily: 'TimesNewRoman',
-    paddingTop: '15'
-  },
   text: {
     fontSize: 11, // Adjusted font size to 11
     fontFamily: 'TimesNewRoman',
@@ -221,6 +208,18 @@ const styles = StyleSheet.create({
   customTextSection: {
     marginBottom: 10,
   },
+
+  tableHeader: {
+    fontWeight: 'bold',
+    backgroundColor: '#ffffff',
+    fontSize: 10, // Reduced font size for headers
+    fontFamily: 'TimesNewRoman',
+    // padding: 1,
+    textAlign: 'center',
+    borderTop:1
+  },
+
+
   itemsTable: {
     display: 'table',
     width: '100%',
@@ -228,15 +227,44 @@ const styles = StyleSheet.create({
     borderColor: '#000',
     borderWidth: 1,
     wordWrap: 'break-word',
-    flex: 'auto',
     textAlign: 'center',
-    fontSize: 9
+    fontSize: 6,  // Further reduced font size
   },
-
-  itemrow:{
+  
+  itemrow: {
     flexDirection: 'row',
     borderBottomWidth: 1,
-    borderBottomColor: '#000',
+    borderBottomColor: '#000',  
+  },
+
+  tableCell: {
+    // padding: '0.5',  // Further reduced padding
+    justifyContent: 'center',
+    fontSize: 6,  // Further reduced font size
+  },
+
+  tabletext: {
+    fontFamily: 'TimesNewRoman',
+    textAlign: 'center',
+    fontSize:11, // Further reduced font size for table items
+  },
+
+  descriptionColumn: {
+    width: '40%',
+    textAlign: 'left',    
+    fontFamily: 'TimesNewRoman',
+    fontSize:11,
+    borderRight: 1  // Adjusted column width for description
+  },
+
+  smallColumn: {
+    width: '7%',
+    borderRight: 1  // Smaller width for less important columns
+  },
+
+  mediumColumn: {
+    width: '10%',
+    borderRight: 1  // Slightly wider for important columns like Amount
   },
 
   signatureWrapper: {
@@ -263,113 +291,211 @@ const styles = StyleSheet.create({
   amttext: {
     fontFamily: 'TimesNewRoman',
     textAlign: 'right',
+    fontSize: 11, // Reduced font size for amounts
   },
-  tabletext: {
-    fontFamily: 'TimesNewRoman',
-    justifyContent:'center'
-  },
+
 });
 
 const ProjectOrderPDF = (props) => {
   const renderItemsTable = () => {
-    const rows = props.items.map((item, index) => {
-      const subItemDiscountAmount = item.subItems.reduce((total, subItem) => total + (subItem.ratePerUnit * subItem.quantity * subItem.discount / 100), 0);
-      const subItemGSTAmount = item.subItems.reduce((total, subItem) => total + ((subItem.ratePerUnit * subItem.quantity - (subItem.ratePerUnit * subItem.quantity * subItem.discount / 100)) * subItem.gstPercentage / 100), 0);
-
-      const subItemRows = item.subItems.map((subItem, subIndex) => (
-        <View style={styles.itemrow} key={`${index}-${subIndex}`}>
-          <Text style={[styles.tableCell, styles.tabletext]}>{`${item.sno}.${subIndex + 1}`}</Text>
-          <Text style={[styles.tableCell, styles.tabletext]}>{subItem.description}</Text>
-          <Text style={[styles.tableCell, styles.tabletext]}>{subItem.unit}</Text>
-          <Text style={[styles.tableCell, styles.tabletext]}>{subItem.quantity}</Text>
-          <Text style={[styles.tableCell, styles.amttext]}>{formatNumber(subItem.ratePerUnit)}</Text>
-          <Text style={[styles.tableCell, styles.tabletext]}>{formatNumber(subItem.discount)}</Text>
-          <Text style={[styles.tableCell, styles.amttext]}>
-            {formatNumber((subItem.ratePerUnit * subItem.quantity * subItem.discount / 100).toFixed(2))}
-          </Text>
-          <Text style={[styles.tableCell, styles.tabletext]}>{subItem.gstPercentage}</Text>
-          <Text style={[styles.tableCell, styles.amttext]}>
-            {formatNumber(((subItem.ratePerUnit * subItem.quantity - (subItem.ratePerUnit * subItem.quantity * subItem.discount / 100)) * subItem.gstPercentage / 100).toFixed(2))}
-          </Text>
-          <Text style={[styles.tableCell, styles.amttext]}>{formatNumber(subItem.amount)}</Text>
-        </View>
-      ));
-
-      return (
-        <React.Fragment key={index}>
-          <View style={styles.itemrow}>
-            <Text style={[styles.tableCell, styles.tabletext]}>{item.sno}</Text>
-            <Text style={[styles.tableCell, styles.tabletext]}>{item.description}</Text>
-            <Text style={[styles.tableCell, styles.tabletext]}>{item.unit}</Text>
-            <Text style={[styles.tableCell, styles.tabletext]}>{item.quantity}</Text>
-            <Text style={[styles.tableCell, styles.amttext]}>{formatNumber(item.ratePerUnit)}</Text>
-            <Text style={[styles.tableCell, styles.tabletext]}>{item.discount}</Text>
-            <Text style={[styles.tableCell, styles.amttext]}>
-              {formatNumber((subItemDiscountAmount).toFixed(2))}
-            </Text>
-            <Text style={[styles.tableCell, styles.tabletext]}>{item.gstPercentage}</Text>
-            <Text style={[styles.tableCell, styles.amttext]}>
-              {formatNumber((subItemGSTAmount).toFixed(2))}
-            </Text>
-            <Text style={[styles.tableCell, styles.amttext]}>{formatNumber(item.amount)}</Text>
-          </View>
-          {subItemRows}
-        </React.Fragment>
+    // Define a variable to hold all rows including sub-items
+    const rows = [];
+  
+    // Iterate over each item and create rows for items and sub-items
+    props.items.forEach((item, index) => {
+      const subItemDiscountAmount = item.subItems.reduce(
+        (total, subItem) =>
+          total +
+          (subItem.ratePerUnit * subItem.quantity * subItem.discount) /
+            100,
+        0
       );
+  
+      const subItemGSTAmount = item.subItems.reduce(
+        (total, subItem) =>
+          total +
+          ((subItem.ratePerUnit * subItem.quantity -
+            (subItem.ratePerUnit * subItem.quantity * subItem.discount) /
+              100) *
+            subItem.gstPercentage) /
+            100,
+        0
+      );
+  
+      // Add the main item row to rows array
+      rows.push(
+        <View style={styles.itemrow} key={`item-${index}`}>
+          <Text style={[styles.smallColumn, styles.tabletext]}>
+            {item.sno}
+          </Text>
+          <Text style={[styles.descriptionColumn]}>{item.description}</Text>
+          <Text style={[styles.smallColumn, styles.tabletext]}>
+            {item.unit}
+          </Text>
+          <Text style={[styles.smallColumn, styles.tabletext]}>
+            {formatNumber(item.quantity)}
+          </Text>
+          <Text style={[styles.smallColumn, styles.amttext]}>
+            {formatNumber(item.ratePerUnit)}{" "}
+          </Text>
+          <Text style={[styles.smallColumn, styles.tabletext]}>
+            {formatNumber(item.discount)}
+          </Text>
+          <Text style={[styles.mediumColumn, styles.amttext]}>
+            {formatNumber(subItemDiscountAmount)}{" "}
+          </Text>
+          <Text style={[styles.smallColumn, styles.tabletext]}>
+            {formatNumber(item.gstPercentage)}
+          </Text>
+          <Text style={[styles.mediumColumn, styles.amttext]}>
+            {formatNumber(subItemGSTAmount)} {/* Ensure commas */}
+          </Text>
+          <Text style={[styles.mediumColumn, styles.amttext]}>
+            {formatNumber(item.amount)} {/* Ensure commas */}
+          </Text>
+        </View>
+      );
+  
+      // Add sub-item rows to the rows array
+      item.subItems.forEach((subItem, subIndex) => {
+        rows.push(
+          <View style={styles.itemrow} key={`${index}-${subIndex}`}>
+            <Text style={[styles.smallColumn, styles.tabletext]}>
+              {`${item.sno}.${subIndex + 1}`}
+            </Text>
+            <Text style={[styles.descriptionColumn]}>
+              {subItem.description}
+            </Text>
+            <Text style={[styles.smallColumn, styles.tabletext]}>
+              {subItem.unit}
+            </Text>
+            <Text style={[styles.smallColumn, styles.tabletext]}>
+              {formatNumber(subItem.quantity)}
+            </Text>
+            <Text style={[styles.smallColumn, styles.amttext]}>
+              {formatNumber(subItem.ratePerUnit)}{" "}
+            </Text>
+            <Text style={[styles.smallColumn, styles.tabletext]}>
+              {formatNumber(subItem.discount)}
+            </Text>
+            <Text style={[styles.mediumColumn, styles.amttext]}>
+              {formatNumber(
+                (subItem.ratePerUnit * subItem.quantity * subItem.discount) /
+                  100
+              )}
+            </Text>
+            <Text style={[styles.smallColumn, styles.tabletext]}>
+              {formatNumber(subItem.gstPercentage)}
+            </Text>
+            <Text style={[styles.mediumColumn, styles.amttext]}>
+              {formatNumber(
+                ((subItem.ratePerUnit * subItem.quantity -
+                  (subItem.ratePerUnit * subItem.quantity * subItem.discount) /
+                    100) *
+                  subItem.gstPercentage) /
+                  100
+              )}
+            </Text>
+            <Text style={[styles.mediumColumn, styles.amttext]}>
+              {formatNumber(subItem.amount)} {/* Ensure commas */}
+            </Text>
+          </View>
+        );
+      });
     });
-
-    const rowsPerPage = 15;
+  
+    const rowsPerPage = 8; // Adjust as needed to fit content within page
     const pages = [];
-
+  
     for (let i = 0; i < rows.length; i += rowsPerPage) {
       pages.push(
         <Page key={i} size="A4" orientation="landscape" style={styles.page}>
-          {i === 0 && (
-            <>
-              <View style={styles.header}>
-                <Text style={styles.headerTitle}>GIRIK ENTERPRISES</Text>
-                <Text style={styles.headerText}>
-                  Email id:- girik.enterprices24@gmail.com  |  Contact number:- 9560666158
-                </Text>
-              </View>
-              <View style={styles.headerRight}>
-                <Text style={styles.text}>PO Number: {props.poNumber}</Text>
-                <Text style={styles.text}>PO Date: {props.poDate}</Text>
-                <Text style={styles.text}>Delivery Date: {props.podeliveryDate}</Text>
-              </View>
-            </>
-          )}
+          {/* Header */}
+          <View style={styles.header}>
+            <Text style={styles.headerTitle}>GIRIK ENTERPRISES</Text>
+            <Text style={styles.headerText}>
+              Email id:- girik.enterprices24@gmail.com | Contact number:-
+              9560666158
+            </Text>
+          </View>
+          <View style={styles.headerRight}>
+            <Text style={styles.text}>PO Number: {props.poNumber}</Text>
+            <Text style={styles.text}>PO Date: {props.poDate}</Text>
+            <Text style={styles.text}>
+              Delivery Date: {props.podeliveryDate}
+            </Text>
+          </View>
+  
+          {/* Table Header */}
           <View style={styles.itemsrow}>
             <View style={styles.itemrow}>
-              <Text style={[styles.itemsTable, styles.tableHeader]}>S.No</Text>
-              <Text style={[styles.itemsTable, styles.tableHeader]}>Description</Text>
-              <Text style={[styles.itemsTable, styles.tableHeader]}>Unit</Text>
-              <Text style={[styles.itemsTable, styles.tableHeader]}>Quantity</Text>
-              <Text style={[styles.itemsTable, styles.tableHeader]}>Rate Per Unit</Text>
-              <Text style={[styles.itemsTable, styles.tableHeader]}>Discount %</Text>
-              <Text style={[styles.itemsTable, styles.tableHeader]}>Net Amount</Text>
-              <Text style={[styles.itemsTable, styles.tableHeader]}>GST %</Text>
-              <Text style={[styles.itemsTable, styles.tableHeader]}>GST Amount</Text>
-              <Text style={[styles.itemsTable, styles.tableHeader]}>Amount</Text>
+              <Text style={[styles.smallColumn, styles.tableHeader]}>
+                S.No
+              </Text>
+              <Text style={[styles.descriptionColumn, styles.tableHeader]}>
+                Description
+              </Text>
+              <Text style={[styles.smallColumn, styles.tableHeader]}>
+                Unit
+              </Text>
+              <Text style={[styles.smallColumn, styles.tableHeader]}>
+                Qty
+              </Text>
+              <Text style={[styles.smallColumn, styles.tableHeader]}>
+                RPU
+              </Text>
+              <Text style={[styles.smallColumn, styles.tableHeader]}>
+                Disc%
+              </Text>
+              <Text style={[styles.mediumColumn, styles.tableHeader]}>
+                Net Amt
+              </Text>
+              <Text style={[styles.smallColumn, styles.tableHeader]}>
+                GST %
+              </Text>
+              <Text style={[styles.mediumColumn, styles.tableHeader]}>
+                GST Amt
+              </Text>
+              <Text style={[styles.mediumColumn, styles.tableHeader]}>
+                Amount
+              </Text>
             </View>
+            {/* Table Rows */}
             {rows.slice(i, i + rowsPerPage)}
           </View>
+  
+          {/* Footer */}
+          <View style={styles.footer}>
+            <Text style={styles.footerTextBoldUnderline}>
+              GIRIK ENTERPRISES
+            </Text>
+            <Text style={styles.footerText}>
+              736A/5, PATEL NAGAR, JHARSA ROAD, POLICE LINE, BACK GATE,
+              GURGAON, HARYANA 122006
+            </Text>
+          </View>
+  
+          {/* Total Section on the Last Page */}
           {i + rowsPerPage >= rows.length && (
             <View style={styles.section}>
-              <Text style={[styles.texthead]}>Total Amount: Rs. {props.totalAmount}</Text>
-              <Text style={[styles.texthead]}>Total Amount in Words: Rupees {numberToWords(props.totalAmount)}</Text>
-              <Text style={[styles.textalign]}>------------------Intentionally Left Blank------------------</Text>
+              <Text style={[styles.texthead]}>
+                Total Amount: Rs. {formatNumber(props.totalAmount)}{" "}
+              </Text>
+              <Text style={[styles.texthead]}>
+                Total Amount in Words: Rupees {numberToWords(props.totalAmount)}
+              </Text>
+              <Text style={[styles.textalign]}>
+                ------------------Intentionally Left
+                Blank------------------
+              </Text>
             </View>
           )}
-          <View style={styles.footer}>
-            <Text style={styles.footerTextBoldUnderline}>GIRIK ENTERPRISES</Text>
-            <Text style={styles.footerText}>736A/5, PATEL NAGAR, JHARSA ROAD, POLICE LINE, BACK GATE, GURGAON, HARYANA 122006</Text>
-          </View>
         </Page>
       );
     }
     return pages;
   };
+  
 
   return (
     <Document>

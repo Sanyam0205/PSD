@@ -105,11 +105,11 @@ const Form = () => {
   const [signature, setSignature] = useState(null);
   const [signatureUrl, setSignatureUrl] = useState('');
   const [vendors, setVendors] = useState([]);
-  const [selectedVendor, setSelectedVendor] = useState(null);
+  // const [selectedVendor, setSelectedVendor] = useState(null);
   const [location, setlocation] = useState([]);
-  const [selectedlocation, setSelectedlocation] = useState(null);
+  // const [selectedlocation, setSelectedlocation] = useState(null);
   const [delivery ,setdelivery] = useState([]);
-  const [selecteddellocation, setSelecteddellocation] = useState(null);
+  // const [selecteddellocation, setSelecteddellocation] = useState(null);
 
   // Fetch vendor details when vendor code changes
   useEffect(() => {
@@ -242,15 +242,15 @@ const Form = () => {
   const getLabel = (option) => `${option.billtoname} - ${option.locationCode}`;
 
   const handleVendorChange = (selectedOption) => {
-    setSelectedVendor(selectedOption);
+    // setSelectedVendor(selectedOption);
     setVendorCode(selectedOption.vendorCode);
   };
   const handlelocationChange = (selectedOption) => {
-    setSelectedlocation(selectedOption);
+    // setSelectedlocation(selectedOption);
     setLocationCode(selectedOption.locationCode);
   };
   const handledellocationChange = (selectedOption) => {
-    setSelecteddellocation(selectedOption);
+    // setSelecteddellocation(selectedOption);
     setDeliveryLocationCode(selectedOption.locationCode);
   };
 
@@ -403,7 +403,6 @@ const Form = () => {
   
     if (selectedType) {
       const prefix = selectedType === 'material' ? 'GE-12' : 'GE-22';
-      const year = new Date().getFullYear().toString().slice(-2);
       const seriesNumber = await getNextSeriesPoNumber();
       console.log('Generated PO Number:', `${prefix}-${seriesNumber}`);
       setPoNumber(`${prefix}-${seriesNumber}`);
@@ -474,7 +473,7 @@ const Form = () => {
       amount: calculateAmount(item),
     }));
     setItems(updatedItems);
-  }, []);
+  },[items]);
   
   useEffect(() => {
     calculateTotalAmount();
@@ -1072,11 +1071,11 @@ const Form = () => {
                     </div>
                     <div className="item-field">
                       <label>GST:</label>
-                      <input type="number" value={subItem.gstPercentage} readOnly />
+                      <input type="number" value={subItem.gstPercentage} />
                     </div>
                     <div className="item-field">
                       <label>Amount:</label>
-                      <input type="number" value={subItem.amount} readOnly />
+                      <input type="number" value={subItem.amount} />
                     </div>
                     <div className="item-field">
                       <button type="button" onClick={() => handleRemoveSubItem(subIndex)}>Remove Sub-Item</button>
