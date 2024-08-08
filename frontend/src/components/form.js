@@ -150,7 +150,7 @@ const Form = () => {
           setError('');
           // Set billing details to corresponding state variables
           setbilltoname(billing.billtoname || '');
-          setbilltocp(billing,billtocp || '');
+          setbilltocp(billing.billtocp || '');
           setBillToAddress(billing.billToAddress || '');
           setBillToDistrict(billing.billToDistrict || '');
           setbillToState(billing.billToState || '');
@@ -187,7 +187,7 @@ const Form = () => {
           setError('');
           // Set delivery details to corresponding state variables
           setDeliveryName(delivery.billtoname || '');
-          setdelcp(delivery.setbilltocp || '');
+          setdelcp(delivery.billtocp || '');
           setshippingAddress(delivery.billToAddress || '');
           setDeliveryDistrict(delivery.billToDistrict || '');
           setDeliveryState(delivery.billToState || '') 
@@ -474,7 +474,7 @@ const Form = () => {
       amount: calculateAmount(item),
     }));
     setItems(updatedItems);
-  }, [items]);
+  }, []);
   
   useEffect(() => {
     calculateTotalAmount();
