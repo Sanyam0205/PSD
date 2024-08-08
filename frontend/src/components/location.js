@@ -22,7 +22,7 @@ const LocationManagement = () => {
 
   const fetchLocation = async () => {
     try {
-      const response = await axios.get('http://13.234.47.87:5000/api/location');
+      const response = await axios.get('http://ec2-13-234-47-87.ap-south-1.compute.amazonaws.com:5000/api/location');
       setLocation(response.data);
     } catch (error) {
       console.error('Error fetching location:', error);
@@ -48,9 +48,9 @@ const LocationManagement = () => {
       }
       const existingLocation = location.find(loc => loc.locationCode === formData.locationCode);
       if (existingLocation) {
-        await axios.put(`http://13.234.47.87:5000/api/location/${formData.locationCode}`, formData);
+        await axios.put(`http://ec2-13-234-47-87.ap-south-1.compute.amazonaws.com:5000/api/location/${formData.locationCode}`, formData);
       } else {
-        await axios.post('http://13.234.47.87:5000/api/location', formData);
+        await axios.post('http://ec2-13-234-47-87.ap-south-1.compute.amazonaws.com:5000/api/location', formData);
       }
       fetchLocation();
       setFormData({
@@ -74,7 +74,7 @@ const LocationManagement = () => {
     const confirmDelete = window.confirm("Are you sure you want to delete this location?");
     if (confirmDelete) {
       try {
-        await axios.delete(`http://13.234.47.87:5000/api/location/${code}`);
+        await axios.delete(`http://ec2-13-234-47-87.ap-south-1.compute.amazonaws.com:5000/api/location/${code}`);
         fetchLocation();
       } catch (error) {
         console.error('Error deleting location:', error);
