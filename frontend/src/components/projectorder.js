@@ -50,6 +50,7 @@ const ProjectOrd = () => {
     const value = e.target.value;
     setSearchedProjectOrder({ ...searchedProjectOrder, [field]: value });
   };
+  
 
   const calculateAmount = (item) => {
     if (item.subItems && item.subItems.length > 0) {
@@ -84,44 +85,36 @@ const ProjectOrd = () => {
     setSearchedProjectOrder({ ...searchedProjectOrder, items: updatedItems });
   };
 
-  const handleEditSubItemChange = (e, subIndex, field) => {
-    const { value } = e.target;
-    setNewItem((prevState) => {
-      const updatedSubItems = [...prevState.subItems];
-      updatedSubItems[subIndex] = {
-        ...updatedSubItems[subIndex],
-        [field]: value,
-      };
-      return {
-        ...prevState,
-        subItems: updatedSubItems,
-      };
-    });
+  const handleEditSubItemChange = (e, index, subIndex, field) => {
+    const value = e.target.value;
+    const updatedItems = [...searchedProjectOrder.items];
+    const updatedSubItems = [...updatedItems[index].subItems];
+    updatedSubItems[subIndex][field] = value;
+  
+    // Recalculate amount for sub-item and item
+    updatedItems[index].subItems = updatedSubItems;
+    updatedItems[index].amount = calculateAmount(updatedItems[index]);
+  
+    setSearchedProjectOrder({ ...searchedProjectOrder, items: updatedItems });
   };
   
-  const handleDeleteSubItem = (subIndex) => {
-    setNewItem((prevState) => {
-      const updatedSubItems = [...prevState.subItems];
-      updatedSubItems.splice(subIndex, 1);
-      return {
-        ...prevState,
-        subItems: updatedSubItems,
-      };
-    });
+  
+  const handleDeleteSubItem = (index, subIndex) => {
+    const updatedItems = [...searchedProjectOrder.items];
+    updatedItems[index].subItems.splice(subIndex, 1);
+  
+    setSearchedProjectOrder({ ...searchedProjectOrder, items: updatedItems });
   };
   
-  const handleAddSubItem = () => {
-    const newSubItem = {
-      description: "",
-      quantity: 0,
-      rate: 0,
-    };
   
-    setNewItem((prevState) => ({
-      ...prevState,
-      subItems: [...prevState.subItems, newSubItem],
-    }));
+  const handleAddSubItem = (index) => {
+    const newSubItem = { description: "", quantity: 0, ratePerUnit: 0 };
+    const updatedItems = [...searchedProjectOrder.items];
+    updatedItems[index].subItems = [...updatedItems[index].subItems, newSubItem];
+  
+    setSearchedProjectOrder({ ...searchedProjectOrder, items: updatedItems });
   };
+  
   
   const handleEditSubmit = async (e) => {
     e.preventDefault();
@@ -267,7 +260,10 @@ const ProjectOrd = () => {
           <form onSubmit={handleEditSubmit}>
             <div className='custom-text-section'>
               <label>Top Section:</label>
-              <textarea value={searchedProjectOrder.topsection} onChange={(e) => handleEditProjectOrderChange(e.target.value)} />
+              <textarea 
+                value={searchedProjectOrder.topsection} 
+                onChange={(e) => handleEditProjectOrderChange(e, "topsection")} 
+              />
             </div>
             <div>
               <label>Name:</label>

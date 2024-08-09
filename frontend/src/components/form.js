@@ -101,7 +101,7 @@ const Form = () => {
   );
 
   const [showPDFPreview, setShowPDFPreview] = useState(false); // Add this line
-  const [showsubItems, setShowsubItems] = useState(false);
+
   const [signature, setSignature] = useState(null);
   const [signatureUrl, setSignatureUrl] = useState('');
   const [vendors, setVendors] = useState([]);
@@ -473,7 +473,7 @@ const Form = () => {
       amount: calculateAmount(item),
     }));
     setItems(updatedItems);
-  },[items]);
+  },[]);
   
   useEffect(() => {
     calculateTotalAmount();
@@ -495,9 +495,6 @@ const Form = () => {
 
   const handleDeleteItem = (index) => {
     setItems((prevItems) => prevItems.filter((_, i) => i !== index));
-  };
-  const togglesubItems = () => {
-    setShowsubItems(!showsubItems);
   };
 
   const handleItemChange = (e) => {
@@ -562,12 +559,85 @@ const Form = () => {
     }));
   };
 
-  const handleRemoveSubItem = (index) => {
-    setItem((prevItem) => ({
-      ...prevItem,
-      subItems: prevItem.subItems.filter((_, i) => i !== index),
-    }));
+  const handleItemFieldChange = (e, index, field) => {
+    const { value } = e.target;
+    setItems((prevItems) => {
+      const updatedItems = [...prevItems];
+      const updatedItem = { ...updatedItems[index], [field]: value };
+  
+      // Perform calculations for the updated item
+      const updatedItemWithCalculations = {
+        ...updatedItem,
+        quantity: calculateQuantity(updatedItem),
+        discountAmount: calculateDiscountAmount(updatedItem),
+        gstAmount: calculateGSTAmount(updatedItem),
+        amount: calculateAmount(updatedItem),
+      };
+  
+      updatedItems[index] = updatedItemWithCalculations;
+  
+      // Recalculate total quantities, discount, GST, and amount for the whole list
+      const updatedItemsWithTotals = updatedItems.map(item => ({
+        ...item,
+        quantity: calculateQuantity(item),
+        discountAmount: calculateDiscountAmount(item),
+        gstAmount: calculateGSTAmount(item),
+        amount: calculateAmount(item),
+      }));
+  
+      return updatedItemsWithTotals;
+    });
   };
+
+  const handleSubItemFieldChange = (e, itemIndex, subIndex, field) => {
+    const { value } = e.target;
+    setItems((prevItems) => {
+      const updatedItems = [...prevItems];
+      const updatedSubItems = [...updatedItems[itemIndex].subItems];
+      const updatedSubItem = { ...updatedSubItems[subIndex], [field]: value };
+  
+      // Perform calculations for the updated sub-item
+      const updatedSubItemWithCalculations = {
+        ...updatedSubItem,
+        quantity: calculateQuantity(updatedSubItem),
+        discountAmount: calculateDiscountAmount(updatedSubItem),
+        gstAmount: calculateGSTAmount(updatedSubItem),
+        amount: calculateAmount(updatedSubItem),
+      };
+  
+      updatedSubItems[subIndex] = updatedSubItemWithCalculations;
+      updatedItems[itemIndex].subItems = updatedSubItems;
+  
+      // Recalculate total quantities, discount, GST, and amount for the main item
+      const updatedItemWithSubItems = {
+        ...updatedItems[itemIndex],
+        quantity: calculateQuantity({ ...updatedItems[itemIndex], subItems: updatedSubItems }),
+        discountAmount: calculateDiscountAmount({ ...updatedItems[itemIndex], subItems: updatedSubItems }),
+        gstAmount: calculateGSTAmount({ ...updatedItems[itemIndex], subItems: updatedSubItems }),
+        amount: calculateAmount({ ...updatedItems[itemIndex], subItems: updatedSubItems }),
+      };
+  
+      updatedItems[itemIndex] = updatedItemWithSubItems;
+  
+      // Recalculate totals for the entire list of items
+      const updatedItemsWithTotals = updatedItems.map(item => ({
+        ...item,
+        quantity: calculateQuantity(item),
+        discountAmount: calculateDiscountAmount(item),
+        gstAmount: calculateGSTAmount(item),
+        amount: calculateAmount(item),
+      }));
+  
+      return updatedItemsWithTotals;
+    });
+  };
+
+// Update the remove sub-item handler
+const handleRemoveSubItem = (itemIndex, subIndex) => {
+  const newItems = [...items];
+  newItems[itemIndex].subItems.splice(subIndex, 1);
+  setItems(newItems);
+};
 
   const handleSignatureChange = (event) => {
     const file = event.target.files[0];
@@ -856,13 +926,13 @@ const Form = () => {
           </div>
         </div>
         <div className="add-item-section">
-          <h2>Add Item</h2>
+          <h2>Add Section</h2>
           <div className="item-fields">
             <div className="item-field">
               <label>Description:</label>
               <input type="text" name="description" value={item.description} onChange={handleItemChange} />
             </div>
-            <div className="item-field">
+            {/* <div className="item-field">
               <label>Unit:</label>
               <select name="unit" value={item.unit} onChange={handleItemChange}>
                 <option value="">Select One</option>
@@ -876,7 +946,7 @@ const Form = () => {
                 <option value="pcs">PCS</option>
                 <option value="nos">Nos</option>
               </select>
-            </div>
+            </div> */}
             {/* <div className="item-field">
               <label>Quantity:</label>
               <input type="number" name="quantity" value={item.quantity} onChange={handleItemChange} />
@@ -900,7 +970,7 @@ const Form = () => {
           </div>
           <button type="button" onClick={handleAddItem}>Add Item</button>
         </div>
-        <div>
+        {/* <div>
           <label>
             <input
               type="checkbox"
@@ -909,8 +979,8 @@ const Form = () => {
             />
              Add Sub-Items
           </label>
-        </div>
-      {showsubItems && (
+        </div> */}
+      {/* {showsubItems && ( */}
         <div className='subitem-section'>
           <h3>Sub-Items</h3>
           {(item.subItems || []).map((subItem, index) => (
@@ -995,99 +1065,154 @@ const Form = () => {
           ))}
           <button type="button" onClick={handleAddSubItem}>Add Sub-Item</button>
         </div>
-      )}
-      <div className="items-section">
-        <h2>Items</h2>
-        {items.map((item, index) => (
-          <div key={index} className="item">
+      {/* )} */}
+{items.map((item, index) => (
+  <div key={index} className="item">
+    <div className="item-field">
+      <label>Serial No:</label>
+      <input type="text" value={item.sno} readOnly />
+    </div>
+    <div className="item-field">
+      <label>Description:</label>
+      <input
+        type="text"
+        value={item.description}
+        onChange={(e) => handleItemFieldChange(e, index, 'description')}
+      />
+    </div>
+    <div className="item-field">
+      <label>Unit:</label>
+      <input
+        type="text"
+        value={item.unit}
+        onChange={(e) => handleItemFieldChange(e, index, 'unit')}
+      />
+    </div>
+    <div className="item-field">
+      <label>Quantity:</label>
+      <input
+        type="number"
+        value={item.quantity}
+        onChange={(e) => handleItemFieldChange(e, index, 'quantity')}
+      />
+    </div>
+    <div className="item-field">
+      <label>Rate Per Unit:</label>
+      <input
+        type="number"
+        value={item.ratePerUnit}
+        onChange={(e) => handleItemFieldChange(e, index, 'ratePerUnit')}
+      />
+    </div>
+    <div className="item-field">
+      <label>Discount:</label>
+      <input
+        type="number"
+        value={item.discount}
+        onChange={(e) => handleItemFieldChange(e, index, 'discount')}
+      />
+    </div>
+    <div className="item-field">
+      <label>GST:</label>
+      <input
+        type="number"
+        value={item.gstPercentage}
+        onChange={(e) => handleItemFieldChange(e, index, 'gstPercentage')}
+      />
+    </div>
+    <div className="item-field">
+      <label>Amount:</label>
+      <input
+        type="number"
+        value={item.amount}
+        onChange={(e) => handleItemFieldChange(e, index, 'amount')}
+      />
+    </div>
+    <button
+      type="button"
+      className="delete-button"
+      onClick={() => handleDeleteItem(index)}
+    >
+      <FontAwesomeIcon icon={faTrash} />
+    </button>
+    {/* Render sub-items */}
+    {item.subItems && item.subItems.length > 0 && (
+      <div className="subitem-section">
+        <h3>Sub-Items</h3>
+        {item.subItems.map((subItem, subIndex) => (
+          <div key={`${index}-${subIndex}`} className="sub-item">
             <div className="item-field">
               <label>Serial No:</label>
-              <input type="text" value={item.sno} readOnly />
+              <input type="text" value={`${item.sno}.${subIndex + 1}`} readOnly />
             </div>
             <div className="item-field">
               <label>Description:</label>
-              <input type="text" value={item.description} readOnly />
+              <input
+                type="text"
+                value={subItem.description}
+                onChange={(e) => handleSubItemFieldChange(e, index, subIndex, 'description')}
+              />
             </div>
             <div className="item-field">
               <label>Unit:</label>
-              <input type="text" value={item.unit} readOnly />
+              <input
+                type="text"
+                value={subItem.unit}
+                onChange={(e) => handleSubItemFieldChange(e, index, subIndex, 'unit')}
+              />
             </div>
             <div className="item-field">
               <label>Quantity:</label>
-              <input type="number" value={item.quantity} readOnly />
+              <input
+                type="number"
+                value={subItem.quantity}
+                onChange={(e) => handleSubItemFieldChange(e, index, subIndex, 'quantity')}
+              />
             </div>
             <div className="item-field">
               <label>Rate Per Unit:</label>
-              <input type="number" value={item.ratePerUnit} readOnly />
+              <input
+                type="number"
+                value={subItem.ratePerUnit}
+                onChange={(e) => handleSubItemFieldChange(e, index, subIndex, 'ratePerUnit')}
+              />
             </div>
             <div className="item-field">
               <label>Discount:</label>
-              <input type="number" value={item.discount} readOnly />
+              <input
+                type="number"
+                value={subItem.discount}
+                onChange={(e) => handleSubItemFieldChange(e, index, subIndex, 'discount')}
+              />
             </div>
             <div className="item-field">
               <label>GST:</label>
-              <input type="number" value={item.gstPercentage} readOnly />
+              <input
+                type="number"
+                value={subItem.gstPercentage}
+                onChange={(e) => handleSubItemFieldChange(e, index, subIndex, 'gstPercentage')}
+              />
             </div>
             <div className="item-field">
               <label>Amount:</label>
-              <input type="number" value={item.amount} readOnly />
+              <input
+                type="number"
+                value={subItem.amount}
+                onChange={(e) => handleSubItemFieldChange(e, index, subIndex, 'amount')}
+              />
             </div>
             <button
               type="button"
-              className="delete-button"
-              onClick={() => handleDeleteItem(index)}
+              onClick={() => handleRemoveSubItem(index, subIndex)}
             >
-              <FontAwesomeIcon icon={faTrash} />
+              Remove Sub-Item
             </button>
-            {/* Render sub-items */}
-            {item.subItems && item.subItems.length > 0 && (
-              <div className="subitem-section">
-                <h3>Sub-Items</h3>
-                {item.subItems.map((subItem, subIndex) => (
-                  <><div key={`${index}-${subIndex}`} className="sub-item">
-                    <div className="item-field">
-                      <label>Serial No:</label>
-                      <input type="text" value={`${item.sno}.${subIndex + 1}`} readOnly />
-                    </div>
-                    <div className="item-field">
-                      <label>Description:</label>
-                      <input type="text" value={subItem.description} readOnly />
-                    </div>
-                    <div className="item-field">
-                      <label>Unit:</label>
-                      <input type="text" value={subItem.unit} readOnly />
-                    </div>
-                    <div className="item-field">
-                      <label>Quantity:</label>
-                      <input type="number" value={subItem.quantity} readOnly />
-                    </div>
-                    <div className="item-field">
-                      <label>Rate Per Unit:</label>
-                      <input type="number" value={subItem.ratePerUnit} readOnly />
-                    </div>
-                    <div className="item-field">
-                      <label>Discount:</label>
-                      <input type="number" value={subItem.discount} readOnly />
-                    </div>
-                    <div className="item-field">
-                      <label>GST:</label>
-                      <input type="number" value={subItem.gstPercentage} />
-                    </div>
-                    <div className="item-field">
-                      <label>Amount:</label>
-                      <input type="number" value={subItem.amount} />
-                    </div>
-                    <div className="item-field">
-                      <button type="button" onClick={() => handleRemoveSubItem(subIndex)}>Remove Sub-Item</button>
-                  </div>
-                  </div>
-                    </>
-                ))}
-              </div>
-            )}
           </div>
         ))}
-      </div>    
+      </div>
+    )}
+  </div>
+))}
         <div className="total-amount-section">
           <h2>Total Amount</h2>
           <div>

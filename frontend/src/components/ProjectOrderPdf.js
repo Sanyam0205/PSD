@@ -9,33 +9,80 @@ Font.register({
 });
 
 const numberToWords = (num) => {
-  try {
-    const str = toWords(num);
-    const arr = str.split(' ');
+  if (num === 0) return 'ZERO';
 
-    const indianWords = arr.map(word => {
-      switch (word) {
-        case 'thousand':
-          return 'thousand';
-        case 'million':
-          return 'lakh';
-        case 'billion':
-          return 'crore';
-        default:
-          return word;
-      }
-    });
+  const underTwenty = [
+    '', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten',
+    'eleven', 'twelve', 'thirteen', 'fourteen', 'fifteen', 'sixteen', 'seventeen', 'eighteen', 'nineteen'
+  ];
 
-    return indianWords.join(' ').toUpperCase(); // Converting to words and capitalizing
-  } catch (error) {
-    console.error('Error converting number to words:', error);
-    return 'NUMBER TOO LARGE';
+  const tens = [
+    '', '', 'twenty', 'thirty', 'forty', 'fifty', 'sixty', 'seventy', 'eighty', 'ninety'
+  ];
+
+  const scales = [
+    '', 'thousand', 'lakh', 'crore'
+  ];
+
+  const getBelowHundred = (n) => {
+    if (n < 20) {
+      return underTwenty[n];
+    }
+    const ten = Math.floor(n / 10);
+    const unit = n % 10;
+    return tens[ten] + (unit ? ' ' + underTwenty[unit] : '');
+  };
+
+  const getBelowThousand = (n) => {
+    const hundred = Math.floor(n / 100);
+    const rest = n % 100;
+    return (hundred ? underTwenty[hundred] + ' hundred ' : '') + (rest ? getBelowHundred(rest) : '').trim();
+  };
+
+  const getBelowLakh = (n) => {
+    const thousand = Math.floor(n / 1000);
+    const belowThousand = n % 1000;
+    return (thousand ? getBelowThousand(thousand) + ' thousand ' : '') + (belowThousand ? getBelowThousand(belowThousand) : '').trim();
+  };
+
+  const getBelowCrore = (n) => {
+    const lakh = Math.floor(n / 100000);
+    const belowLakh = n % 100000;
+    return (lakh ? getBelowLakh(lakh) + ' lakh ' : '') + (belowLakh ? getBelowLakh(belowLakh) : '').trim();
+  };
+
+  let result = '';
+  let crore = Math.floor(num / 10000000);
+  let remainder = num % 10000000;
+  let lakh = Math.floor(remainder / 100000);
+  remainder = remainder % 100000;
+  let thousand = Math.floor(remainder / 1000);
+  let belowThousand = remainder % 1000;
+
+  if (crore > 0) {
+    result += getBelowCrore(crore) + ' crore ';
   }
+  if (lakh > 0) {
+    result += getBelowLakh(lakh) + ' lakh ';
+  }
+  if (thousand > 0) {
+    result += getBelowThousand(thousand) + ' thousand ';
+  }
+  if (belowThousand > 0) {
+    result += getBelowThousand(belowThousand);
+  }
+
+  return result.trim().toUpperCase();
 };
 
-const formatNumber = (num) => {
-  return num.toLocaleString('en-IN');
+const formatNumber = (value) => {
+  if (typeof value !== 'number') {
+      console.error("Value is not a number:", value);
+      return ''; // Return an empty string or a default value if the input is not a number
+  }
+  return value.toLocaleString();
 };
+
 
 const styles = StyleSheet.create({
   borderWrapper: {
@@ -147,13 +194,27 @@ const styles = StyleSheet.create({
     padding: 2,
     borderRightWidth: 1,
     borderRightColor: '#000',
+    fontFamily:'TimesNewRoman'
   },
+
   dataHeader: {
     fontWeight: 'bold',
     fontSize: 12,
     padding: 1,
     borderRightWidth: 1,
     borderRightColor: '#000',
+    fontFamily:'TimesNewRoman'
+  
+  },
+
+  DataHeader: {
+    fontWeight: 'bold',
+    fontSize: 12,
+    padding: 1,
+    borderRightWidth: 1,
+    borderRightColor: '#000',
+    borderBottom:1,
+    textAlign:'center'
   },
 
   fixedHeightText: {
@@ -164,6 +225,16 @@ const styles = StyleSheet.create({
     overflow: 'hidden', // Hide any overflow text
     fontFamily: 'TimesNewRoman',
   },
+
+  fixedhText: {
+    height: 40, // Adjust this height to fit 4 lines
+    padding: 2,
+    textAlign: 'left',
+    fontSize: 10, // Adjust font size as needed
+    overflow: 'hidden', // Hide any overflow text
+    fontFamily: 'TimesNewRoman',
+  },
+
   contentText: {
     fontSize: 11,
     fontFamily: 'TimesNewRoman',
@@ -212,7 +283,7 @@ const styles = StyleSheet.create({
   tableHeader: {
     fontWeight: 'bold',
     backgroundColor: '#ffffff',
-    fontSize: 10, // Reduced font size for headers
+    fontSize: 12, // Reduced font size for headers
     fontFamily: 'TimesNewRoman',
     // padding: 1,
     textAlign: 'center',
@@ -228,7 +299,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     wordWrap: 'break-word',
     textAlign: 'center',
-    fontSize: 6,  // Further reduced font size
+    fontSize: 9,  // Further reduced font size
   },
   
   itemrow: {
@@ -239,14 +310,15 @@ const styles = StyleSheet.create({
 
   tableCell: {
     // padding: '0.5',  // Further reduced padding
-    justifyContent: 'center',
-    fontSize: 6,  // Further reduced font size
+    // justifyContent: 'center',
+    fontSize: 9,  // Further reduced font size
   },
 
   tabletext: {
     fontFamily: 'TimesNewRoman',
     textAlign: 'center',
-    fontSize:11, // Further reduced font size for table items
+    fontSize:11, 
+
   },
 
   descriptionColumn: {
@@ -254,7 +326,16 @@ const styles = StyleSheet.create({
     textAlign: 'left',    
     fontFamily: 'TimesNewRoman',
     fontSize:11,
-    borderRight: 1  // Adjusted column width for description
+    borderRight: 1,
+    height: 50,  // Adjusted column width for description
+  },
+  
+  descriptionheadColumn: {
+    width: '40%',
+    textAlign: 'left',    
+    fontFamily: 'TimesNewRoman',
+    fontSize:11,
+    borderRight: 1,
   },
 
   smallColumn: {
@@ -328,7 +409,9 @@ const ProjectOrderPDF = (props) => {
           <Text style={[styles.smallColumn, styles.tabletext]}>
             {item.sno}
           </Text>
-          <Text style={[styles.descriptionColumn]}>{item.description}</Text>
+          <Text style={[styles.descriptionColumn]}>
+            {item.description}
+          </Text>
           <Text style={[styles.smallColumn, styles.tabletext]}>
             {item.unit}
           </Text>
@@ -373,7 +456,7 @@ const ProjectOrderPDF = (props) => {
               {formatNumber(subItem.quantity)}
             </Text>
             <Text style={[styles.smallColumn, styles.amttext]}>
-              {formatNumber(subItem.ratePerUnit)}{" "}
+              {formatNumber(subItem.ratePerUnit)}
             </Text>
             <Text style={[styles.smallColumn, styles.tabletext]}>
               {formatNumber(subItem.discount)}
@@ -418,13 +501,7 @@ const ProjectOrderPDF = (props) => {
               9560666158
             </Text>
           </View>
-          <View style={styles.headerRight}>
-            <Text style={styles.text}>PO Number: {props.poNumber}</Text>
-            <Text style={styles.text}>PO Date: {props.poDate}</Text>
-            <Text style={styles.text}>
-              Delivery Date: {props.podeliveryDate}
-            </Text>
-          </View>
+
   
           {/* Table Header */}
           <View style={styles.itemsrow}>
@@ -432,7 +509,7 @@ const ProjectOrderPDF = (props) => {
               <Text style={[styles.smallColumn, styles.tableHeader]}>
                 S.No
               </Text>
-              <Text style={[styles.descriptionColumn, styles.tableHeader]}>
+              <Text style={[styles.descriptionheadColumn, styles.tableHeader]}>
                 Description
               </Text>
               <Text style={[styles.smallColumn, styles.tableHeader]}>
@@ -485,8 +562,7 @@ const ProjectOrderPDF = (props) => {
                 Total Amount in Words: Rupees {numberToWords(props.totalAmount)}
               </Text>
               <Text style={[styles.textalign]}>
-                ------------------Intentionally Left
-                Blank------------------
+                ------------------Intentionally Left Blank------------------
               </Text>
             </View>
           )}
@@ -507,15 +583,17 @@ const ProjectOrderPDF = (props) => {
     </Text>
   </View>
   
-  <View style={styles.headerDetails}>
-    <Text style={styles.contentText}>PO Number: {props.poNumber}</Text>
-    <Text style={styles.contentText}>PO Date: {props.poDate}</Text>
-    <Text style={styles.contentText}>Delivery Date: {props.podeliverydate}</Text>
+  <View style={styles.headerRight}>
+    <Text style={styles.text}>PO Number: {props.poNumber}</Text>
+    <Text style={styles.text}>PO Date: {props.poDate}</Text>
+    <Text style={styles.text}>
+      Delivery Date: {props.podeliveryDate}
+    </Text>
   </View>
 
   <View style={styles.tableWrapper}>
     <View style={styles.dataTable}>
-      <Text style={styles.dataHeader}>Vendor Details</Text>
+      <Text style={styles.DataHeader}>Vendor Details</Text>
       <View style={styles.dataRow}>
         <Text style={[styles.dataCell, styles.dataHeader]}>Code</Text>
         <Text style={styles.dataCell}>{props.vendorCode}</Text>
@@ -526,7 +604,7 @@ const ProjectOrderPDF = (props) => {
       </View>
       <View style={styles.dataRow}>
         <Text style={[styles.dataCell, styles.dataHeader]}>Contact Person</Text>
-        <Text style={styles.dataCell}>{props.contactperson}</Text>
+        <Text style={[styles.dataCell, styles.fixedhText]}>{props.contactperson}</Text>
       </View>
       <View style={styles.dataRow}>
         <Text style={[styles.dataCell, styles.dataHeader]}>Address</Text>
@@ -559,7 +637,7 @@ const ProjectOrderPDF = (props) => {
     </View>
 
     <View style={styles.dataTable}>
-      <Text style={styles.dataHeader}>Billing Details</Text>
+      <Text style={styles.DataHeader}>Billing Details</Text>
       <View style={styles.dataRow}>
         <Text style={[styles.dataCell, styles.dataHeader]}>Location Code</Text>
         <Text style={styles.dataCell}>{props.locationCode}</Text>
@@ -570,7 +648,7 @@ const ProjectOrderPDF = (props) => {
       </View>
       <View style={styles.dataRow}>
         <Text style={[styles.dataCell, styles.dataHeader]}>Contact Name</Text>
-        <Text style={styles.dataCell}>{props.billtoname}</Text>
+        <Text style={[styles.dataCell, styles.fixedhText]}>{props.billtoname}</Text>
       </View>
       <View style={styles.dataRow}>
         <Text style={[styles.dataCell, styles.dataHeader]}>Billing Address</Text>
@@ -603,7 +681,7 @@ const ProjectOrderPDF = (props) => {
     </View>
 
     <View style={styles.dataTable}>
-      <Text style={styles.dataHeader}>Delivery Details</Text>
+      <Text style={styles.DataHeader}>Delivery Details</Text>
       <View style={styles.dataRow}>
         <Text style={[styles.dataCell, styles.dataHeader]}>Location Code</Text>
         <Text style={styles.dataCell}>{props.deliveryLocationCode}</Text>
@@ -614,7 +692,7 @@ const ProjectOrderPDF = (props) => {
       </View>
       <View style={styles.dataRow}>
         <Text style={[styles.dataCell, styles.dataHeader]}>Contact Name</Text>
-        <Text style={styles.dataCell}>{props.deliveryName}</Text>
+        <Text style={[styles.dataCell, styles.fixedhText]}>{props.deliveryName}</Text>
       </View>
       <View style={styles.dataRow}>
         <Text style={[styles.dataCell, styles.dataHeader]}>Shipping Address</Text>
