@@ -48,6 +48,7 @@ const projectOrderSchema = new mongoose.Schema({
   deliveryName: String,
   delcp: String,
   deliveryDistrict: String,
+  deliverState: String,
   deliveryPinCode: String,
   deliveryContact: String,
   deliveryEmail: String,

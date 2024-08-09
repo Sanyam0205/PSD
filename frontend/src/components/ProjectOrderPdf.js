@@ -34,9 +34,15 @@ const numberToWords = (num) => {
   };
 
   const getBelowThousand = (n) => {
+    if (typeof n !== 'number' || n < 0) {
+      console.error("Invalid number passed to getBelowThousand:", n);
+      return '';
+    }
     const hundred = Math.floor(n / 100);
     const rest = n % 100;
-    return (hundred ? underTwenty[hundred] + ' hundred ' : '') + (rest ? getBelowHundred(rest) : '').trim();
+    const hundredText = hundred ? underTwenty[hundred] + ' hundred ' : '';
+    const restText = rest ? getBelowHundred(rest) : '';
+    return (hundredText + restText).trim();
   };
 
   const getBelowLakh = (n) => {
@@ -76,10 +82,6 @@ const numberToWords = (num) => {
 };
 
 const formatNumber = (value) => {
-  if (typeof value !== 'number') {
-      console.error("Value is not a number:", value);
-      return ''; // Return an empty string or a default value if the input is not a number
-  }
   return value.toLocaleString();
 };
 
@@ -419,17 +421,17 @@ const ProjectOrderPDF = (props) => {
             {formatNumber(item.quantity)}
           </Text>
           <Text style={[styles.smallColumn, styles.amttext]}>
-            {formatNumber(item.ratePerUnit)}{" "}
-          </Text>
-          <Text style={[styles.smallColumn, styles.tabletext]}>
-            {formatNumber(item.discount)}
-          </Text>
+   {item.ratePerUnit !== undefined && item.ratePerUnit !== null ? formatNumber(item.ratePerUnit) : 'N/A'}
+</Text>
+<Text style={[styles.smallColumn, styles.tabletext]}>
+   {item.discount !== undefined && item.discount !== null ? formatNumber(item.discount) : 'N/A'}
+</Text>
           <Text style={[styles.mediumColumn, styles.amttext]}>
             {formatNumber(subItemDiscountAmount)}{" "}
           </Text>
           <Text style={[styles.smallColumn, styles.tabletext]}>
-            {formatNumber(item.gstPercentage)}
-          </Text>
+   {item.gstPercentage !== undefined && item.gstPercentage !== null ? formatNumber(item.gstPercentage) : 'N/A'}
+</Text>
           <Text style={[styles.mediumColumn, styles.amttext]}>
             {formatNumber(subItemGSTAmount)} {/* Ensure commas */}
           </Text>
@@ -456,7 +458,7 @@ const ProjectOrderPDF = (props) => {
               {formatNumber(subItem.quantity)}
             </Text>
             <Text style={[styles.smallColumn, styles.amttext]}>
-              {formatNumber(subItem.ratePerUnit)}
+              {formatNumber(subItem.ratePerUnit)}{' '}
             </Text>
             <Text style={[styles.smallColumn, styles.tabletext]}>
               {formatNumber(subItem.discount)}

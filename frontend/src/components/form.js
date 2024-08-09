@@ -559,78 +559,78 @@ const Form = () => {
     }));
   };
 
-  const handleItemFieldChange = (e, index, field) => {
-    const { value } = e.target;
-    setItems((prevItems) => {
-      const updatedItems = [...prevItems];
-      const updatedItem = { ...updatedItems[index], [field]: value };
+  // const handleItemFieldChange = (e, index, field) => {
+  //   const { value } = e.target;
+  //   setItems((prevItems) => {
+  //     const updatedItems = [...prevItems];
+  //     const updatedItem = { ...updatedItems[index], [field]: value };
   
-      // Perform calculations for the updated item
-      const updatedItemWithCalculations = {
-        ...updatedItem,
-        quantity: calculateQuantity(updatedItem),
-        discountAmount: calculateDiscountAmount(updatedItem),
-        gstAmount: calculateGSTAmount(updatedItem),
-        amount: calculateAmount(updatedItem),
-      };
+  //     // Perform calculations for the updated item
+  //     const updatedItemWithCalculations = {
+  //       ...updatedItem,
+  //       quantity: calculateQuantity(updatedItem),
+  //       discountAmount: calculateDiscountAmount(updatedItem),
+  //       gstAmount: calculateGSTAmount(updatedItem),
+  //       amount: calculateAmount(updatedItem),
+  //     };
   
-      updatedItems[index] = updatedItemWithCalculations;
+  //     updatedItems[index] = updatedItemWithCalculations;
   
-      // Recalculate total quantities, discount, GST, and amount for the whole list
-      const updatedItemsWithTotals = updatedItems.map(item => ({
-        ...item,
-        quantity: calculateQuantity(item),
-        discountAmount: calculateDiscountAmount(item),
-        gstAmount: calculateGSTAmount(item),
-        amount: calculateAmount(item),
-      }));
+  //     // Recalculate total quantities, discount, GST, and amount for the whole list
+  //     const updatedItemsWithTotals = updatedItems.map(item => ({
+  //       ...item,
+  //       quantity: calculateQuantity(item),
+  //       discountAmount: calculateDiscountAmount(item),
+  //       gstAmount: calculateGSTAmount(item),
+  //       amount: calculateAmount(item),
+  //     }));
   
-      return updatedItemsWithTotals;
-    });
-  };
+  //     return updatedItemsWithTotals;
+  //   });
+  // };
 
-  const handleSubItemFieldChange = (e, itemIndex, subIndex, field) => {
-    const { value } = e.target;
-    setItems((prevItems) => {
-      const updatedItems = [...prevItems];
-      const updatedSubItems = [...updatedItems[itemIndex].subItems];
-      const updatedSubItem = { ...updatedSubItems[subIndex], [field]: value };
+  // const handleSubItemFieldChange = (e, itemIndex, subIndex, field) => {
+  //   const { value } = e.target;
+  //   setItems((prevItems) => {
+  //     const updatedItems = [...prevItems];
+  //     const updatedSubItems = [...updatedItems[itemIndex].subItems];
+  //     const updatedSubItem = { ...updatedSubItems[subIndex], [field]: value };
   
-      // Perform calculations for the updated sub-item
-      const updatedSubItemWithCalculations = {
-        ...updatedSubItem,
-        quantity: calculateQuantity(updatedSubItem),
-        discountAmount: calculateDiscountAmount(updatedSubItem),
-        gstAmount: calculateGSTAmount(updatedSubItem),
-        amount: calculateAmount(updatedSubItem),
-      };
+  //     // Perform calculations for the updated sub-item
+  //     const updatedSubItemWithCalculations = {
+  //       ...updatedSubItem,
+  //       quantity: calculateQuantity(updatedSubItem),
+  //       discountAmount: calculateDiscountAmount(updatedSubItem),
+  //       gstAmount: calculateGSTAmount(updatedSubItem),
+  //       amount: calculateAmount(updatedSubItem),
+  //     };
   
-      updatedSubItems[subIndex] = updatedSubItemWithCalculations;
-      updatedItems[itemIndex].subItems = updatedSubItems;
+  //     updatedSubItems[subIndex] = updatedSubItemWithCalculations;
+  //     updatedItems[itemIndex].subItems = updatedSubItems;
   
-      // Recalculate total quantities, discount, GST, and amount for the main item
-      const updatedItemWithSubItems = {
-        ...updatedItems[itemIndex],
-        quantity: calculateQuantity({ ...updatedItems[itemIndex], subItems: updatedSubItems }),
-        discountAmount: calculateDiscountAmount({ ...updatedItems[itemIndex], subItems: updatedSubItems }),
-        gstAmount: calculateGSTAmount({ ...updatedItems[itemIndex], subItems: updatedSubItems }),
-        amount: calculateAmount({ ...updatedItems[itemIndex], subItems: updatedSubItems }),
-      };
+  //     // Recalculate total quantities, discount, GST, and amount for the main item
+  //     const updatedItemWithSubItems = {
+  //       ...updatedItems[itemIndex],
+  //       quantity: calculateQuantity({ ...updatedItems[itemIndex], subItems: updatedSubItems }),
+  //       discountAmount: calculateDiscountAmount({ ...updatedItems[itemIndex], subItems: updatedSubItems }),
+  //       gstAmount: calculateGSTAmount({ ...updatedItems[itemIndex], subItems: updatedSubItems }),
+  //       amount: calculateAmount({ ...updatedItems[itemIndex], subItems: updatedSubItems }),
+  //     };
   
-      updatedItems[itemIndex] = updatedItemWithSubItems;
+  //     updatedItems[itemIndex] = updatedItemWithSubItems;
   
-      // Recalculate totals for the entire list of items
-      const updatedItemsWithTotals = updatedItems.map(item => ({
-        ...item,
-        quantity: calculateQuantity(item),
-        discountAmount: calculateDiscountAmount(item),
-        gstAmount: calculateGSTAmount(item),
-        amount: calculateAmount(item),
-      }));
+  //     // Recalculate totals for the entire list of items
+  //     const updatedItemsWithTotals = updatedItems.map(item => ({
+  //       ...item,
+  //       quantity: calculateQuantity(item),
+  //       discountAmount: calculateDiscountAmount(item),
+  //       gstAmount: calculateGSTAmount(item),
+  //       amount: calculateAmount(item),
+  //     }));
   
-      return updatedItemsWithTotals;
-    });
-  };
+  //     return updatedItemsWithTotals;
+  //   });
+  // };
 
 // Update the remove sub-item handler
 const handleRemoveSubItem = (itemIndex, subIndex) => {
@@ -970,6 +970,7 @@ const handleRemoveSubItem = (itemIndex, subIndex) => {
           </div>
           <button type="button" onClick={handleAddItem}>Add Item</button>
         </div>
+       
         {/* <div>
           <label>
             <input
@@ -1077,7 +1078,7 @@ const handleRemoveSubItem = (itemIndex, subIndex) => {
       <input
         type="text"
         value={item.description}
-        onChange={(e) => handleItemFieldChange(e, index, 'description')}
+        readOnly
       />
     </div>
     <div className="item-field">
@@ -1085,7 +1086,7 @@ const handleRemoveSubItem = (itemIndex, subIndex) => {
       <input
         type="text"
         value={item.unit}
-        onChange={(e) => handleItemFieldChange(e, index, 'unit')}
+        readOnly
       />
     </div>
     <div className="item-field">
@@ -1093,7 +1094,7 @@ const handleRemoveSubItem = (itemIndex, subIndex) => {
       <input
         type="number"
         value={item.quantity}
-        onChange={(e) => handleItemFieldChange(e, index, 'quantity')}
+        readOnly
       />
     </div>
     <div className="item-field">
@@ -1101,7 +1102,7 @@ const handleRemoveSubItem = (itemIndex, subIndex) => {
       <input
         type="number"
         value={item.ratePerUnit}
-        onChange={(e) => handleItemFieldChange(e, index, 'ratePerUnit')}
+        readOnly
       />
     </div>
     <div className="item-field">
@@ -1109,7 +1110,7 @@ const handleRemoveSubItem = (itemIndex, subIndex) => {
       <input
         type="number"
         value={item.discount}
-        onChange={(e) => handleItemFieldChange(e, index, 'discount')}
+        readOnly
       />
     </div>
     <div className="item-field">
@@ -1117,7 +1118,7 @@ const handleRemoveSubItem = (itemIndex, subIndex) => {
       <input
         type="number"
         value={item.gstPercentage}
-        onChange={(e) => handleItemFieldChange(e, index, 'gstPercentage')}
+        readOnly
       />
     </div>
     <div className="item-field">
@@ -1125,7 +1126,7 @@ const handleRemoveSubItem = (itemIndex, subIndex) => {
       <input
         type="number"
         value={item.amount}
-        onChange={(e) => handleItemFieldChange(e, index, 'amount')}
+        readOnly
       />
     </div>
     <button
@@ -1150,7 +1151,7 @@ const handleRemoveSubItem = (itemIndex, subIndex) => {
               <input
                 type="text"
                 value={subItem.description}
-                onChange={(e) => handleSubItemFieldChange(e, index, subIndex, 'description')}
+                readOnly
               />
             </div>
             <div className="item-field">
@@ -1158,7 +1159,7 @@ const handleRemoveSubItem = (itemIndex, subIndex) => {
               <input
                 type="text"
                 value={subItem.unit}
-                onChange={(e) => handleSubItemFieldChange(e, index, subIndex, 'unit')}
+                readOnly
               />
             </div>
             <div className="item-field">
@@ -1166,7 +1167,7 @@ const handleRemoveSubItem = (itemIndex, subIndex) => {
               <input
                 type="number"
                 value={subItem.quantity}
-                onChange={(e) => handleSubItemFieldChange(e, index, subIndex, 'quantity')}
+                readOnly
               />
             </div>
             <div className="item-field">
@@ -1174,7 +1175,7 @@ const handleRemoveSubItem = (itemIndex, subIndex) => {
               <input
                 type="number"
                 value={subItem.ratePerUnit}
-                onChange={(e) => handleSubItemFieldChange(e, index, subIndex, 'ratePerUnit')}
+                readOnly
               />
             </div>
             <div className="item-field">
@@ -1182,7 +1183,7 @@ const handleRemoveSubItem = (itemIndex, subIndex) => {
               <input
                 type="number"
                 value={subItem.discount}
-                onChange={(e) => handleSubItemFieldChange(e, index, subIndex, 'discount')}
+                readOnly
               />
             </div>
             <div className="item-field">
@@ -1190,7 +1191,7 @@ const handleRemoveSubItem = (itemIndex, subIndex) => {
               <input
                 type="number"
                 value={subItem.gstPercentage}
-                onChange={(e) => handleSubItemFieldChange(e, index, subIndex, 'gstPercentage')}
+                readOnly
               />
             </div>
             <div className="item-field">
@@ -1198,7 +1199,7 @@ const handleRemoveSubItem = (itemIndex, subIndex) => {
               <input
                 type="number"
                 value={subItem.amount}
-                onChange={(e) => handleSubItemFieldChange(e, index, subIndex, 'amount')}
+                readOnly
               />
             </div>
             <button
