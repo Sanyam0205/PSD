@@ -21,7 +21,8 @@ const ProjectOrd = () => {
     amount: 0,
     subItems: [], // Initialize subItems for new item
   });
-
+  const [signature, setSignature] = useState(null);
+  const [signatureUrl, setSignatureUrl] = useState('');
   const [showPDFPreview, setShowPDFPreview] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
 
@@ -51,6 +52,36 @@ const ProjectOrd = () => {
     setSearchedProjectOrder({ ...searchedProjectOrder, [field]: value });
   };
   
+  const handleSignatureChange = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      console.log('File selected:', file);
+      setSignature(file);
+    } else {
+      console.log('No file selected');
+    }
+  };
+
+  const handlesignUpload = async () => {
+    if (!signature) {
+      console.log('No signature file selected');
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append('signature', signature);
+
+    try {
+      console.log('Uploading signature...');
+      const response = await axios.post('http://13.234.47.87:5000/upload', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      });
+      console.log('Upload response:', response);
+      setSignatureUrl(response.data.filePath);
+    } catch (error) {
+      console.error('Error uploading signature', error);
+    }
+  };
 
   const calculateAmount = (item) => {
     if (item.subItems && item.subItems.length > 0) {
@@ -229,7 +260,7 @@ const ProjectOrd = () => {
                 topsection={searchedProjectOrder.topsection}
                 Notes={searchedProjectOrder.Notes}
                 tnc={searchedProjectOrder.tnc}
-                signature={searchedProjectOrder.signatureUrl}
+                signature={signatureUrl}
                 // Add more props as per your ProjectOrderPDF component requirements
               />
             </PDFViewer>
@@ -624,7 +655,7 @@ const ProjectOrd = () => {
                 topsection={searchedProjectOrder.topsection}
                 Notes={searchedProjectOrder.Notes}
                 tnc={searchedProjectOrder.tnc}
-                signature={searchedProjectOrder.signatureUrl}
+                signature={signatureUrl}
                 // Add more props as per your ProjectOrderPDF component requirements
               />
             </PDFViewer>
@@ -633,6 +664,12 @@ const ProjectOrd = () => {
             <div>
             </div>
             <button type="button" onClick={() => setShowPDFPreview(false)}>Close PDF</button>
+            </div>
+            <div className="signature-section">
+              <label>Signature:</label>
+              <input type="file" accept="image/*" onChange={handleSignatureChange} />
+              <button type="button" onClick={handlesignUpload}>Upload Signature</button>
+              {signatureUrl && <img src={`http://13.234.47.87:5000${signatureUrl}`} alt="Signature"  />}
             </div>
               <button type="submit">Update Project Order</button>
             </form>
