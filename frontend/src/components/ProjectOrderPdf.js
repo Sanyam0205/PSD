@@ -66,7 +66,7 @@ const numberToWords = (num) => {
     result += getBelowThousand(crore) + ' crore ';
   }
   if (lakh > 0) {
-    result += getBelowThousand(lakh) + ' lakh ';
+    result += getBelowLakh(lakh) + ' lakh ';
   }
   if (thousand > 0) {
     result += getBelowThousand(thousand) + ' thousand ';
@@ -78,10 +78,9 @@ const numberToWords = (num) => {
   return result.trim().toUpperCase();
 };
 
-const formatNumber = (number) => {
-  return (number !== undefined && number !== null) ? number.toLocaleString('en-IN') : 'N/A';
-}
-
+const formatNumber = (value) => {
+  return value.toLocaleString('en-IN');
+};
 
 
 const styles = StyleSheet.create({
