@@ -13,9 +13,9 @@ const Navbar = () => {
       <div className="nav-link">
         <Link to="/form">Form</Link>
       </div>
-      <div className="nav-link">
+      {/* <div className="nav-link">
         <Link to="/projectorder">ProjectOrder</Link>
-      </div>
+      </div> */}
       <div className="nav-link">
         <Link to="/vendor">VendorManagement</Link>
       </div>
