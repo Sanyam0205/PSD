@@ -276,16 +276,11 @@ const styles = StyleSheet.create({
     flexGrow: 1,
   },
 
-  customTextSection: {
-    marginBottom: 10,
-  },
-
   tableHeader: {
     fontWeight: 'bold',
     backgroundColor: '#ffffff',
     fontSize: 12, // Reduced font size for headers
     fontFamily: 'TimesNewRoman',
-    // padding: 1,
     textAlign: 'center',
     borderTop:1
   },
@@ -370,7 +365,7 @@ const styles = StyleSheet.create({
   },
 
   signatureWrapper: {
-    marginTop: 20,
+    // marginTop: 20,
     flexDirection: 'row',
     alignItems: 'left',
     justifyContent: 'left',
@@ -766,6 +761,9 @@ const ProjectOrderPDF = (props) => {
               <View style={styles.section}>
                 <Text style={[styles.texthead]}>Terms and Conditions</Text>
                 <Text style={styles.text}>{props.tnc}</Text>
+              </View>
+              <View>
+                <Text style={styles.text}> For GIRIK ENTERPRISES </Text>
               </View>
               {props.signature && (
                 <View style={styles.signatureWrapper}>
