@@ -766,7 +766,7 @@ const ProjectOrderPDF = (props) => {
                 <Text style={[styles.texthead]}>Terms and Conditions</Text>
                 <Text style={styles.text}>{props.tnc}</Text>
               </View>
-              <View style={styles.section}>
+              <View style={styles.text}>
                 <Text style={styles.text}>GIRIK ENTERPRISES</Text>
               </View>
               {props.signature && (
