@@ -272,7 +272,6 @@ const styles = StyleSheet.create({
   },
   section: {
     margin: 10,
-    padding: 10,
     flexGrow: 1,
   },
   customTextSection: {
