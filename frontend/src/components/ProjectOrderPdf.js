@@ -399,7 +399,8 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontSize: 12,
     paddingTop:7,
-    verticalAlign:'sub'
+    verticalAlign:'sub',
+    wordWrap:'break-word'
   },
 
 });
