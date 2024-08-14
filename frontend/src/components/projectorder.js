@@ -139,11 +139,30 @@ const ProjectOrd = () => {
   
   
   const handleAddSubItem = (index) => {
-    const newSubItem = { description: "", quantity: 0, ratePerUnit: 0 };
-    const updatedItems = [...searchedProjectOrder.items];
-    updatedItems[index].subItems = [...updatedItems[index].subItems, newSubItem];
-  
-    setSearchedProjectOrder({ ...searchedProjectOrder, items: updatedItems });
+    if (searchedProjectOrder.items && searchedProjectOrder.items[index]) {
+      const items = [...searchedProjectOrder.items];
+      if (!items[index].subItems) {
+        items[index].subItems = [];
+      }
+      items[index].subItems.push({
+        description: '',
+        quantity: 0,
+        ratePerUnit: 0
+      });
+      setSearchedProjectOrder({ ...searchedProjectOrder, items });
+    }
+  };
+
+  const handleaddSubItem = () => {
+    const newSubItem = {
+      description: '',
+      quantity: 0,
+      rate: 0
+    };
+    setNewItem({
+      ...newItem,
+      subItems: [...(newItem.subItems || []), newSubItem]
+    });
   };
   
   
@@ -409,7 +428,6 @@ const ProjectOrd = () => {
                         </div>
                         {/* Other fields remain unchanged */}
                       </div>
-                      
                       <button
                             type="button"
                             onClick={() => handleDeleteItem(index)}
@@ -601,7 +619,7 @@ const ProjectOrd = () => {
                 ) : (
                   <p>No sub-items added yet.</p>
                 )}
-                <button type="button" onClick={handleAddSubItem}>
+                <button type="button" onClick={handleaddSubItem}>
                   Add Sub-Item
                 </button>
 

@@ -1,11 +1,16 @@
 import React from 'react';
 import { Page, Text, View, Image, Document, StyleSheet, Font } from '@react-pdf/renderer';
-import { toWords } from 'number-to-words'; // Importing from number-to-words
-import times from '../assets/Times New Roman.ttf'; // Importing the font file
+import times from '../assets/Times New Roman.ttf';
+import bold from '../assets/times new roman bold.ttf'
 
 Font.register({
   family: 'TimesNewRoman',
   src: times,
+});
+
+Font.register({
+  family: 'TimesNewRomanBold',
+  src: bold,
 });
 
 const numberToWords = (num) => {
@@ -20,10 +25,6 @@ const numberToWords = (num) => {
     '', '', 'twenty', 'thirty', 'forty', 'fifty', 'sixty', 'seventy', 'eighty', 'ninety'
   ];
 
-  const scales = [
-    '', 'thousand', 'lakh', 'crore'
-  ];
-
   const getBelowHundred = (n) => {
     if (n < 20) {
       return underTwenty[n];
@@ -34,10 +35,6 @@ const numberToWords = (num) => {
   };
 
   const getBelowThousand = (n) => {
-    if (typeof n !== 'number' || n < 0) {
-      console.error("Invalid number passed to getBelowThousand:", n);
-      return '';
-    }
     const hundred = Math.floor(n / 100);
     const rest = n % 100;
     const hundredText = hundred ? underTwenty[hundred] + ' hundred ' : '';
@@ -66,10 +63,10 @@ const numberToWords = (num) => {
   let belowThousand = remainder % 1000;
 
   if (crore > 0) {
-    result += getBelowCrore(crore) + ' crore ';
+    result += getBelowThousand(crore) + ' crore ';
   }
   if (lakh > 0) {
-    result += getBelowLakh(lakh) + ' lakh ';
+    result += getBelowThousand(lakh) + ' lakh ';
   }
   if (thousand > 0) {
     result += getBelowThousand(thousand) + ' thousand ';
@@ -81,9 +78,10 @@ const numberToWords = (num) => {
   return result.trim().toUpperCase();
 };
 
-const formatNumber = (value) => {
-  return value.toLocaleString('en-IN');
-};
+const formatNumber = (number) => {
+  return (number !== undefined && number !== null) ? number.toLocaleString('en-IN') : 'N/A';
+}
+
 
 
 const styles = StyleSheet.create({
@@ -220,7 +218,7 @@ const styles = StyleSheet.create({
   },
 
   fixedHeightText: {
-    height: 80, // Adjust this height to fit 4 lines
+    height: 60, // Adjust this height to fit 4 lines
     padding: 2,
     textAlign: 'left',
     fontSize: 10, // Adjust font size as needed
@@ -320,7 +318,15 @@ const styles = StyleSheet.create({
     fontFamily: 'TimesNewRoman',
     textAlign: 'center',
     fontSize:11, 
+  },
 
+  itemtabletext: {
+    fontFamily: 'TimesNewRomanBold',
+    textAlign: 'center',
+    fontSize:12, 
+    fontWeight:'heavy',
+    paddingTop:7,
+    verticalAlign:'sub'
   },
 
   descriptionColumn: {
@@ -329,25 +335,38 @@ const styles = StyleSheet.create({
     fontFamily: 'TimesNewRoman',
     fontSize:11,
     borderRight: 1,
-    height: 50,  // Adjusted column width for description
+    height: 45,
   },
   
   descriptionheadColumn: {
     width: '40%',
     textAlign: 'left',    
     fontFamily: 'TimesNewRoman',
-    fontSize:11,
     borderRight: 1,
+  },
+
+  descriptionitemColumn: {
+    width: '68%',
+    textAlign: 'center',    
+    fontFamily: 'TimesNewRomanBold',
+    fontSize:13,
+    height: 50,
+    paddingTop:7,
+    verticalAlign:'sub',
+    borderRight: 1
   },
 
   smallColumn: {
     width: '7%',
-    borderRight: 1  // Smaller width for less important columns
+    borderRight: 1 
   },
-
+  
   mediumColumn: {
     width: '10%',
-    borderRight: 1  // Slightly wider for important columns like Amount
+    borderRight: 1 
+  },
+  mediumitemColumn: {
+    width: '10%',
   },
 
   signatureWrapper: {
@@ -374,17 +393,21 @@ const styles = StyleSheet.create({
   amttext: {
     fontFamily: 'TimesNewRoman',
     textAlign: 'right',
-    fontSize: 11, // Reduced font size for amounts
+    fontSize: 11,
+  },
+  amtitemtext: {
+    fontFamily: 'TimesNewRomanBold',
+    textAlign: 'center',
+    fontSize: 12,
+    paddingTop:7,
+    verticalAlign:'sub'
   },
 
 });
 
 const ProjectOrderPDF = (props) => {
   const renderItemsTable = () => {
-    // Define a variable to hold all rows including sub-items
     const rows = [];
-  
-    // Iterate over each item and create rows for items and sub-items
     props.items.forEach((item, index) => {
       const subItemDiscountAmount = item.subItems.reduce(
         (total, subItem) =>
@@ -404,44 +427,29 @@ const ProjectOrderPDF = (props) => {
             100,
         0
       );
-  
-      // Add the main item row to rows array
+
       rows.push(
         <View style={styles.itemrow} key={`item-${index}`}>
-          <Text style={[styles.smallColumn, styles.tabletext]}>
+          <Text style={[styles.smallColumn, styles.itemtabletext]}>
             {item.sno}
           </Text>
-          <Text style={[styles.descriptionColumn]}>
+          <Text style={[styles.descriptionitemColumn]}>
             {item.description}
           </Text>
-          <Text style={[styles.smallColumn, styles.tabletext]}>
-            {item.unit}
-          </Text>
-          <Text style={[styles.smallColumn, styles.tabletext]}>
-            {formatNumber(item.quantity)}
-          </Text>
-          <Text style={[styles.smallColumn, styles.amttext]}>
-   {item.ratePerUnit !== undefined && item.ratePerUnit !== null ? formatNumber(item.ratePerUnit) : 'N/A'}
-</Text>
-<Text style={[styles.smallColumn, styles.tabletext]}>
-   {item.discount !== undefined && item.discount !== null ? formatNumber(item.discount) : 'N/A'}
-</Text>
-          <Text style={[styles.mediumColumn, styles.amttext]}>
+          <Text style={[styles.mediumColumn, styles.amtitemtext]}>
             {formatNumber(subItemDiscountAmount)}{" "}
           </Text>
-          <Text style={[styles.smallColumn, styles.tabletext]}>
-   {item.gstPercentage !== undefined && item.gstPercentage !== null ? formatNumber(item.gstPercentage) : 'N/A'}
-</Text>
-          <Text style={[styles.mediumColumn, styles.amttext]}>
-            {formatNumber(subItemGSTAmount)} {/* Ensure commas */}
+          <Text style={[styles.smallColumn, styles.itemtabletext]}>
+           {item.gstPercentage !== undefined && item.gstPercentage !== null ? formatNumber(item.gstPercentage) : 'N/A'}
           </Text>
-          <Text style={[styles.mediumColumn, styles.amttext]}>
-            {formatNumber(item.amount)} {/* Ensure commas */}
+          <Text style={[styles.mediumColumn, styles.amtitemtext]}>
+            {formatNumber(subItemGSTAmount)}
+          </Text>
+          <Text style={[styles.mediumColumn, styles.amtitemtext]}>
+            {formatNumber(item.amount)}
           </Text>
         </View>
       );
-  
-      // Add sub-item rows to the rows array
       item.subItems.forEach((subItem, subIndex) => {
         rows.push(
           <View style={styles.itemrow} key={`${index}-${subIndex}`}>
@@ -482,14 +490,14 @@ const ProjectOrderPDF = (props) => {
               )}
             </Text>
             <Text style={[styles.mediumColumn, styles.amttext]}>
-              {formatNumber(subItem.amount)} {/* Ensure commas */}
+              {formatNumber(subItem.amount)}
             </Text>
           </View>
         );
       });
     });
   
-    const rowsPerPage = 8; // Adjust as needed to fit content within page
+    const rowsPerPage = 8;
     const pages = [];
   
     for (let i = 0; i < rows.length; i += rowsPerPage) {
@@ -503,9 +511,6 @@ const ProjectOrderPDF = (props) => {
               9560666158
             </Text>
           </View>
-
-  
-          {/* Table Header */}
           <View style={styles.itemsrow}>
             <View style={styles.itemrow}>
               <Text style={[styles.smallColumn, styles.tableHeader]}>
@@ -539,7 +544,6 @@ const ProjectOrderPDF = (props) => {
                 Amount
               </Text>
             </View>
-            {/* Table Rows */}
             {rows.slice(i, i + rowsPerPage)}
           </View>
   
@@ -553,8 +557,6 @@ const ProjectOrderPDF = (props) => {
               GURGAON, HARYANA 122006
             </Text>
           </View>
-  
-          {/* Total Section on the Last Page */}
           {i + rowsPerPage >= rows.length && (
             <View style={styles.section}>
               <Text style={[styles.texthead]}>
@@ -573,210 +575,207 @@ const ProjectOrderPDF = (props) => {
     }
     return pages;
   };
-  
 
   return (
     <Document>
       <Page size="A4" orientation="landscape" style={styles.page}>
-  <View style={styles.header}>
-    <Text style={styles.headerTitle}>GIRIK ENTERPRISES</Text>
-    <Text style={styles.headerText}>
-      Email id:- girik.enterprices24@gmail.com | Contact number:- 9560666158
-    </Text>
-  </View>
-  
-  <View style={styles.headerRight}>
-    <Text style={styles.text}>PO Number: {props.poNumber}</Text>
-    <Text style={styles.text}>PO Date: {props.poDate}</Text>
-    <Text style={styles.text}>
-      Delivery Date: {props.podeliveryDate}
-    </Text>
-  </View>
-
-  <View style={styles.tableWrapper}>
-    <View style={styles.dataTable}>
-      <Text style={styles.DataHeader}>Vendor Details</Text>
-      <View style={styles.dataRow}>
-        <Text style={[styles.dataCell, styles.dataHeader]}>Code</Text>
-        <Text style={styles.dataCell}>{props.vendorCode}</Text>
-      </View>
-      <View style={styles.dataRow}>
-        <Text style={[styles.dataCell, styles.dataHeader]}>Name</Text>
-        <Text style={styles.dataCell}>{props.name}</Text>
-      </View>
-      <View style={styles.dataRow}>
-        <Text style={[styles.dataCell, styles.dataHeader]}>Contact Person</Text>
-        <Text style={[styles.dataCell, styles.fixedhText]}>{props.contactperson}</Text>
-      </View>
-      <View style={styles.dataRow}>
-        <Text style={[styles.dataCell, styles.dataHeader]}>Address</Text>
-        <Text style={[styles.dataCell, styles.fixedHeightText]}>{props.address}</Text>
-      </View>
-      <View style={styles.dataRow}>
-        <Text style={[styles.dataCell, styles.dataHeader]}>District</Text>
-        <Text style={styles.dataCell}>{props.district}</Text>
-      </View>
-      <View style={styles.dataRow}>
-        <Text style={[styles.dataCell, styles.dataHeader]}>State</Text>
-        <Text style={styles.dataCell}>{props.state}</Text>
-      </View>
-      <View style={styles.dataRow}>
-        <Text style={[styles.dataCell, styles.dataHeader]}>Pincode</Text>
-        <Text style={styles.dataCell}>{props.pinCode}</Text>
-      </View>
-      <View style={styles.dataRow}>
-        <Text style={[styles.dataCell, styles.dataHeader]}>Email</Text>
-        <Text style={styles.dataCell}>{props.email}</Text>
-      </View>
-      <View style={styles.dataRow}>
-        <Text style={[styles.dataCell, styles.dataHeader]}>Contact</Text>
-        <Text style={styles.dataCell}>{props.contact}</Text>
-      </View>
-      <View style={styles.dataRow}>
-        <Text style={[styles.dataCell, styles.dataHeader]}>GST Number</Text>
-        <Text style={styles.dataCell}>{props.gstNumber}</Text>
-      </View>
-    </View>
-
-    <View style={styles.dataTable}>
-      <Text style={styles.DataHeader}>Billing Details</Text>
-      <View style={styles.dataRow}>
-        <Text style={[styles.dataCell, styles.dataHeader]}>Location Code</Text>
-        <Text style={styles.dataCell}>{props.locationCode}</Text>
-      </View>
-      <View style={styles.dataRow}>
-        <Text style={[styles.dataCell, styles.dataHeader]}>Name</Text>
-        <Text style={styles.dataCell}>{props.billtocp}</Text>
-      </View>
-      <View style={styles.dataRow}>
-        <Text style={[styles.dataCell, styles.dataHeader]}>Contact Name</Text>
-        <Text style={[styles.dataCell, styles.fixedhText]}>{props.billtoname}</Text>
-      </View>
-      <View style={styles.dataRow}>
-        <Text style={[styles.dataCell, styles.dataHeader]}>Billing Address</Text>
-        <Text style={[styles.dataCell, styles.fixedHeightText]}>{props.billToAddress}</Text>
-      </View>
-      <View style={styles.dataRow}>
-        <Text style={[styles.dataCell, styles.dataHeader]}>District</Text>
-        <Text style={styles.dataCell}>{props.billToDistrict}</Text>
-      </View>
-      <View style={styles.dataRow}>
-        <Text style={[styles.dataCell, styles.dataHeader]}>State</Text>
-        <Text style={styles.dataCell}>{props.billToState}</Text>
-      </View>
-      <View style={styles.dataRow}>
-        <Text style={[styles.dataCell, styles.dataHeader]}>Pincode</Text>
-        <Text style={styles.dataCell}>{props.billToPinCode}</Text>
-      </View>
-      <View style={styles.dataRow}>
-        <Text style={[styles.dataCell, styles.dataHeader]}>Phone Number</Text>
-        <Text style={styles.dataCell}>{props.billToContact}</Text>
-      </View>
-      <View style={styles.dataRow}>
-        <Text style={[styles.dataCell, styles.dataHeader]}>Email</Text>
-        <Text style={styles.dataCell}>{props.billToEmail}</Text>
-      </View>
-      <View style={styles.dataRow}>
-        <Text style={[styles.dataCell, styles.dataHeader]}>GST Number</Text>
-        <Text style={styles.dataCell}>{props.billToGstNumber}</Text>
-      </View>
-    </View>
-
-    <View style={styles.dataTable}>
-      <Text style={styles.DataHeader}>Delivery Details</Text>
-      <View style={styles.dataRow}>
-        <Text style={[styles.dataCell, styles.dataHeader]}>Location Code</Text>
-        <Text style={styles.dataCell}>{props.deliveryLocationCode}</Text>
-      </View>
-      <View style={styles.dataRow}>
-        <Text style={[styles.dataCell, styles.dataHeader]}>Name</Text>
-        <Text style={styles.dataCell}>{props.delcp}</Text>
-      </View>
-      <View style={styles.dataRow}>
-        <Text style={[styles.dataCell, styles.dataHeader]}>Contact Name</Text>
-        <Text style={[styles.dataCell, styles.fixedhText]}>{props.deliveryName}</Text>
-      </View>
-      <View style={styles.dataRow}>
-        <Text style={[styles.dataCell, styles.dataHeader]}>Shipping Address</Text>
-        <Text style={[styles.dataCell, styles.fixedHeightText]}>{props.shippingAddress}</Text>
-      </View>
-      <View style={styles.dataRow}>
-        <Text style={[styles.dataCell, styles.dataHeader]}>District</Text>
-        <Text style={styles.dataCell}>{props.deliveryDistrict}</Text>
-      </View>
-      <View style={styles.dataRow}>
-        <Text style={[styles.dataCell, styles.dataHeader]}>State</Text>
-        <Text style={styles.dataCell}>{props.deliveryState}</Text>
-      </View>
-      <View style={styles.dataRow}>
-        <Text style={[styles.dataCell, styles.dataHeader]}>Pin Code</Text>
-        <Text style={styles.dataCell}>{props.deliveryPinCode}</Text>
-      </View>
-      <View style={styles.dataRow}>
-        <Text style={[styles.dataCell, styles.dataHeader]}>Phone Number</Text>
-        <Text style={styles.dataCell}>{props.deliveryContact}</Text>
-      </View>
-      <View style={styles.dataRow}>
-        <Text style={[styles.dataCell, styles.dataHeader]}>Email</Text>
-        <Text style={styles.dataCell}>{props.deliveryEmail}</Text>
-      </View>
-      <View style={styles.dataRow}>
-        <Text style={[styles.dataCell, styles.dataHeader]}>GST Number</Text>
-        <Text style={styles.dataCell}>{props.deliveryGstNumber}</Text>
-      </View>
-    </View>
-  </View>
-
-  <View style={styles.footer}>
-    <Text style={styles.footerTextBoldUnderline}>GIRIK ENTERPRISES</Text>
-    <Text style={styles.footerText}>
-      736A/5, PATEL NAGAR, JHARSA ROAD, POLICE LINE, BACK GATE, GURGAON, HARYANA 122006
-    </Text>
-  </View>
-  <View style={styles.section}>
-          <Text style={styles.texthead}>Subject:</Text>
-          <Text style={styles.text}>{props.topsection}</Text>
-  </View>
-</Page>
-
-      {renderItemsTable()}
-      <Page size="A4" orientation="landscape" style={styles.page}>
-      <View style={styles.header}>
-          <Text style={styles.headerTitle}>GIRIK ENTERPRISES</Text>
-          <Text style={styles.headerText}>
-            Email id:- girik.enterprices24@gmail.com | Contact number:- 9560666158
-          </Text>
-        </View>
-        <View style={styles.section}>
-          <Text style={[styles.texthead]}>Notes:</Text>
-          <Text style={styles.text}>{props.Notes}</Text>
-        </View>
-        <View style={styles.footer}>
-          <Text style={styles.footerTextBoldUnderline}>GIRIK ENTERPRISES</Text>
-          <Text style={styles.footerText}>736A/5, PATEL NAGAR, JHARSA ROAD, POLICE LINE, BACK GATE, GURGAON, HARYANA 122006</Text>
-        </View>
-        </Page>
-        <Page size="A4" orientation="landscape" style={styles.page}>
         <View style={styles.header}>
           <Text style={styles.headerTitle}>GIRIK ENTERPRISES</Text>
           <Text style={styles.headerText}>
             Email id:- girik.enterprices24@gmail.com | Contact number:- 9560666158
           </Text>
         </View>
-        <View style={styles.section}>
-          <Text style={[styles.texthead]}>Terms and Conditions</Text>
-          <Text style={styles.text}>{props.tnc}</Text>
+        <View style={styles.headerRight}>
+          <Text style={styles.text}>PO Number: {props.poNumber}</Text>
+          <Text style={styles.text}>PO Date: {props.poDate}</Text>
+          <Text style={styles.text}>
+            Delivery Date: {props.podeliveryDate}
+          </Text>
         </View>
-        {props.signature && (
-          <View style={styles.signatureWrapper}>
-            <Image style={styles.signature} src={props.signature ? `http://13.234.47.87:5000${props.signature}` : ''} />
+        <View style={styles.tableWrapper}>
+          <View style={styles.dataTable}>
+            <Text style={styles.DataHeader}>Vendor Details</Text>
+            <View style={styles.dataRow}>
+              <Text style={[styles.dataCell, styles.dataHeader]}>Code</Text>
+              <Text style={styles.dataCell}>{props.vendorCode}</Text>
+            </View>
+            <View style={styles.dataRow}>
+              <Text style={[styles.dataCell, styles.dataHeader]}>Name</Text>
+              <Text style={styles.dataCell}>{props.name}</Text>
+            </View>
+            <View style={styles.dataRow}>
+              <Text style={[styles.dataCell, styles.dataHeader]}>Contact Person</Text>
+              <Text style={[styles.dataCell, styles.fixedhText]}>{props.contactperson}</Text>
+            </View>
+            <View style={styles.dataRow}>
+              <Text style={[styles.dataCell, styles.dataHeader]}>Address</Text>
+              <Text style={[styles.dataCell, styles.fixedHeightText]}>{props.address}</Text>
+            </View>
+            <View style={styles.dataRow}>
+              <Text style={[styles.dataCell, styles.dataHeader]}>District</Text>
+              <Text style={styles.dataCell}>{props.district}</Text>
+            </View>
+            <View style={styles.dataRow}>
+              <Text style={[styles.dataCell, styles.dataHeader]}>State</Text>
+              <Text style={styles.dataCell}>{props.state}</Text>
+            </View>
+            <View style={styles.dataRow}>
+              <Text style={[styles.dataCell, styles.dataHeader]}>Pincode</Text>
+              <Text style={styles.dataCell}>{props.pinCode}</Text>
+            </View>
+            <View style={styles.dataRow}>
+              <Text style={[styles.dataCell, styles.dataHeader]}>Email</Text>
+              <Text style={styles.dataCell}>{props.email}</Text>
+            </View>
+            <View style={styles.dataRow}>
+              <Text style={[styles.dataCell, styles.dataHeader]}>Contact</Text>
+              <Text style={styles.dataCell}>{props.contact}</Text>
+            </View>
+            <View style={styles.dataRow}>
+              <Text style={[styles.dataCell, styles.dataHeader]}>GST Number</Text>
+              <Text style={styles.dataCell}>{props.gstNumber}</Text>
+            </View>
           </View>
-        )}
+
+          <View style={styles.dataTable}>
+            <Text style={styles.DataHeader}>Billing Details</Text>
+            <View style={styles.dataRow}>
+              <Text style={[styles.dataCell, styles.dataHeader]}>Location Code</Text>
+              <Text style={styles.dataCell}>{props.locationCode}</Text>
+            </View>
+            <View style={styles.dataRow}>
+              <Text style={[styles.dataCell, styles.dataHeader]}>Name</Text>
+              <Text style={styles.dataCell}>{props.billtocp}</Text>
+            </View>
+            <View style={styles.dataRow}>
+              <Text style={[styles.dataCell, styles.dataHeader]}>Contact Name</Text>
+              <Text style={[styles.dataCell, styles.fixedhText]}>{props.billtoname}</Text>
+            </View>
+            <View style={styles.dataRow}>
+              <Text style={[styles.dataCell, styles.dataHeader]}>Billing Address</Text>
+              <Text style={[styles.dataCell, styles.fixedHeightText]}>{props.billToAddress}</Text>
+            </View>
+            <View style={styles.dataRow}>
+              <Text style={[styles.dataCell, styles.dataHeader]}>District</Text>
+              <Text style={styles.dataCell}>{props.billToDistrict}</Text>
+            </View>
+            <View style={styles.dataRow}>
+              <Text style={[styles.dataCell, styles.dataHeader]}>State</Text>
+              <Text style={styles.dataCell}>{props.billToState}</Text>
+            </View>
+            <View style={styles.dataRow}>
+              <Text style={[styles.dataCell, styles.dataHeader]}>Pincode</Text>
+              <Text style={styles.dataCell}>{props.billToPinCode}</Text>
+            </View>
+            <View style={styles.dataRow}>
+              <Text style={[styles.dataCell, styles.dataHeader]}>Phone Number</Text>
+              <Text style={styles.dataCell}>{props.billToContact}</Text>
+            </View>
+            <View style={styles.dataRow}>
+              <Text style={[styles.dataCell, styles.dataHeader]}>Email</Text>
+              <Text style={styles.dataCell}>{props.billToEmail}</Text>
+            </View>
+            <View style={styles.dataRow}>
+              <Text style={[styles.dataCell, styles.dataHeader]}>GST Number</Text>
+              <Text style={styles.dataCell}>{props.billToGstNumber}</Text>
+            </View>
+          </View>
+
+          <View style={styles.dataTable}>
+            <Text style={styles.DataHeader}>Delivery Details</Text>
+            <View style={styles.dataRow}>
+              <Text style={[styles.dataCell, styles.dataHeader]}>Location Code</Text>
+              <Text style={styles.dataCell}>{props.deliveryLocationCode}</Text>
+            </View>
+            <View style={styles.dataRow}>
+              <Text style={[styles.dataCell, styles.dataHeader]}>Name</Text>
+              <Text style={styles.dataCell}>{props.delcp}</Text>
+            </View>
+            <View style={styles.dataRow}>
+              <Text style={[styles.dataCell, styles.dataHeader]}>Contact Name</Text>
+              <Text style={[styles.dataCell, styles.fixedhText]}>{props.deliveryName}</Text>
+            </View>
+            <View style={styles.dataRow}>
+              <Text style={[styles.dataCell, styles.dataHeader]}>Shipping Address</Text>
+              <Text style={[styles.dataCell, styles.fixedHeightText]}>{props.shippingAddress}</Text>
+            </View>
+            <View style={styles.dataRow}>
+              <Text style={[styles.dataCell, styles.dataHeader]}>District</Text>
+              <Text style={styles.dataCell}>{props.deliveryDistrict}</Text>
+            </View>
+            <View style={styles.dataRow}>
+              <Text style={[styles.dataCell, styles.dataHeader]}>State</Text>
+              <Text style={styles.dataCell}>{props.deliveryState}</Text>
+            </View>
+            <View style={styles.dataRow}>
+              <Text style={[styles.dataCell, styles.dataHeader]}>Pin Code</Text>
+              <Text style={styles.dataCell}>{props.deliveryPinCode}</Text>
+            </View>
+            <View style={styles.dataRow}>
+              <Text style={[styles.dataCell, styles.dataHeader]}>Phone Number</Text>
+              <Text style={styles.dataCell}>{props.deliveryContact}</Text>
+            </View>
+            <View style={styles.dataRow}>
+              <Text style={[styles.dataCell, styles.dataHeader]}>Email</Text>
+              <Text style={styles.dataCell}>{props.deliveryEmail}</Text>
+            </View>
+            <View style={styles.dataRow}>
+              <Text style={[styles.dataCell, styles.dataHeader]}>GST Number</Text>
+              <Text style={styles.dataCell}>{props.deliveryGstNumber}</Text>
+            </View>
+          </View>
+        </View>
+
         <View style={styles.footer}>
           <Text style={styles.footerTextBoldUnderline}>GIRIK ENTERPRISES</Text>
-          <Text style={styles.footerText}>736A/5, PATEL NAGAR, JHARSA ROAD, POLICE LINE, BACK GATE, GURGAON, HARYANA 122006</Text>
+          <Text style={styles.footerText}>
+            736A/5, PATEL NAGAR, JHARSA ROAD, POLICE LINE, BACK GATE, GURGAON, HARYANA 122006
+          </Text>
         </View>
+        <View style={styles.section}>
+                <Text style={styles.texthead}>Subject:</Text>
+                <Text style={styles.text}>{props.topsection}</Text>
+        </View>
       </Page>
+
+            {renderItemsTable()}
+            <Page size="A4" orientation="landscape" style={styles.page}>
+            <View style={styles.header}>
+                <Text style={styles.headerTitle}>GIRIK ENTERPRISES</Text>
+                <Text style={styles.headerText}>
+                  Email id:- girik.enterprices24@gmail.com | Contact number:- 9560666158
+                </Text>
+              </View>
+              <View style={styles.section}>
+                <Text style={[styles.texthead]}>Notes:</Text>
+                <Text style={styles.text}>{props.Notes}</Text>
+              </View>
+              <View style={styles.footer}>
+                <Text style={styles.footerTextBoldUnderline}>GIRIK ENTERPRISES</Text>
+                <Text style={styles.footerText}>736A/5, PATEL NAGAR, JHARSA ROAD, POLICE LINE, BACK GATE, GURGAON, HARYANA 122006</Text>
+              </View>
+              </Page>
+              <Page size="A4" orientation="landscape" style={styles.page}>
+              <View style={styles.header}>
+                <Text style={styles.headerTitle}>GIRIK ENTERPRISES</Text>
+                <Text style={styles.headerText}>
+                  Email id:- girik.enterprices24@gmail.com | Contact number:- 9560666158
+                </Text>
+              </View>
+              <View style={styles.section}>
+                <Text style={[styles.texthead]}>Terms and Conditions</Text>
+                <Text style={styles.text}>{props.tnc}</Text>
+              </View>
+              {props.signature && (
+                <View style={styles.signatureWrapper}>
+                  <Image style={styles.signature} src={props.signature ? `http://13.234.47.87:5000${props.signature}` : ''} />
+                </View>
+              )}
+              <View style={styles.footer}>
+                <Text style={styles.footerTextBoldUnderline}>GIRIK ENTERPRISES</Text>
+                <Text style={styles.footerText}>736A/5, PATEL NAGAR, JHARSA ROAD, POLICE LINE, BACK GATE, GURGAON, HARYANA 122006</Text>
+              </View>
+            </Page>
     </Document>
   );
 };

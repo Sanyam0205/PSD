@@ -48,11 +48,11 @@ const Form = () => {
     sno: 0,
     description: '',
     unit: '',
-    quantity: 0,
-    ratePerUnit: 0,
-    gstPercentage: 0,
-    discount: 0,
-    amount: 0,
+    quantity: '',
+    ratePerUnit: '',
+    gstPercentage: '',
+    discount: '',
+    amount: '',
     subItems: [],
   });
   const [totalAmount, setTotalAmount] = useState(0);
@@ -105,13 +105,8 @@ const Form = () => {
   const [signature, setSignature] = useState(null);
   const [signatureUrl, setSignatureUrl] = useState('');
   const [vendors, setVendors] = useState([]);
-  // const [selectedVendor, setSelectedVendor] = useState(null);
   const [location, setlocation] = useState([]);
-  // const [selectedlocation, setSelectedlocation] = useState(null);
   const [delivery ,setdelivery] = useState([]);
-  // const [selecteddellocation, setSelecteddellocation] = useState(null);
-
-  // Fetch vendor details when vendor code changes
   useEffect(() => {
     const fetchVendor = async () => {
       try {
@@ -119,7 +114,6 @@ const Form = () => {
           const response = await axios.get(`http://13.234.47.87:5000/api/vendors/${vendorCode}`);
           const vendor = response.data;
           setError('');
-          // Set vendor details to corresponding state variables
           setName(vendor.name || '');
           setPerson(vendor.contactperson || '');
           setAddress(vendor.address || '');
@@ -130,7 +124,6 @@ const Form = () => {
           setContact(vendor.contact || '');
           setGstNumber(vendor.gstNumber || '');
         } else {
-          // Reset all fields when vendorCode is empty
           resetForm();
         }
       } catch (error) {
@@ -140,7 +133,6 @@ const Form = () => {
     fetchVendor();
   }, [vendorCode]);
 
-  // Fetch billing details when location code changes
   useEffect(() => {
     const fetchBillingDetails = async () => {
       try {
@@ -148,7 +140,6 @@ const Form = () => {
           const response = await axios.get(`http://13.234.47.87:5000/api/location/${locationCode}`);
           const billing = response.data;
           setError('');
-          // Set billing details to corresponding state variables
           setbilltoname(billing.billtoname || '');
           setbilltocp(billing.billtocp || '');
           setBillToAddress(billing.billToAddress || '');
@@ -159,7 +150,6 @@ const Form = () => {
           setBillToEmail(billing.billToEmail || '');
           setBillToGstNumber(billing.billToGstNumber || '');
         } else {
-          // Reset billing fields when locationCode is empty
           setbilltoname('');
           setbilltocp('');
           setBillToAddress('');
@@ -176,8 +166,6 @@ const Form = () => {
     };
     fetchBillingDetails();
   }, [locationCode]);
-
-  // Fetch delivery details when delivery location code changes
   useEffect(() => {
     const fetchDeliveryDetails = async () => {
       try {
@@ -185,7 +173,6 @@ const Form = () => {
           const response = await axios.get(`http://13.234.47.87:5000/api/location/${deliveryLocationCode}`);
           const delivery = response.data;
           setError('');
-          // Set delivery details to corresponding state variables
           setDeliveryName(delivery.billtoname || '');
           setdelcp(delivery.billtocp || '');
           setshippingAddress(delivery.billToAddress || '');
@@ -214,24 +201,21 @@ const Form = () => {
   }, [deliveryLocationCode]);
 
   useEffect(() => {
-    // Fetch vendors from the backend
-    fetch('http://13.234.47.87:5000/api/vendors') // Replace with your API endpoint
+    fetch('http://13.234.47.87:5000/api/vendors')
       .then(response => response.json())
       .then(data => setVendors(data))
       .catch(error => console.error('Error fetching vendors:', error));
   }, []);
 
   useEffect(() => {
-    // Fetch vendors from the backend
-    fetch('http://13.234.47.87:5000/api/location') // Replace with your API endpoint
+    fetch('http://13.234.47.87:5000/api/location')
       .then(response => response.json())
       .then(data => setlocation(data))
       .catch(error => console.error('Error fetching vendors:', error));
   }, []);
 
   useEffect(() => {
-    // Fetch vendors from the backend
-    fetch('http://13.234.47.87:5000/api/location') // Replace with your API endpoint
+    fetch('http://13.234.47.87:5000/api/location')
       .then(response => response.json())
       .then(data => setdelivery(data))
       .catch(error => console.error('Error fetching vendors:', error));
@@ -242,19 +226,14 @@ const Form = () => {
   const getLabel = (option) => `${option.billtoname} - ${option.locationCode}`;
 
   const handleVendorChange = (selectedOption) => {
-    // setSelectedVendor(selectedOption);
     setVendorCode(selectedOption.vendorCode);
   };
   const handlelocationChange = (selectedOption) => {
-    // setSelectedlocation(selectedOption);
     setLocationCode(selectedOption.locationCode);
   };
   const handledellocationChange = (selectedOption) => {
-    // setSelecteddellocation(selectedOption);
     setDeliveryLocationCode(selectedOption.locationCode);
   };
-
-  // Reset all form fields
   const resetForm = () => {
     setName('');
     setPerson('');
@@ -400,7 +379,6 @@ const Form = () => {
   const handleTypeChange = async (e) => {
     const selectedType = e.target.value;
     setType(selectedType);
-  
     if (selectedType) {
       const prefix = selectedType === 'material' ? 'GE-12' : 'GE-22';
       const seriesNumber = await getNextSeriesPoNumber();
@@ -461,7 +439,7 @@ const Form = () => {
   
   const calculateTotalAmount = useCallback(() => {
     const total = items.reduce((sum, item) => sum + item.amount, 0);
-    setTotalAmount(Math.round(total)); // Round off the total amount
+    setTotalAmount(Math.round(total)); 
   }, [items]);
   
   useEffect(() => {
@@ -484,11 +462,11 @@ const Form = () => {
     setItem({
       description: '',
       unit: '',
-      quantity: 0,
-      ratePerUnit: 0,
-      discount: 0,
-      gstPercentage: 0,
-      amount: 0,
+      quantity: '',
+      ratePerUnit: '',
+      discount: '',
+      gstPercentage: '',
+      amount: '',
       subItems: [],
     });
   };
@@ -539,7 +517,7 @@ const Form = () => {
       };
       return updatedMainItem;
     });
-  };
+  }
 
   const handleAddSubItem = () => {
     setItem((prevItem) => ({
@@ -559,85 +537,63 @@ const Form = () => {
     }));
   };
 
-  // const handleItemFieldChange = (e, index, field) => {
-  //   const { value } = e.target;
-  //   setItems((prevItems) => {
-  //     const updatedItems = [...prevItems];
-  //     const updatedItem = { ...updatedItems[index], [field]: value };
+  const handleRemoveSubItem = (itemIndex, subItemIndex) => {
+    setItems((prevItems) => {
+      // Ensure itemIndex is within bounds
+      if (itemIndex < 0 || itemIndex >= prevItems.length) {
+        console.error('Invalid itemIndex:', itemIndex);
+        return prevItems; // Return the previous state if index is invalid
+      }
   
-  //     // Perform calculations for the updated item
-  //     const updatedItemWithCalculations = {
-  //       ...updatedItem,
-  //       quantity: calculateQuantity(updatedItem),
-  //       discountAmount: calculateDiscountAmount(updatedItem),
-  //       gstAmount: calculateGSTAmount(updatedItem),
-  //       amount: calculateAmount(updatedItem),
-  //     };
+      const updatedItems = [...prevItems];
+      const currentItem = updatedItems[itemIndex];
   
-  //     updatedItems[index] = updatedItemWithCalculations;
+      // Check if currentItem and subItems are defined
+      if (!currentItem || !currentItem.subItems || currentItem.subItems.length === 0) {
+        console.error('Invalid subItems at itemIndex:', itemIndex);
+        return prevItems; // Return the previous state if subItems is undefined or empty
+      }
   
-  //     // Recalculate total quantities, discount, GST, and amount for the whole list
-  //     const updatedItemsWithTotals = updatedItems.map(item => ({
-  //       ...item,
-  //       quantity: calculateQuantity(item),
-  //       discountAmount: calculateDiscountAmount(item),
-  //       gstAmount: calculateGSTAmount(item),
-  //       amount: calculateAmount(item),
-  //     }));
+      const subItems = [...currentItem.subItems];
   
-  //     return updatedItemsWithTotals;
-  //   });
-  // };
-
-  // const handleSubItemFieldChange = (e, itemIndex, subIndex, field) => {
-  //   const { value } = e.target;
-  //   setItems((prevItems) => {
-  //     const updatedItems = [...prevItems];
-  //     const updatedSubItems = [...updatedItems[itemIndex].subItems];
-  //     const updatedSubItem = { ...updatedSubItems[subIndex], [field]: value };
+      // Ensure subItemIndex is within bounds
+      if (subItemIndex < 0 || subItemIndex >= subItems.length) {
+        console.error('Invalid subItemIndex:', subItemIndex);
+        return prevItems; // Return the previous state if subItemIndex is invalid
+      }
   
-  //     // Perform calculations for the updated sub-item
-  //     const updatedSubItemWithCalculations = {
-  //       ...updatedSubItem,
-  //       quantity: calculateQuantity(updatedSubItem),
-  //       discountAmount: calculateDiscountAmount(updatedSubItem),
-  //       gstAmount: calculateGSTAmount(updatedSubItem),
-  //       amount: calculateAmount(updatedSubItem),
-  //     };
+      // Remove the sub-item
+      subItems.splice(subItemIndex, 1);
   
-  //     updatedSubItems[subIndex] = updatedSubItemWithCalculations;
-  //     updatedItems[itemIndex].subItems = updatedSubItems;
+      // Recalculate the item quantity and amount
+      const totalQuantity = subItems.reduce((total, subItem) => total + subItem.quantity, 0);
+      const totalAmount = subItems.reduce((total, subItem) => total + subItem.amount, 0);
   
-  //     // Recalculate total quantities, discount, GST, and amount for the main item
-  //     const updatedItemWithSubItems = {
-  //       ...updatedItems[itemIndex],
-  //       quantity: calculateQuantity({ ...updatedItems[itemIndex], subItems: updatedSubItems }),
-  //       discountAmount: calculateDiscountAmount({ ...updatedItems[itemIndex], subItems: updatedSubItems }),
-  //       gstAmount: calculateGSTAmount({ ...updatedItems[itemIndex], subItems: updatedSubItems }),
-  //       amount: calculateAmount({ ...updatedItems[itemIndex], subItems: updatedSubItems }),
-  //     };
+      updatedItems[itemIndex] = {
+        ...currentItem,
+        subItems: subItems,
+        quantity: totalQuantity,
+        amount: totalAmount,
+      };
   
-  //     updatedItems[itemIndex] = updatedItemWithSubItems;
+      return updatedItems;
+    });
+  };
   
-  //     // Recalculate totals for the entire list of items
-  //     const updatedItemsWithTotals = updatedItems.map(item => ({
-  //       ...item,
-  //       quantity: calculateQuantity(item),
-  //       discountAmount: calculateDiscountAmount(item),
-  //       gstAmount: calculateGSTAmount(item),
-  //       amount: calculateAmount(item),
-  //     }));
+  const handleremoveSubItem = (indexToRemove) => {
+    // Create a copy of the current subItems array
+    const updatedSubItems = [...item.subItems];
   
-  //     return updatedItemsWithTotals;
-  //   });
-  // };
-
-// Update the remove sub-item handler
-const handleRemoveSubItem = (itemIndex, subIndex) => {
-  const newItems = [...items];
-  newItems[itemIndex].subItems.splice(subIndex, 1);
-  setItems(newItems);
-};
+    // Remove the sub-item at the specified index
+    updatedSubItems.splice(indexToRemove, 1);
+  
+    // Update the state with the new array
+    setItem({
+      ...item,
+      subItems: updatedSubItems,
+    });
+  };
+  
 
   const handleSignatureChange = (event) => {
     const file = event.target.files[0];
@@ -727,9 +683,7 @@ const handleRemoveSubItem = (itemIndex, subIndex) => {
           mimeType: signature?.type,
         },
       };
-      // Submit project order
       await axios.post('http://13.234.47.87:5000/api/project-orders', projectOrder);
-      // Generate PDF
       alert('Project order submitted successfully');
     } catch (error) {
       console.error(error);
@@ -932,56 +886,9 @@ const handleRemoveSubItem = (itemIndex, subIndex) => {
               <label>Description:</label>
               <input type="text" name="description" value={item.description} onChange={handleItemChange} />
             </div>
-            {/* <div className="item-field">
-              <label>Unit:</label>
-              <select name="unit" value={item.unit} onChange={handleItemChange}>
-                <option value="">Select One</option>
-                <option value="kg">Kilogram (kg)</option>
-                <option value="metricTon">Metric Ton</option>
-                <option value="metre">Metre (m)</option>
-                <option value="squareMetre">Square Metre (m²)</option>
-                <option value="cubicMetre">Cubic Metre (m³)</option>
-                <option value="litre">Litre (L)</option>
-                <option value="gallon">Gallon</option>
-                <option value="pcs">PCS</option>
-                <option value="nos">Nos</option>
-              </select>
-            </div> */}
-            {/* <div className="item-field">
-              <label>Quantity:</label>
-              <input type="number" name="quantity" value={item.quantity} onChange={handleItemChange} />
-            </div>
-            <div className="item-field">
-              <label>Rate Per Unit:</label>
-              <input type="number" name="ratePerUnit" value={item.ratePerUnit} onChange={handleItemChange} />
-            </div>
-            <div className="item-field">
-              <label>Discount:</label>
-              <input type="number" name="discount" value={item.discount} onChange={handleItemChange} />
-            </div>
-            <div className="item-field">
-              <label>GST:</label>
-              <input type="number" name="gstPercentage" value={item.gstPercentage} onChange={handleItemChange} />
-            </div>
-            <div className="item-field">
-              <label>Amount:</label>
-              <input type="number" name="amount" value={item.amount} readOnly />
-            </div> */}
           </div>
           <button type="button" onClick={handleAddItem}>Add Item</button>
         </div>
-       
-        {/* <div>
-          <label>
-            <input
-              type="checkbox"
-              checked={showsubItems}
-              onChange={togglesubItems}
-            />
-             Add Sub-Items
-          </label>
-        </div> */}
-      {/* {showsubItems && ( */}
         <div className='subitem-section'>
           <h3>Sub-Items</h3>
           {(item.subItems || []).map((subItem, index) => (
@@ -1060,105 +967,23 @@ const handleRemoveSubItem = (itemIndex, subIndex) => {
                 />
               </div>
               <div className="item-field">
-                <button type="button" onClick={() => handleRemoveSubItem(index)}>Remove Sub-Item</button>
+                <button type="button" onClick={() => handleremoveSubItem(index)}>Remove Sub-Item</button>
               </div>
             </div>
           ))}
           <button type="button" onClick={handleAddSubItem}>Add Sub-Item</button>
         </div>
-      {/* )} */}
-{items.map((item, index) => (
-  <div key={index} className="item">
-    <div className="item-field">
-      <label>Serial No:</label>
-      <input type="text" value={item.sno} readOnly />
-    </div>
-    <div className="item-field">
-      <label>Description:</label>
-      <input
-        type="text"
-        value={item.description}
-        readOnly
-      />
-    </div>
-    <div className="item-field">
-      <label>Unit:</label>
-      <input
-        type="text"
-        value={item.unit}
-        readOnly
-      />
-    </div>
-    <div className="item-field">
-      <label>Quantity:</label>
-      <input
-        type="number"
-        value={item.quantity}
-        readOnly
-      />
-    </div>
-    <div className="item-field">
-      <label>Rate Per Unit:</label>
-      <input
-        type="number"
-        value={item.ratePerUnit}
-        readOnly
-      />
-    </div>
-    <div className="item-field">
-      <label>Discount:</label>
-      <input
-        type="number"
-        value={item.discount}
-        readOnly
-      />
-    </div>
-    <div className="item-field">
-      <label>GST:</label>
-      <input
-        type="number"
-        value={item.gstPercentage}
-        readOnly
-      />
-    </div>
-    <div className="item-field">
-      <label>Amount:</label>
-      <input
-        type="number"
-        value={item.amount}
-        readOnly
-      />
-    </div>
-    <button
-      type="button"
-      className="delete-button"
-      onClick={() => handleDeleteItem(index)}
-    >
-      <FontAwesomeIcon icon={faTrash} />
-    </button>
-    {/* Render sub-items */}
-    {item.subItems && item.subItems.length > 0 && (
-      <div className="subitem-section">
-        <h3>Sub-Items</h3>
-        {item.subItems.map((subItem, subIndex) => (
-          <div key={`${index}-${subIndex}`} className="sub-item">
+        {items.map((item, index) => (
+          <div key={index} className="item">
             <div className="item-field">
               <label>Serial No:</label>
-              <input type="text" value={`${item.sno}.${subIndex + 1}`} readOnly />
+              <input type="text" value={item.sno} readOnly />
             </div>
             <div className="item-field">
               <label>Description:</label>
               <input
                 type="text"
-                value={subItem.description}
-                readOnly
-              />
-            </div>
-            <div className="item-field">
-              <label>Unit:</label>
-              <input
-                type="text"
-                value={subItem.unit}
+                value={item.description}
                 readOnly
               />
             </div>
@@ -1166,31 +991,7 @@ const handleRemoveSubItem = (itemIndex, subIndex) => {
               <label>Quantity:</label>
               <input
                 type="number"
-                value={subItem.quantity}
-                readOnly
-              />
-            </div>
-            <div className="item-field">
-              <label>Rate Per Unit:</label>
-              <input
-                type="number"
-                value={subItem.ratePerUnit}
-                readOnly
-              />
-            </div>
-            <div className="item-field">
-              <label>Discount:</label>
-              <input
-                type="number"
-                value={subItem.discount}
-                readOnly
-              />
-            </div>
-            <div className="item-field">
-              <label>GST:</label>
-              <input
-                type="number"
-                value={subItem.gstPercentage}
+                value={item.quantity}
                 readOnly
               />
             </div>
@@ -1198,22 +999,95 @@ const handleRemoveSubItem = (itemIndex, subIndex) => {
               <label>Amount:</label>
               <input
                 type="number"
-                value={subItem.amount}
+                value={item.amount}
                 readOnly
               />
             </div>
             <button
               type="button"
-              onClick={() => handleRemoveSubItem(index, subIndex)}
+              className="delete-button"
+              onClick={() => handleDeleteItem(index)}
             >
-              Remove Sub-Item
+              <FontAwesomeIcon icon={faTrash} />
             </button>
-          </div>
+            {/* Render sub-items */}
+                    {item.subItems && item.subItems.length > 0 && (
+                      <div className="subitem-section">
+                        <h3>Sub-Items</h3>
+                        {item.subItems.map((subItem, subIndex) => (
+                          <div key={`${index}-${subIndex}`} className="sub-item">
+                            <div className="item-field">
+                              <label>Serial No:</label>
+                              <input type="text" value={`${item.sno}.${subIndex + 1}`} readOnly />
+                            </div>
+                            <div className="item-field">
+                              <label>Description:</label>
+                              <input
+                                type="text"
+                                value={subItem.description}
+                                readOnly
+                              />
+                            </div>
+                            <div className="item-field">
+                              <label>Unit:</label>
+                              <input
+                                type="text"
+                                value={subItem.unit}
+                                readOnly
+                              />
+                            </div>
+                            <div className="item-field">
+                              <label>Quantity:</label>
+                              <input
+                                type="number"
+                                value={subItem.quantity}
+                                readOnly
+                              />
+                            </div>
+                            <div className="item-field">
+                              <label>Rate Per Unit:</label>
+                              <input
+                                type="number"
+                                value={subItem.ratePerUnit}
+                                readOnly
+                              />
+                            </div>
+                            <div className="item-field">
+                              <label>Discount:</label>
+                              <input
+                                type="number"
+                                value={subItem.discount}
+                                readOnly
+                              />
+                            </div>
+                            <div className="item-field">
+                              <label>GST:</label>
+                              <input
+                                type="number"
+                                value={subItem.gstPercentage}
+                                readOnly
+                              />
+                            </div>
+                            <div className="item-field">
+                              <label>Amount:</label>
+                              <input
+                                type="number"
+                                value={subItem.amount}
+                                readOnly
+                              />
+                            </div>
+                            <button
+                              type="button"
+                              onClick={() => handleRemoveSubItem(index, subIndex)}
+                            >
+                              Remove Sub-Item
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
         ))}
-      </div>
-    )}
-  </div>
-))}
         <div className="total-amount-section">
           <h2>Total Amount</h2>
           <div>
