@@ -113,7 +113,7 @@ const styles = StyleSheet.create({
     right: 0, // Align to the edges
     textAlign: 'center',
     alignItems: 'center', // Center content horizontally
-    paddingBottom: 10,
+    // paddingBottom: 10,
   },
 
   itemsrow:{
@@ -270,10 +270,12 @@ const styles = StyleSheet.create({
     fontFamily: 'TimesNewRoman',
     textAlign: 'justify',
   },
+
   section: {
     margin: 10,
     flexGrow: 1,
   },
+
   customTextSection: {
     marginBottom: 10,
   },
