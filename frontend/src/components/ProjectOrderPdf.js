@@ -768,6 +768,7 @@ const ProjectOrderPDF = (props) => {
               </View>
               {props.signature && (
                 <View style={styles.signatureWrapper}>
+                  <Text style={[styles.texthead]}>GIRIK ENTERPRISES</Text>
                   <Image style={styles.signature} src={props.signature ? `http://13.234.47.87:5000${props.signature}` : ''} />
                 </View>
               )}
