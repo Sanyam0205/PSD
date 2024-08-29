@@ -19,7 +19,7 @@ function Signin() {
         e.preventDefault();
     
         try {
-            const response = await axios.post('http://localhost:5000/api/register', { 
+            const response = await axios.post('http://13.234.47.87:5000/api/register', { 
                 firstName, 
                 lastName, 
                 phoneNumber, 

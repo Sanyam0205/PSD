@@ -13,7 +13,7 @@ function Login({ onLogin }) {
         e.preventDefault();
 
         try {
-            const response = await axios.post('http://localhost:5000/api/login', { email, password });
+            const response = await axios.post('http://13.234.47.87:5000/api/login', { email, password });
 
             const userRole = response.data.role;
 
