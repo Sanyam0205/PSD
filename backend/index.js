@@ -9,7 +9,7 @@ const uploadRoutes = require('./routes/uploadRoutes');
 const purchaseOrderRoutes = require('./routes/projectOrderRoutes');
 const locationRoutes = require('./routes/locationRoutes');
 const { getNextSeriesPoNumber } = require('./controllers/ProjectOrderController');
-
+const bodyparser = require("body-parser");
 // Load environment variables
 dotenv.config();
 const app = express();
@@ -33,9 +33,10 @@ mongoose.connect(process.env.MONGO_URI, {
 // Define routes
 app.use('/api/vendors', require('./routes/vendorRoutes'));
 app.use('/api/project-orders', require('./routes/projectOrderRoutes'));
-app.use('/api/users', userRoutes);
 app.use(uploadRoutes);
 app.use(purchaseOrderRoutes);
 app.use('/api/location', locationRoutes);
 app.use('/api/series', getNextSeriesPoNumber);
-
+app.use(bodyparser.json());
+app.use("/api", userRoutes);
+app.use("/api", purchaseOrderRoutes);

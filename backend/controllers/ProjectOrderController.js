@@ -234,3 +234,16 @@ exports.getNextSeriesPoNumber = async (req, res) => {
   }
 };
 
+exports.getAllProjectOrders = async (req, res) => {
+  try {
+    // Fetch all project orders from the database
+    const projectOrders = await ProjectOrder.find();
+
+    // Return the list of project orders in the response
+    res.json(projectOrders);
+  } catch (error) {
+    // If an error occurs, return a 500 status code and an error message
+    console.error(error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+};

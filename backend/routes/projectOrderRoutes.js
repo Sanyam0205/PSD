@@ -8,7 +8,8 @@ const {
   addItemToProjectOrder,
   editProjectOrder,
   editItemInProjectOrder,
-  getNextSeriesPoNumber
+  getNextSeriesPoNumber,
+  getAllProjectOrders
 } = require('../controllers/ProjectOrderController');
 
 router.post('/', createProjectOrder);
@@ -17,6 +18,6 @@ router.post('/:poNumber/items', addItemToProjectOrder);
 router.put('/:poNumber', editProjectOrder); // New route for editing project order
 router.put('/:poNumber/items/:itemId', editItemInProjectOrder);
 router.get('/next-po-number', getNextSeriesPoNumber);
-
+router.get('/project-orders', getAllProjectOrders);
 
 module.exports = router;

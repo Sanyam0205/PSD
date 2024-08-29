@@ -64,7 +64,6 @@ const Form = () => {
       'PWM 2016 (and its amendments) and respective state Rules in connection with collection, storage, Transportation\n' +
       'and Disposal of Post- Consumers at below mentioned.'
   );
-
   const [Notes, setNotes] = useState(
     '\nIt may be noted that the above work will be carried out to our complete satisfaction if any amendment or alteration\n' +
       'are to be carried out due to mistakes or violation of any Rules on your parts, no extra payment will be payable for\n' +
@@ -80,7 +79,6 @@ const Form = () => {
       '  • LR Slip/ Transporter Bill of Transport\n' +
       '  • Un-Loading Weighing Slip'
   );
-
   const [tnc, settnc] = useState(
     `1. This PO Supersedes all previous discussions, offers & documents.
       2. All Above materials must be dispatched as per delivery schedules.
@@ -107,6 +105,7 @@ const Form = () => {
   const [vendors, setVendors] = useState([]);
   const [location, setlocation] = useState([]);
   const [delivery ,setdelivery] = useState([]);
+
   useEffect(() => {
     const fetchVendor = async () => {
       try {
