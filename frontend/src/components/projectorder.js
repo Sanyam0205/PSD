@@ -34,7 +34,7 @@ const ProjectOrd = () => {
   const handleSearchProjectOrder = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.get(`http://localhost:5000/api/project-orders/${searchedPoNumber}`);
+      const response = await axios.get(`http://13.234.47.87:5000/api/project-orders/${searchedPoNumber}`);
       const formattedProjectOrder = {
         ...response.data,
         poDate: response.data.poDate.split('T')[0] // Format date to "yyyy-MM-dd"
