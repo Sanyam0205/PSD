@@ -12,7 +12,7 @@ const Viewer = () => {
   useEffect(() => {
     const fetchPoList = async () => {
       try {
-        const response = await axios.get("http://13.234.47.87:5000/api/project-orders");
+        const response = await axios.get("http://13.234.47.87:5000/api/purchaseorders");
         
         // Check if the response data is an array
         if (Array.isArray(response.data)) {
