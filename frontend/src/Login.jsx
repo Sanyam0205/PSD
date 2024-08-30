@@ -1,166 +1,78 @@
-import React, { useState, useEffect } from "react";
-import axios from "axios";
-import { PDFViewer } from "@react-pdf/renderer";
-import ProjectOrderPDF from "./components/ProjectOrderPdf.js"; // Ensure this path is correct
-import styles from './Approver.css';
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import styles from './Signin.module.css';
 
-const Approver = () => {
-  const [poList, setPoList] = useState([]); // List of POs
-  const [selectedPo, setSelectedPo] = useState(null); // Selected PO for PDF preview
-  const [showPDFPreview, setShowPDFPreview] = useState(false);
+function Login({ onLogin }) {
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const navigate = useNavigate();
 
-  // Fetch the list of POs on component mount
-  useEffect(() => {
-    const fetchPoList = async () => {
-      try {
-        const response = await axios.get("http://13.234.47.87:5000/api/project-orders/all");
-        
-        // Check if the response data is an array
-        if (Array.isArray(response.data)) {
-          const formattedPoList = response.data.map((po) => ({
-            ...po,
-            poDate: po.poDate ? po.poDate.split('T')[0] : '', // Format date to "yyyy-MM-dd"
-          }));
-          setPoList(formattedPoList);
-        } else {
-          console.error("Unexpected response format:", response.data);
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+
+        try {
+            const response = await axios.post('http://13.234.47.87:5000/api/login', { email, password });
+
+            const { role, username, id } = response.data; // Assuming the API returns user id as well
+            console.log('Login successful:', response.data);
+
+            localStorage.setItem('userId', id); // Save the user ID
+
+            onLogin(role, username);
+
+            switch (role) {
+                case 'Creator':
+                    navigate('/creator');
+                    break;
+                case 'Viewer':
+                    navigate('/viewer');
+                    break;
+                case 'Approver':
+                    navigate('/approver');
+                    break;
+                case 'Admin':
+                    navigate('/home');
+                    break;
+                default:
+                    console.error('Unknown role:', role);
+                    break;
+            }
+        } catch (error) {
+            console.error('Login failed:', error);
         }
-      } catch (error) {
-        console.error("Error fetching PO list:", error);
-      }
     };
-    
-    fetchPoList();
-  }, []);
 
-  // Handler to mark a PO as approved
-  const handleApprove = async (po) => {
-    try {
-      const updatedPo = { ...po, status: "Approved" };
-      const response = await axios.put(`http://13.234.47.87:5000/api/project-orders/${po.poNumber}`, updatedPo);
-
-      if (response.status === 200) {
-        setPoList((prevList) =>
-          prevList.map((item) =>
-            item.poNumber === po.poNumber ? { ...item, status: "Approved" } : item
-          )
-        );
-      }
-    } catch (error) {
-      console.error("Error approving PO:", error);
-    }
-  };
-
-  // Handler to mark a PO as pending
-  const handlePending = async (po) => {
-    try {
-      const updatedPo = { ...po, status: "Pending" };
-      const response = await axios.put(`http://13.234.47.87:5000/api/project-orders/${po.poNumber}`, updatedPo);
-
-      if (response.status === 200) {
-        setPoList((prevList) =>
-          prevList.map((item) =>
-            item.poNumber === po.poNumber ? { ...item, status: "Pending" } : item
-          )
-        );
-      }
-    } catch (error) {
-      console.error("Error marking PO as pending:", error);
-    }
-  };
-
-  // Handler for selecting a PO to preview
-  const handlePoClick = (po) => {
-    setSelectedPo(po);
-    setShowPDFPreview(true);
-  };
-
-  // Close PDF Preview
-  const handleClosePDFPreview = () => {
-    setShowPDFPreview(false);
-    setSelectedPo(null);
-  };
-
-  return (
-    <div className="form-container">
-      <h2>Purchase Orders - Approver</h2>
-      <table className={styles.table}>
-        <thead>
-          <tr>
-            <th>PO Number</th>
-            <th>Vendor Name</th>
-            <th>Status</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {poList.map((po, index) => (
-            <tr key={index}>
-              <td>{po.poNumber}</td>
-              <td>{po.name}</td>
-              <td>{po.status || "Pending"}</td>
-              <td>
-                <button onClick={() => handleApprove(po)}>Approve</button>
-                <button onClick={() => handlePending(po)}>Mark as Pending</button>
-                <button onClick={() => handlePoClick(po)}>View PDF</button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-
-      {showPDFPreview && selectedPo && (
-        <div className="pdf-preview">
-          <h3>PDF Preview - PO Number: {selectedPo.poNumber}</h3>
-          <PDFViewer width="100%" height="600" style={{ border: '1px solid black' }}>
-            <ProjectOrderPDF
-              vendorCode={selectedPo.vendorCode}
-              name={selectedPo.name}
-              contactperson={selectedPo.contactperson}
-              address={selectedPo.address}
-              district={selectedPo.district}
-              state={selectedPo.state}
-              pinCode={selectedPo.pinCode}
-              email={selectedPo.email}
-              contact={selectedPo.contact}
-              gstNumber={selectedPo.gstNumber}
-              locationCode={selectedPo.locationCode}
-              billtoname={selectedPo.billtoname}
-              billtocp={selectedPo.billtocp}
-              billToAddress={selectedPo.billToAddress}
-              billToDistrict={selectedPo.billToDistrict}
-              billToState={selectedPo.billToState}
-              billToPinCode={selectedPo.billToPinCode}
-              billToContact={selectedPo.billToContact}
-              billToEmail={selectedPo.billToEmail}
-              billToGstNumber={selectedPo.billToGstNumber}
-              shippingAddress={selectedPo.shippingAddress}
-              deliveryLocationCode={selectedPo.deliveryLocationCode}
-              deliveryName={selectedPo.deliveryName}
-              delcp={selectedPo.delcp}
-              deliveryDistrict={selectedPo.deliveryDistrict}
-              deliveryState={selectedPo.deliveryState}
-              deliveryPinCode={selectedPo.deliveryPinCode}
-              deliveryContact={selectedPo.deliveryContact}
-              deliveryEmail={selectedPo.deliveryEmail}
-              deliveryGstNumber={selectedPo.deliveryGstNumber}
-              poNumber={selectedPo.poNumber}
-              poDate={selectedPo.poDate}
-              podeliverydate={selectedPo.podeliverydate}
-              type={selectedPo.type}
-              items={selectedPo.items}
-              totalAmount={selectedPo.totalAmount}
-              topsection={selectedPo.topsection}
-              Notes={selectedPo.Notes}
-              tnc={selectedPo.tnc}
-              signature={selectedPo.signatureUrl}
-            />
-          </PDFViewer>
-          <button onClick={handleClosePDFPreview}>Close PDF Preview</button>
+    return (
+        <div className={styles.container}>
+            <form onSubmit={handleSubmit} className={styles.formContainer}>
+                <h1 className={styles.header}>Login</h1>
+                <div className={styles.uiForm}>
+                    <div className={styles.field}>
+                        <label>Email</label>
+                        <input
+                            type="text"
+                            name="email"
+                            placeholder="Email"
+                            onChange={(e) => setEmail(e.target.value)}
+                            className={styles.inputField}
+                        />
+                    </div>
+                    <div className={styles.field}>
+                        <label>Password</label>
+                        <input
+                            type="password"
+                            name="password"
+                            placeholder="Password"
+                            onChange={(e) => setPassword(e.target.value)}
+                            className={styles.inputField}
+                        />
+                    </div>
+                    <button type="submit" className={styles.button}>Submit</button>
+                </div>
+            </form>
         </div>
-      )}
-    </div>
-  );
-};
+    );
+}
 
-export default Approver;
+export default Login;

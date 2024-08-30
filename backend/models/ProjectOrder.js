@@ -69,10 +69,7 @@ const projectOrderSchema = new mongoose.Schema({
     uploadDate: { type: Date, default: Date.now },
   },
   status: { type: String, default: 'Pending' },
-  
-  // New fields for tracking user actions
-  createdBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
-  approvedBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+  approvedBy: String,
 });
 
 module.exports = mongoose.model('ProjectOrder', projectOrderSchema);
