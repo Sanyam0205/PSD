@@ -681,6 +681,7 @@ const Form = () => {
           fileSize: signature?.size,
           mimeType: signature?.type,
         },
+        status: 'pending',
       };
       await axios.post('http://13.234.47.87:5000/api/project-orders', projectOrder);
       alert('Project order submitted successfully');
