@@ -14,13 +14,15 @@ const Viewer = () => {
       try {
         const response = await axios.get("http://13.234.47.87:5000/api/project-orders/all");
         
-        // Check if the response data is an array
+        // Check if the response data is an array and filter for approved POs
         if (Array.isArray(response.data)) {
-          const formattedPoList = response.data.map((po) => ({
-            ...po,
-            poDate: po.poDate ? po.poDate.split('T')[0] : '', // Format date to "yyyy-MM-dd"
-          }));
-          setPoList(formattedPoList);
+          const approvedPoList = response.data
+            .filter(po => po.status === "Approved") // Filter POs with "Approved" status
+            .map((po) => ({
+              ...po,
+              poDate: po.poDate ? po.poDate.split('T')[0] : '', // Format date to "yyyy-MM-dd"
+            }));
+          setPoList(approvedPoList);
         } else {
           console.error("Unexpected response format:", response.data);
         }
@@ -46,7 +48,7 @@ const Viewer = () => {
 
   return (
     <div className="form-container">
-      <h2>Purchase Orders</h2>
+      <h2>Approved Purchase Orders</h2>
       <table>
         <thead>
           <tr>
