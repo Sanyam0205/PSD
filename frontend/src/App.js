@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Form from './components/form';
 import ProjectOrd from './components/projectorder';
@@ -13,8 +13,7 @@ import Approver from './Approver';
 import UserManagement from './UserManagement';
 import Sidebar from './Sidebar';
 import AppDash from './AppDash';
-import PrivateRoute from './PrivateRoute'; // Import PrivateRoute
-// import Settings from './Settings'; // Assuming Settings component exists
+import PrivateRoute from './PrivateRoute';
 import './App.css';
 
 function App() {
@@ -128,6 +127,14 @@ function App() {
               element={
                 <PrivateRoute isAuthenticated={isAuthenticated} role={role} allowedRoles={['Approver']}>
                   <AppDash />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/signin-admin"
+              element={
+                <PrivateRoute isAuthenticated={isAuthenticated} role={role} allowedRoles={['Admin']}>
+                  <Signin />
                 </PrivateRoute>
               }
             />

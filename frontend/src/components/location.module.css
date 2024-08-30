@@ -1,0 +1,200 @@
+/* Main Content Area */
+.formContainer {
+  width: calc(100% - 200px); /* Adjust the width to account for the sidebar */
+  margin-left: 230px; /* Shift content to the right, next to the sidebar */
+  padding: 20px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  text-align: left; /* Ensure text is left-justified */
+}
+
+h2, h3 {
+  color: #333;
+  margin-bottom: 20px;
+  text-align: left; /* Ensure headings are left-justified */
+}
+
+.form {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  text-align: left; /* Ensure form content is left-justified */
+}
+
+.item-field {
+  display: flex;
+  flex-direction: column;
+  text-align: left; /* Ensure each item field is left-justified */
+}
+
+.item-field label {
+  font-weight: bold;
+  margin-bottom: 5px;
+  color: #555;
+}
+
+.item-field input {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+button[type="submit"] {
+  grid-column: span 2;
+  padding: 10px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+  text-align: center; /* Center the text on the button */
+}
+
+button[type="submit"]:hover {
+  background-color: #0056b3;
+}
+
+ul {
+  list-style-type: none;
+  padding: 0;
+  margin-top: 20px;
+}
+
+.item {
+  background-color: #fff;
+  margin-bottom: 15px;
+  padding: 15px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.item-fields {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  text-align: left; /* Ensure fields are left-justified */
+}
+
+.item-field {
+  word-break: break-word;
+}
+
+.item-field strong {
+  font-weight: bold;
+  color: #333;
+}
+
+.item-field span {
+  display: block;
+  min-height: 30px; /* Ensure uniform height for all data fields */
+  padding: 5px;
+  background-color: #f1f1f1;
+  border-radius: 4px;
+  margin-bottom: 5px;
+}
+
+.item-field button {
+  padding: 8px 12px;
+  margin-top: 5px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.item-field button:hover {
+  background-color: #0056b3;
+}
+
+.item-field button:last-child {
+  background-color: #dc3545;
+}
+
+.item-field button:last-child:hover {
+  background-color: #c82333;
+}
+
+@media (max-width: 600px) {
+  .form {
+    grid-template-columns: 1fr;
+  }
+
+  .item-fields {
+    grid-template-columns: 1fr;
+  }
+
+  button[type="submit"] {
+    grid-column: span 1;
+  }
+}
+
+/* Sidebar */
+.sidebar {
+  width: 200px;
+  background-color: #f4f4f4;
+  padding: 15px;
+  position: fixed;
+  height: 100%;
+}
+
+.sidebar ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.sidebar ul li {
+  margin-bottom: 10px;
+}
+
+.sidebar ul li a {
+  text-decoration: none;
+  color: #333;
+  display: block;
+  padding: 10px;
+  border-radius: 5px;
+  transition: background-color 0.3s;
+}
+
+.sidebar ul li a:hover {
+  background-color: #ddd;
+}
+
+.logout-button {
+  width: 100%;
+  padding: 10px;
+  background-color: #f44336;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.logout-button:hover {
+  background-color: #c62828;
+}
+
+.sidebar .profile-section {
+  padding: 20px;
+  text-align: center;
+  border-bottom: 1px solid #ccc;
+}
+
+.profile-section h3 {
+  margin: 0;
+  color: #333;
+}
+
+.settings-link {
+  display: block;
+  margin-top: 10px;
+  color: #007bff;
+  text-decoration: none;
+}
+
+.settings-link:hover {
+  text-decoration: underline;
+}

@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import styles from './location.module.css'; // Importing CSS Module
 
 const LocationManagement = () => {
-  const [location, setLocation] = useState([]);
-  const [formData, setFormData] = useState({
+  const initialFormData = {
     locationCode: '',
     billtoname: '',
     billtocp: '',
@@ -14,7 +14,11 @@ const LocationManagement = () => {
     billToGstNumber: '',
     billToContact: '',
     billToEmail: ''
-  });
+  };
+
+  const [location, setLocation] = useState([]);
+  const [formData, setFormData] = useState(initialFormData);
+  const [error, setError] = useState('');
 
   useEffect(() => {
     fetchLocation();
@@ -25,6 +29,7 @@ const LocationManagement = () => {
       const response = await axios.get('http://13.234.47.87:5000/api/location');
       setLocation(response.data);
     } catch (error) {
+      setError('Error fetching locations.');
       console.error('Error fetching location:', error);
     }
   };
@@ -35,7 +40,7 @@ const LocationManagement = () => {
 
   const generateLocationCode = () => {
     if (location.length === 0) return 'LOC00001';
-    const codes = location.map(loc => parseInt(loc.locationCode.replace('LOC', '')));
+    const codes = location.map(loc => parseInt(loc.locationCode.replace('LOC', ''), 10));
     const maxCode = Math.max(...codes);
     return `LOC${String(maxCode + 1).padStart(5, '0')}`;
   };
@@ -53,19 +58,9 @@ const LocationManagement = () => {
         await axios.post('http://13.234.47.87:5000/api/location', formData);
       }
       fetchLocation();
-      setFormData({
-        locationCode: '',
-        billtoname: '',
-        billtocp:'',
-        billToAddress: '',
-        billToDistrict: '',
-        billToState: '',
-        billToPinCode: '',
-        billToGstNumber: '',
-        billToContact: '',
-        billToEmail: ''
-      });
+      setFormData(initialFormData);
     } catch (error) {
+      setError('Error submitting location.');
       console.error('Error submitting location:', error);
     }
   };
@@ -77,6 +72,7 @@ const LocationManagement = () => {
         await axios.delete(`http://13.234.47.87:5000/api/location/${code}`);
         fetchLocation();
       } catch (error) {
+        setError('Error deleting location.');
         console.error('Error deleting location:', error);
       }
     }
@@ -85,83 +81,74 @@ const LocationManagement = () => {
   const handleUpdate = (code) => {
     const existingLocation = location.find(loc => loc.locationCode === code);
     if (existingLocation) {
-      setFormData({
-        locationCode: existingLocation.locationCode,
-        billtoname: existingLocation.billtoname,
-        billtocp: existingLocation.billtocp,
-        billToAddress: existingLocation.billToAddress,
-        billToDistrict: existingLocation.billToDistrict,
-        billToState: existingLocation.billToState,
-        billToPinCode: existingLocation.billToPinCode,
-        billToGstNumber: existingLocation.billToGstNumber,
-        billToContact: existingLocation.billToContact,
-        billToEmail: existingLocation.billToEmail
-      });
+      setFormData(existingLocation);
     } else {
+      setError('Location not found.');
       console.error('Location not found.');
     }
   };
 
   return (
-    <div className="form-container">
+    <div className={styles.formContainer}>
       <h2>Location Management</h2>
-      <form onSubmit={handleSubmit} className="form">
-        <div className="item-field">
+      {error && <p className={styles.error}>{error}</p>}
+      <form onSubmit={handleSubmit} className={styles.form}>
+        <div className={styles.itemField}>
           <label>Bill To Name:</label>
           <input type="text" name="billtoname" value={formData.billtoname} onChange={handleChange} required />
         </div>
-        <div className="item-field">
+        <div className={styles.itemField}>
           <label>Bill To Contact Name:</label>
           <input type="text" name="billtocp" value={formData.billtocp} onChange={handleChange} required />
         </div>
-        <div className="item-field">
+        <div className={styles.itemField}>
           <label>Bill To Address:</label>
           <input type="text" name="billToAddress" value={formData.billToAddress} onChange={handleChange} required />
         </div>
-        <div className="item-field">
+        <div className={styles.itemField}>
           <label>Bill To District:</label>
           <input type="text" name="billToDistrict" value={formData.billToDistrict} onChange={handleChange} required />
         </div>
-        <div className="item-field">
+        <div className={styles.itemField}>
           <label>Bill To State:</label>
           <input type="text" name="billToState" value={formData.billToState} onChange={handleChange} required />
         </div>
-        <div className="item-field">
+        <div className={styles.itemField}>
           <label>Bill To Pin Code:</label>
           <input type="text" name="billToPinCode" value={formData.billToPinCode} onChange={handleChange} required />
         </div>
-        <div className="item-field">
+        <div className={styles.itemField}>
           <label>Bill To GST Number:</label>
           <input type="text" name="billToGstNumber" value={formData.billToGstNumber} onChange={handleChange} required />
         </div>
-        <div className="item-field">
+        <div className={styles.itemField}>
           <label>Bill To Contact:</label>
           <input type="text" name="billToContact" value={formData.billToContact} onChange={handleChange} required />
         </div>
-        <div className="item-field">
+        <div className={styles.itemField}>
           <label>Bill To Email:</label>
           <input type="email" name="billToEmail" value={formData.billToEmail} onChange={handleChange} required />
         </div>
-        <button type="submit">Add/Update Location</button>
+        <button type="submit" className={styles.submitButton}>Add/Update Location</button>
       </form>
-      <h3>location</h3>
-      <ul>
-        {location.map(location => (
-          <li key={location._id} className="item">
-            <div className="item-fields">
-              <div className="item-field"><strong>Code:</strong> {location.locationCode}</div>
-              <div className="item-field"><strong>Name:</strong> {location.billtoname}</div>
-              <div className="item-field"><strong>Contact Name:</strong> {location.billtocp}</div>
-              <div className="item-field"><strong>Address:</strong> {location.billToAddress}</div>
-              <div className="item-field"><strong>District:</strong> {location.billToDistrict}</div>
-              <div className="item-field"><strong>State:</strong> {location.billToState}</div>
-              <div className="item-field"><strong>Pin Code:</strong> {location.billToPinCode}</div>
-              <div className="item-field"><strong>GST Number:</strong> {location.billToGstNumber}</div>
-              <div className="item-field"><strong>Contact:</strong> {location.billToContact}</div>
-              <div className="item-field"><strong>Email:</strong> {location.billToEmail}</div>
-              <div className="item-field">
-                <button onClick={() => handleDelete(location.locationCode)}>Delete</button>
-                <button onClick={() => handleUpdate(location.locationCode)}>Update</button>
+      <h3>Locations</h3>
+      <ul className={styles.locationList}>
+        {location.map(loc => (
+          <li key={loc._id} className={styles.item}>
+            <div className={styles.itemFields}>
+              <div className={styles.itemField}><strong>Code:</strong> {loc.locationCode}</div>
+              <div className={styles.itemField}><strong>Name:</strong> {loc.billtoname}</div>
+              <div className={styles.itemField}><strong>Contact Name:</strong> {loc.billtocp}</div>
+              <div className={styles.itemField}><strong>Address:</strong> {loc.billToAddress}</div>
+              <div className={styles.itemField}><strong>District:</strong> {loc.billToDistrict}</div>
+              <div className={styles.itemField}><strong>State:</strong> {loc.billToState}</div>
+              <div className={styles.itemField}><strong>Pin Code:</strong> {loc.billToPinCode}</div>
+              <div className={styles.itemField}><strong>GST Number:</strong> {loc.billToGstNumber}</div>
+              <div className={styles.itemField}><strong>Contact:</strong> {loc.billToContact}</div>
+              <div className={styles.itemField}><strong>Email:</strong> {loc.billToEmail}</div>
+              <div className={styles.itemField}>
+                <button onClick={() => handleDelete(loc.locationCode)} className={styles.deleteButton}>Delete</button>
+                <button onClick={() => handleUpdate(loc.locationCode)} className={styles.updateButton}>Update</button>
               </div>
             </div>
           </li>

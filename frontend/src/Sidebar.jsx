@@ -12,10 +12,10 @@ function Sidebar({ role, onLogout, username }) { // Add username prop
 
   return (
     <div className="sidebar">
-      <div className="profile-section">
-        <h3>{username}</h3> {/* Display the username */}
-        <Link to="/settings" className="settings-link">Settings</Link> {/* Add settings link */}
-      </div>
+      {/* <div className="profile-section">
+        <h3>{username}</h3> 
+        <Link to="/Settings" className="settings-link">Settings</Link>
+      </div> */}
       <ul>
         {/* Role-based Links */}
         {role === 'Creator' && (
@@ -42,9 +42,10 @@ function Sidebar({ role, onLogout, username }) { // Add username prop
             <li><Link to="/home">Home</Link></li>
             <li><Link to="/form">Form</Link></li>
             <li><Link to="/projectorder">Project Order</Link></li>
-            <li><Link to="/usermanagement">User Management</Link></li>
+            <li><Link to="/usermanagement">User</Link></li>
             <li><Link to="/location">Location</Link></li>
             <li><Link to="/vendor">Vendor</Link></li>
+            <li><Link to="/Signin">Signin</Link></li>
           </>
         )}
         {/* Common Logout Button for All Roles */}

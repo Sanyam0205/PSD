@@ -1,6 +1,6 @@
-
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import styles from './location.module.css';
 
 const VendorManagement = () => {
   const [vendors, setVendors] = useState([]);
@@ -104,42 +104,42 @@ const VendorManagement = () => {
   };
 
   return (
-    <div className="form-container">
+    <div className={styles.formContainer}>
       <h2>Vendor Management</h2>
-      <form onSubmit={handleSubmit} className="form">
-        <div className="item-field">
+      <form onSubmit={handleSubmit} className={styles.form}>
+        <div className={styles['item-field']}>
           <label>Name:</label>
           <input type="text" name="name" value={formData.name} onChange={handleChange} />
         </div>
-        <div className="item-field">
+        <div className={styles['item-field']}>
           <label>Contact Person:</label>
           <input type="text" name="contactperson" value={formData.contactperson} onChange={handleChange} />
         </div>
-        <div className="item-field">
+        <div className={styles['item-field']}>
           <label>Address:</label>
           <input type="text" name="address" value={formData.address} onChange={handleChange} />
         </div>
-        <div className="item-field">
+        <div className={styles['item-field']}>
           <label>District:</label>
           <input type="text" name="district" value={formData.district} onChange={handleChange} />
         </div>
-        <div className="item-field">
+        <div className={styles['item-field']}>
           <label>state:</label>
           <input type="text" name="state" value={formData.state} onChange={handleChange} />
         </div>
-        <div className="item-field">
+        <div className={styles['item-field']}>
           <label>Pin Code:</label>
           <input type="text" name="pinCode" value={formData.pinCode} onChange={handleChange} />
         </div>
-        <div className="item-field">
+        <div className={styles['item-field']}>
           <label>Email:</label>
           <input type="email" name="email" value={formData.email} onChange={handleChange} />
         </div>
-        <div className="item-field">
+        <div className={styles['item-field']}>
           <label>Contact:</label>
           <input type="text" name="contact" value={formData.contact} onChange={handleChange} />
         </div>
-        <div className="item-field">
+        <div className={styles['item-field']}>
           <label>GST Number:</label>
           <input type="text" name="gstNumber" value={formData.gstNumber} onChange={handleChange} />
         </div>
@@ -148,19 +148,19 @@ const VendorManagement = () => {
       <h3>Vendors</h3>
       <ul>
         {vendors.map(vendor => (
-          <li key={vendor._id} className="item">
-            <div className="item-fields">
-              <div className="item-field"><strong>Name:</strong> {vendor.name}</div>
-              <div className="item-field"><strong>Code:</strong> {vendor.vendorCode}</div>
-              <div className="item-field"><strong>Contact Person:</strong> {vendor.contactperson}</div>
-              <div className="item-field"><strong>Address:</strong> {vendor.address}</div>
-              <div className="item-field"><strong>District:</strong> {vendor.district}</div>
-              <div className="item-field"><strong>state:</strong> {vendor.state}</div>
-              <div className="item-field"><strong>Pin Code:</strong> {vendor.pinCode}</div>
-              <div className="item-field"><strong>Email:</strong> {vendor.email}</div>
-              <div className="item-field"><strong>Contact:</strong> {vendor.contact}</div>
-              <div className="item-field"><strong>GST Number:</strong> {vendor.gstNumber}</div>
-              <div className="item-field">
+          <li key={vendor._id} className={styles.item}>
+            <div className={styles['item-fields']}>
+              <div className={styles['item-field']}><strong>Name:</strong> <span>{vendor.name}</span></div>
+              <div className={styles['item-field']}><strong>Code:</strong> <span>{vendor.vendorCode}</span></div>
+              <div className={styles['item-field']}><strong>Contact Person:</strong> <span>{vendor.contactperson}</span></div>
+              <div className={styles['item-field']}><strong>Address:</strong> <span>{vendor.address}</span></div>
+              <div className={styles['item-field']}><strong>District:</strong> <span>{vendor.district}</span></div>
+              <div className={styles['item-field']}><strong>state:</strong> <span>{vendor.state}</span></div>
+              <div className={styles['item-field']}><strong>Pin Code:</strong> <span>{vendor.pinCode}</span></div>
+              <div className={styles['item-field']}><strong>Email:</strong> <span>{vendor.email}</span></div>
+              <div className={styles['item-field']}><strong>Contact:</strong> <span>{vendor.contact}</span></div>
+              <div className={styles['item-field']}><strong>GST Number:</strong> <span>{vendor.gstNumber}</span></div>
+              <div className={styles['item-field']}>
                 <button onClick={() => handleDelete(vendor.vendorCode)}>Delete</button>
                 <button onClick={() => handleUpdate(vendor.vendorCode)}>Update</button>
               </div>
@@ -173,5 +173,3 @@ const VendorManagement = () => {
 };
 
 export default VendorManagement;
-
-
