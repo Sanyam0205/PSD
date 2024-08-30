@@ -10,6 +10,7 @@ const purchaseOrderRoutes = require('./routes/projectOrderRoutes');
 const locationRoutes = require('./routes/locationRoutes');
 const { getNextSeriesPoNumber } = require('./controllers/ProjectOrderController');
 const bodyparser = require("body-parser");
+const projectOrderRoutes = require('./routes/projectOrderRoutes');
 // Load environment variables
 dotenv.config();
 const app = express();
@@ -39,5 +40,5 @@ app.use('/api/location', locationRoutes);
 app.use('/api/series', getNextSeriesPoNumber);
 app.use(bodyparser.json());
 app.use("/api", userRoutes);
-app.use('/api/project-orders', purchaseOrderRoutes);
+app.use('/api/projectorders', projectOrderRoutes);
 
