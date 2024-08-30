@@ -46,7 +46,7 @@ exports.createProjectOrder = async (req, res) => {
     tnc,
     signature,
     status,
-    approvedby,
+    approvedBy,
   } = req.body;
   const totalAmount = calculateTotalAmount(items);
 
@@ -92,7 +92,7 @@ exports.createProjectOrder = async (req, res) => {
     tnc,
     signature,
     status,
-    approvedby,
+    approvedBy,
   });
 
   try {
