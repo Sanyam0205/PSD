@@ -67,6 +67,7 @@ const projectOrderSchema = new mongoose.Schema({
     mimeType: { type: String },
     uploadDate: { type: Date, default: Date.now },
   },
+  status: { type: String, default: 'Pending' },
 
 });
 
