@@ -59,7 +59,7 @@ const Viewer = () => {
           {poList.map((po, index) => (
             <tr key={index}>
               <td>{po.poNumber}</td>
-              <td>{po.vendorName}</td>
+              <td>{po.name}</td>
               <td>
                 <button onClick={() => handlePoClick(po)}>View PDF</button>
               </td>
