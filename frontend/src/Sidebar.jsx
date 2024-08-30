@@ -1,23 +1,46 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import axios from 'axios';
 import './Sidebar.css';
 
-function Sidebar({ role, onLogout, username }) { // Add username prop
+function Sidebar({ role, onLogout, username }) {
   const navigate = useNavigate();
+  const [userDetails, setUserDetails] = useState(null);
+  const [isExpanded, setIsExpanded] = useState(false);
+
+  useEffect(() => {
+    const userId = localStorage.getItem('userId');
+
+    if (userId) {
+      axios.get(`http://13.234.47.87:5000/api/users/${userId}`)
+        .then(response => {
+          setUserDetails(response.data);
+        })
+        .catch(error => {
+          console.error('Error fetching user details:', error);
+        });
+    }
+  }, []);
 
   const handleLogout = () => {
     onLogout();
+    localStorage.removeItem('userId'); // Clear the user ID on logout
     navigate('/');
   };
 
   return (
     <div className="sidebar">
-      {/* <div className="profile-section">
-        <h3>{username}</h3> 
-        <Link to="/Settings" className="settings-link">Settings</Link>
-      </div> */}
+      <div className="profile-section" onClick={() => setIsExpanded(!isExpanded)}>
+        <h3>{username}</h3>
+        {isExpanded && userDetails && (
+          <div className="user-details">
+            <p>Email: {userDetails.email}</p>
+            <p>Phone: {userDetails.phoneNumber}</p>
+          </div>
+        )}
+      </div>
+
       <ul>
-        {/* Role-based Links */}
         {role === 'Creator' && (
           <>
             <li><Link to="/creator">Home</Link></li>
@@ -42,13 +65,12 @@ function Sidebar({ role, onLogout, username }) { // Add username prop
             <li><Link to="/home">Home</Link></li>
             <li><Link to="/form">Form</Link></li>
             <li><Link to="/projectorder">Project Order</Link></li>
-            <li><Link to="/usermanagement">User</Link></li>
+            <li><Link to="/usermanagement">User Management</Link></li>
             <li><Link to="/location">Location</Link></li>
             <li><Link to="/vendor">Vendor</Link></li>
-            <li><Link to="/Signin">Signin</Link></li>
+            <li><Link to="/signin">Signin</Link></li>
           </>
         )}
-        {/* Common Logout Button for All Roles */}
         <li>
           <button className="logout-button" onClick={handleLogout}>Logout</button>
         </li>

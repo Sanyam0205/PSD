@@ -11,6 +11,7 @@ const locationRoutes = require('./routes/locationRoutes');
 const { getNextSeriesPoNumber } = require('./controllers/ProjectOrderController');
 const bodyparser = require("body-parser");
 const projectOrderRoutes = require('./routes/projectOrderRoutes');
+const dashboardRoutes = require('./routes/DashboardRoutes')
 // Load environment variables
 dotenv.config();
 const app = express();
@@ -39,4 +40,4 @@ app.use('/api/location', locationRoutes);
 app.use('/api/series', getNextSeriesPoNumber);
 app.use("/api", userRoutes);
 app.use('/api/project-orders', projectOrderRoutes);
-
+// app.use('/api/dashboard', dashboardRoutes);

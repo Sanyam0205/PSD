@@ -93,39 +93,39 @@ const LocationManagement = () => {
       <h2>Location Management</h2>
       {error && <p className={styles.error}>{error}</p>}
       <form onSubmit={handleSubmit} className={styles.form}>
-        <div className={styles.itemField}>
+        <div className={styles['item-field']}>
           <label>Bill To Name:</label>
           <input type="text" name="billtoname" value={formData.billtoname} onChange={handleChange} required />
         </div>
-        <div className={styles.itemField}>
+        <div className={styles['item-field']}>
           <label>Bill To Contact Name:</label>
           <input type="text" name="billtocp" value={formData.billtocp} onChange={handleChange} required />
         </div>
-        <div className={styles.itemField}>
+        <div className={styles['item-field']}>
           <label>Bill To Address:</label>
           <input type="text" name="billToAddress" value={formData.billToAddress} onChange={handleChange} required />
         </div>
-        <div className={styles.itemField}>
+        <div className={styles['item-field']}>
           <label>Bill To District:</label>
           <input type="text" name="billToDistrict" value={formData.billToDistrict} onChange={handleChange} required />
         </div>
-        <div className={styles.itemField}>
+        <div className={styles['item-field']}>
           <label>Bill To State:</label>
           <input type="text" name="billToState" value={formData.billToState} onChange={handleChange} required />
         </div>
-        <div className={styles.itemField}>
+        <div className={styles['item-field']}>
           <label>Bill To Pin Code:</label>
           <input type="text" name="billToPinCode" value={formData.billToPinCode} onChange={handleChange} required />
         </div>
-        <div className={styles.itemField}>
+        <div className={styles['item-field']}>
           <label>Bill To GST Number:</label>
           <input type="text" name="billToGstNumber" value={formData.billToGstNumber} onChange={handleChange} required />
         </div>
-        <div className={styles.itemField}>
+        <div className={styles['item-field']}>
           <label>Bill To Contact:</label>
           <input type="text" name="billToContact" value={formData.billToContact} onChange={handleChange} required />
         </div>
-        <div className={styles.itemField}>
+        <div className={styles['item-field']}>
           <label>Bill To Email:</label>
           <input type="email" name="billToEmail" value={formData.billToEmail} onChange={handleChange} required />
         </div>
@@ -135,18 +135,18 @@ const LocationManagement = () => {
       <ul className={styles.locationList}>
         {location.map(loc => (
           <li key={loc._id} className={styles.item}>
-            <div className={styles.itemFields}>
-              <div className={styles.itemField}><strong>Code:</strong> {loc.locationCode}</div>
-              <div className={styles.itemField}><strong>Name:</strong> {loc.billtoname}</div>
-              <div className={styles.itemField}><strong>Contact Name:</strong> {loc.billtocp}</div>
-              <div className={styles.itemField}><strong>Address:</strong> {loc.billToAddress}</div>
-              <div className={styles.itemField}><strong>District:</strong> {loc.billToDistrict}</div>
-              <div className={styles.itemField}><strong>State:</strong> {loc.billToState}</div>
-              <div className={styles.itemField}><strong>Pin Code:</strong> {loc.billToPinCode}</div>
-              <div className={styles.itemField}><strong>GST Number:</strong> {loc.billToGstNumber}</div>
-              <div className={styles.itemField}><strong>Contact:</strong> {loc.billToContact}</div>
-              <div className={styles.itemField}><strong>Email:</strong> {loc.billToEmail}</div>
-              <div className={styles.itemField}>
+            <div className={styles['item-fields']}>
+              <div className={styles['item-field']}><strong>Code:</strong> {loc.locationCode}</div>
+              <div className={styles['item-field']}><strong>Name:</strong> {loc.billtoname}</div>
+              <div className={styles['item-field']}><strong>Contact Name:</strong> {loc.billtocp}</div>
+              <div className={styles['item-field']}><strong>Address:</strong> {loc.billToAddress}</div>
+              <div className={styles['item-field']}><strong>District:</strong> {loc.billToDistrict}</div>
+              <div className={styles['item-field']}><strong>State:</strong> {loc.billToState}</div>
+              <div className={styles['item-field']}><strong>Pin Code:</strong> {loc.billToPinCode}</div>
+              <div className={styles['item-field']}><strong>GST Number:</strong> {loc.billToGstNumber}</div>
+              <div className={styles['item-field']}><strong>Contact:</strong> {loc.billToContact}</div>
+              <div className={styles['item-field']}><strong>Email:</strong> {loc.billToEmail}</div>
+              <div className={styles['item-field']}>
                 <button onClick={() => handleDelete(loc.locationCode)} className={styles.deleteButton}>Delete</button>
                 <button onClick={() => handleUpdate(loc.locationCode)} className={styles.updateButton}>Update</button>
               </div>

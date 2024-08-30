@@ -64,4 +64,12 @@
   .settings-link:hover {
     text-decoration: underline;
   }
-  
+  .profile-section {
+    cursor: pointer;
+}
+
+.user-details {
+    margin-top: 10px;
+    font-size: 14px;
+    color: #555;
+}

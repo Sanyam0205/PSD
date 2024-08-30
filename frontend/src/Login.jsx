@@ -1,8 +1,7 @@
-// Login.js
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import './Signin.css';
+import styles from './Signin.module.css';
 
 function Login({ onLogin }) {
     const [email, setEmail] = useState('');
@@ -11,68 +10,68 @@ function Login({ onLogin }) {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-      
+
         try {
-          const response = await axios.post('http://13.234.47.87:5000/api/login', { email, password });
-      
-          const userRole = response.data.role;
-          const userName = response.data.username; // Assuming the API returns username
-      
-          console.log('Login successful:', response.data);
-      
-          // Set the role and username in the App component
-          onLogin(userRole, userName);
-      
-          switch (userRole) {
-            case 'Creator':
-              navigate('/creator');
-              break;
-            case 'Viewer':
-              navigate('/viewer');
-              break;
-            case 'Approver':
-              navigate('/approver');
-              break;
-            case 'Admin':
-              navigate('/home');
-              break;
-            default:
-              console.error('Unknown role:', userRole);
-              break;
-          }
+            const response = await axios.post('http://13.234.47.87:5000/api/login', { email, password });
+
+            const { role, username, id } = response.data; // Assuming the API returns user id as well
+            console.log('Login successful:', response.data);
+
+            localStorage.setItem('userId', id); // Save the user ID
+
+            onLogin(role, username);
+
+            switch (role) {
+                case 'Creator':
+                    navigate('/creator');
+                    break;
+                case 'Viewer':
+                    navigate('/viewer');
+                    break;
+                case 'Approver':
+                    navigate('/approver');
+                    break;
+                case 'Admin':
+                    navigate('/home');
+                    break;
+                default:
+                    console.error('Unknown role:', role);
+                    break;
+            }
         } catch (error) {
-          console.error('Login failed:', error);
+            console.error('Login failed:', error);
         }
-      };
+    };
 
     return (
-    <div className="container">
-        <form style={{ height: "500px" }} onSubmit={handleSubmit}>
-            <h1 style={{ marginTop: "20px" }}>Login</h1>
-            <div className="ui form" style={{ marginTop: "30px" }}>
-                <div className="field">
-                    <label>Email</label>
-                    <input
-                        type="text"
-                        name="email"
-                        placeholder="Email"
-                        onChange={(e) => setEmail(e.target.value)}
-
-                    />
+        <div className={styles.container}>
+            <form onSubmit={handleSubmit} className={styles.formContainer}>
+                <h1 className={styles.header}>Login</h1>
+                <div className={styles.uiForm}>
+                    <div className={styles.field}>
+                        <label>Email</label>
+                        <input
+                            type="text"
+                            name="email"
+                            placeholder="Email"
+                            onChange={(e) => setEmail(e.target.value)}
+                            className={styles.inputField}
+                        />
+                    </div>
+                    <div className={styles.field}>
+                        <label>Password</label>
+                        <input
+                            type="password"
+                            name="password"
+                            placeholder="Password"
+                            onChange={(e) => setPassword(e.target.value)}
+                            className={styles.inputField}
+                        />
+                    </div>
+                    <button type="submit" className={styles.button}>Submit</button>
                 </div>
-                <div className="field" style={{ marginTop: "30px" }}>
-                    <label>Password</label>
-                    <input
-                        type="password"
-                        name="password"
-                        placeholder="Password"
-                        onChange={(e) => setPassword(e.target.value)}
-                    />
-                </div>
-                <button type="submit" style={{ marginTop: "50px" }} className="fluid ui button blue">Submit</button>
-            </div>
-        </form>
-    </div>
+            </form>
+        </div>
     );
 }
 

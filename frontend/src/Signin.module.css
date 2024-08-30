@@ -1,0 +1,94 @@
+/* Container styling */
+.container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 20px;
+    background-color: #f7f7f7; /* Soft background color */
+}
+
+/* Form styling */
+.container form {
+    width: 100%;
+    max-width: 400px;
+    padding: 40px;
+    border-radius: 8px;
+    background: #fff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+}
+
+/* Header styling */
+h1 {
+    text-align: center;
+    color: #333;
+    font-size: 32px;
+    font-weight: 600;
+    margin-bottom: 30px;
+}
+
+/* Button styling */
+button {
+    width: 100%;
+    height: 50px;
+    padding: 12px;
+    border: none;
+    background-color: #663399; /* Use Rebecca Purple */
+    color: #fff;
+    border-radius: 5px;
+    font-weight: bold;
+    font-size: 18px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: #4b007d; /* Darker shade on hover */
+}
+
+/* Form and input field styling */
+.uiForm {
+    width: 100%;
+}
+
+.field {
+    margin-bottom: 20px;
+}
+
+label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+    color: #333;
+}
+
+.inputField,
+.field input {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 12px;
+    border: 1px solid #ddd; /* Lighter border for modern look */
+    border-radius: 5px;
+    font-size: 16px;
+    background-color: #fafafa; /* Slightly lighter background for inputs */
+}
+
+input::placeholder {
+    color: #aaa; /* Lighter placeholder color */
+}
+
+/* Responsive design */
+@media (max-width: 600px) {
+    .container {
+        padding: 10px;
+    }
+
+    .container form {
+        padding: 30px;
+    }
+
+    h1 {
+        font-size: 28px;
+    }
+}
