@@ -11,7 +11,7 @@ const locationRoutes = require('./routes/locationRoutes');
 const { getNextSeriesPoNumber } = require('./controllers/ProjectOrderController');
 const bodyparser = require("body-parser");
 const projectOrderRoutes = require('./routes/projectOrderRoutes');
-const dashboardRoutes = require('./routes/DashboardRoutes')
+
 // Load environment variables
 dotenv.config();
 const app = express();
