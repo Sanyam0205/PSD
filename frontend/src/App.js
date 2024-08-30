@@ -14,6 +14,7 @@ import Approver from './Approver';
 import UserManagement from './UserManagement';
 import Sidebar from './Sidebar'; // Import the Sidebar component
 import './App.css';
+import AppDash from './AppDash';
 
 function App() {
   // Read the initial role from localStorage, if available
@@ -51,6 +52,7 @@ function App() {
             <Route path="/viewer" element={<Viewer />} />
             <Route path="/approver" element={<Approver />} />
             <Route path="/usermanagement" element={<UserManagement />} />
+            <Route path="/AppDash" element={<AppDash/>} />
           </Routes>
         </div>
       </Router>

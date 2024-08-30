@@ -30,6 +30,7 @@ function Sidebar({ role, onLogout }) {
         )}
         {role === 'Approver' && (
           <>
+            <li><Link to="/AppDash">Dashboard</Link></li>
             <li><Link to="/approver">Home</Link></li>
           </>
         )}
