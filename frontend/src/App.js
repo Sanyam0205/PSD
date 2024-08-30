@@ -1,4 +1,3 @@
-// App.js
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Form from './components/form';
@@ -12,47 +11,134 @@ import Creator from './Creator';
 import Viewer from './Viewer';
 import Approver from './Approver';
 import UserManagement from './UserManagement';
-import Sidebar from './Sidebar'; // Import the Sidebar component
-import './App.css';
+import Sidebar from './Sidebar';
 import AppDash from './AppDash';
+import PrivateRoute from './PrivateRoute'; // Import PrivateRoute
+// import Settings from './Settings'; // Assuming Settings component exists
+import './App.css';
 
 function App() {
-  // Read the initial role from localStorage, if available
   const initialRole = localStorage.getItem('userRole') || '';
-  const [role, setRole] = useState(initialRole); // State to manage user role
+  const initialUsername = localStorage.getItem('username') || '';
 
-  // Handle login to set the role
-  const handleLogin = (userRole) => {
+  const [role, setRole] = useState(initialRole);
+  const [username, setUsername] = useState(initialUsername);
+
+  const handleLogin = (userRole, userName) => {
     setRole(userRole);
-    localStorage.setItem('userRole', userRole); // Save role to localStorage
+    setUsername(userName);
+    localStorage.setItem('userRole', userRole);
+    localStorage.setItem('username', userName);
   };
 
-  // Effect to clear role if logging out
   const handleLogout = () => {
     setRole('');
-    localStorage.removeItem('userRole'); // Clear role from localStorage
+    setUsername('');
+    localStorage.removeItem('userRole');
+    localStorage.removeItem('username');
   };
+
+  const isAuthenticated = !!role;
 
   return (
     <div className="App">
       <Router>
-        {/* Render the Sidebar only if the user role is set */}
-        {role && <Sidebar role={role} onLogout={handleLogout} />} {/* Pass onLogout to Sidebar */}
+        {isAuthenticated && <Sidebar role={role} username={username} onLogout={handleLogout} />}
 
         <div className={`main-content ${role ? 'with-sidebar' : ''}`}>
           <Routes>
-            <Route path="/" element={<Login onLogin={handleLogin} />} /> {/* Pass the handleLogin function */}
+            <Route path="/" element={<Login onLogin={handleLogin} />} />
             <Route path="/signin" element={<Signin />} />
-            <Route path="/home" element={<Home />} />
-            <Route path="/form" element={<Form />} />
-            <Route path="/projectorder" element={<ProjectOrd />} />
-            <Route path="/vendor" element={<VendorManagement />} />
-            <Route path="/location" element={<LocationManagement />} />
-            <Route path="/creator" element={<Creator />} />
-            <Route path="/viewer" element={<Viewer />} />
-            <Route path="/approver" element={<Approver />} />
-            <Route path="/usermanagement" element={<UserManagement />} />
-            <Route path="/AppDash" element={<AppDash/>} />
+            
+            {/* Role-specific Routes */}
+            <Route
+              path="/home"
+              element={
+                <PrivateRoute isAuthenticated={isAuthenticated} role={role} allowedRoles={['Admin']}>
+                  <Home />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/form"
+              element={
+                <PrivateRoute isAuthenticated={isAuthenticated} role={role} allowedRoles={['Creator', 'Admin']}>
+                  <Form />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/projectorder"
+              element={
+                <PrivateRoute isAuthenticated={isAuthenticated} role={role} allowedRoles={['Creator', 'Viewer', 'Admin']}>
+                  <ProjectOrd />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/vendor"
+              element={
+                <PrivateRoute isAuthenticated={isAuthenticated} role={role} allowedRoles={['Admin']}>
+                  <VendorManagement />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/location"
+              element={
+                <PrivateRoute isAuthenticated={isAuthenticated} role={role} allowedRoles={['Admin']}>
+                  <LocationManagement />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/creator"
+              element={
+                <PrivateRoute isAuthenticated={isAuthenticated} role={role} allowedRoles={['Creator']}>
+                  <Creator />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/viewer"
+              element={
+                <PrivateRoute isAuthenticated={isAuthenticated} role={role} allowedRoles={['Viewer']}>
+                  <Viewer />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/approver"
+              element={
+                <PrivateRoute isAuthenticated={isAuthenticated} role={role} allowedRoles={['Approver']}>
+                  <Approver />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/usermanagement"
+              element={
+                <PrivateRoute isAuthenticated={isAuthenticated} role={role} allowedRoles={['Admin']}>
+                  <UserManagement />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/AppDash"
+              element={
+                <PrivateRoute isAuthenticated={isAuthenticated} role={role} allowedRoles={['Approver']}>
+                  <AppDash />
+                </PrivateRoute>
+              }
+            />
+            {/* <Route
+              path="/settings"
+              element={
+                <PrivateRoute isAuthenticated={isAuthenticated} role={role} allowedRoles={['Creator', 'Viewer', 'Approver', 'Admin']}>
+                  <Settings />
+                </PrivateRoute>
+              }
+            /> */}
           </Routes>
         </div>
       </Router>

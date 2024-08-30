@@ -1,18 +1,21 @@
-// Sidebar.js
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import './Sidebar.css';
 
-function Sidebar({ role, onLogout }) {
-  const navigate = useNavigate(); // Use the navigate hook for navigation
+function Sidebar({ role, onLogout, username }) { // Add username prop
+  const navigate = useNavigate();
 
-  // Handle logout and navigate to the login page
   const handleLogout = () => {
-    onLogout(); // Clear role or perform other logout actions
-    navigate('/'); // Redirect to the login page
+    onLogout();
+    navigate('/');
   };
+
   return (
     <div className="sidebar">
+      <div className="profile-section">
+        <h3>{username}</h3> {/* Display the username */}
+        <Link to="/settings" className="settings-link">Settings</Link> {/* Add settings link */}
+      </div>
       <ul>
         {/* Role-based Links */}
         {role === 'Creator' && (

@@ -11,39 +11,39 @@ function Login({ onLogin }) {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-
+      
         try {
-            const response = await axios.post('http://13.234.47.87:5000/api/login', { email, password });
-
-            const userRole = response.data.role;
-
-            console.log('Login successful:', response.data);
-
-            // Set the role in the App component
-            onLogin(userRole);
-
-            // Navigate based on user role
-            switch (userRole) {
-                case 'Creator':
-                    navigate('/creator');
-                    break;
-                case 'Viewer':
-                    navigate('/viewer');
-                    break;
-                case 'Approver':
-                    navigate('/approver');
-                    break;
-                case 'Admin':
-                    navigate('/home');
-                    break;
-                default:
-                    console.error('Unknown role:', userRole);
-                    break;
-            }
+          const response = await axios.post('http://13.234.47.87:5000/api/login', { email, password });
+      
+          const userRole = response.data.role;
+          const userName = response.data.username; // Assuming the API returns username
+      
+          console.log('Login successful:', response.data);
+      
+          // Set the role and username in the App component
+          onLogin(userRole, userName);
+      
+          switch (userRole) {
+            case 'Creator':
+              navigate('/creator');
+              break;
+            case 'Viewer':
+              navigate('/viewer');
+              break;
+            case 'Approver':
+              navigate('/approver');
+              break;
+            case 'Admin':
+              navigate('/home');
+              break;
+            default:
+              console.error('Unknown role:', userRole);
+              break;
+          }
         } catch (error) {
-            console.error('Login failed:', error);
+          console.error('Login failed:', error);
         }
-    };
+      };
 
     return (
     <div className="container">

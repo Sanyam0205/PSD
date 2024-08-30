@@ -43,4 +43,25 @@
   .logout-button:hover {
     background-color: #c62828;
   }
+  .sidebar .profile-section {
+    padding: 20px;
+    text-align: center;
+    border-bottom: 1px solid #ccc;
+  }
+  
+  .profile-section h3 {
+    margin: 0;
+    color: #333;
+  }
+  
+  .settings-link {
+    display: block;
+    margin-top: 10px;
+    color: #007bff;
+    text-decoration: none;
+  }
+  
+  .settings-link:hover {
+    text-decoration: underline;
+  }
   
