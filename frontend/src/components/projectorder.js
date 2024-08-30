@@ -44,10 +44,6 @@ const ProjectOrd = () => {
     fetchPoNumbers();
   }, []);
 
-  const handleSearchPoNumberChange = (e) => {
-    e.preventDefault();
-    setSearchedPoNumber(e.target.value);
-  };
   const handleSelectChange = (selectedOption) => {
     setSearchedPoNumber(selectedOption ? selectedOption.value : null);
   };
