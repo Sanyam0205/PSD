@@ -18,7 +18,7 @@ router.post('/:poNumber/items', addItemToProjectOrder);
 router.put('/:poNumber', editProjectOrder); // New route for editing project order
 router.put('/:poNumber/items/:itemId', editItemInProjectOrder);
 router.get('/next-po-number', getNextSeriesPoNumber);
-router.get('/project-order', getAllProjectOrders);
+router.get('/all', getAllProjectOrders);
 
 
 module.exports = router;

@@ -21,6 +21,7 @@ const PORT = process.env.PORT || 5000;
 
 app.use(cors());
 app.use(express.json());
+app.use(bodyparser.json());
 // Connect to MongoDB
 
 mongoose.connect(process.env.MONGO_URI, {
@@ -33,12 +34,9 @@ mongoose.connect(process.env.MONGO_URI, {
 
 // Define routes
 app.use('/api/vendors', require('./routes/vendorRoutes'));
-app.use('/api/project-orders', require('./routes/projectOrderRoutes'));
 app.use(uploadRoutes);
-app.use(purchaseOrderRoutes);
 app.use('/api/location', locationRoutes);
 app.use('/api/series', getNextSeriesPoNumber);
-app.use(bodyparser.json());
 app.use("/api", userRoutes);
-app.use('/api/projectorders', projectOrderRoutes);
+app.use('/api/project-orders', projectOrderRoutes);
 
