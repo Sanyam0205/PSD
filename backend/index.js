@@ -39,5 +39,5 @@ app.use('/api/location', locationRoutes);
 app.use('/api/series', getNextSeriesPoNumber);
 app.use(bodyparser.json());
 app.use("/api", userRoutes);
-app.use('/api/project-orders', projectOrderRoutes);
+app.use('/api/project-orders', purchaseOrderRoutes);
 
