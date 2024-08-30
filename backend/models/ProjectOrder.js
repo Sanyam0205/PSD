@@ -10,6 +10,7 @@ const subItemschema = new mongoose.Schema({
   discount: Number,
   amount: Number,
 });
+
 const itemSchema = new mongoose.Schema({
   sno: Number,
   description: String,
@@ -19,7 +20,7 @@ const itemSchema = new mongoose.Schema({
   gstPercentage: Number,
   discount: Number,
   amount: Number,
-  subItems:[subItemschema] 
+  subItems: [subItemschema]
 });
 
 const projectOrderSchema = new mongoose.Schema({
@@ -68,7 +69,10 @@ const projectOrderSchema = new mongoose.Schema({
     uploadDate: { type: Date, default: Date.now },
   },
   status: { type: String, default: 'Pending' },
-
+  
+  // New fields for tracking user actions
+  createdBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+  approvedBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
 });
 
 module.exports = mongoose.model('ProjectOrder', projectOrderSchema);

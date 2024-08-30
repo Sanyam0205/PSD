@@ -11,7 +11,7 @@ function PrivateRoute({ children, isAuthenticated, role, allowedRoles }) {
   // Handle closing of the "Not Authorized" popup
   const handleClosePopup = () => {
     setShowNotAuthorized(false);
-    navigate('/viewer'); // Redirect to home or another safe route
+    navigate('/'); // Redirect to home or another safe route
   };
 
 

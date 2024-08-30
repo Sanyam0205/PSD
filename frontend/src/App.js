@@ -110,7 +110,7 @@ function App() {
               path="/approver"
               element={
                 <PrivateRoute isAuthenticated={isAuthenticated} role={role} allowedRoles={['Approver']}>
-                  <Approver />
+                  <Approver username={username} />
                 </PrivateRoute>
               }
             />

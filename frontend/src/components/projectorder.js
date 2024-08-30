@@ -1,13 +1,14 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import './custom.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrash } from '@fortawesome/free-solid-svg-icons';
 import ProjectOrderPDF from './ProjectOrderPdf';
 import { PDFViewer } from '@react-pdf/renderer';
-
+import Select from 'react-select';
 
 const ProjectOrd = () => {
+  const [poNumbers, setPoNumbers] = useState([]);
   const [searchedPoNumber, setSearchedPoNumber] = useState('');
   const [searchedProjectOrder, setSearchedProjectOrder] = useState(null);
   const [newItem, setNewItem] = useState({
@@ -26,13 +27,34 @@ const ProjectOrd = () => {
   const [showPDFPreview, setShowPDFPreview] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
 
+  useEffect(() => {
+    const fetchPoNumbers = async () => {
+      try {
+        const response = await axios.get('http://13.234.47.87:5000/api/project-orders/all'); // Adjust the endpoint as needed
+        const poOptions = response.data.map(po => ({
+          value: po.poNumber,
+          label: `${po.poNumber} - ${po.name}`
+        }));
+        setPoNumbers(poOptions);
+      } catch (error) {
+        console.error('Error fetching PO numbers:', error);
+      }
+    };
+
+    fetchPoNumbers();
+  }, []);
+
   const handleSearchPoNumberChange = (e) => {
     e.preventDefault();
     setSearchedPoNumber(e.target.value);
   };
+  const handleSelectChange = (selectedOption) => {
+    setSearchedPoNumber(selectedOption ? selectedOption.value : null);
+  };
 
   const handleSearchProjectOrder = async (e) => {
     e.preventDefault();
+    if (!searchedPoNumber) return;
     try {
       const response = await axios.get(`http://13.234.47.87:5000/api/project-orders/${searchedPoNumber}`);
       const formattedProjectOrder = {
@@ -290,10 +312,11 @@ const ProjectOrd = () => {
             <form onSubmit={handleSearchProjectOrder} className="search-form">
               <div className="search-section">
                 <label>Search Project Order by PO Number:</label>
-                <input 
-                  type="text" 
-                  value={searchedPoNumber} 
-                  onChange={handleSearchPoNumberChange} 
+                <Select 
+                  options={poNumbers}
+                  onChange={handleSelectChange}
+                  placeholder="Enter or select PO number"
+                  isClearable
                 />
                 <button type="submit">Search</button>
               </div>

@@ -1,25 +1,22 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { PDFViewer } from "@react-pdf/renderer";
-import ProjectOrderPDF from "./components/ProjectOrderPdf.js"; // Ensure this path is correct
+import ProjectOrderPDF from "./components/ProjectOrderPdf.js";
 import styles from './Approver.css';
 
-const Approver = () => {
-  const [poList, setPoList] = useState([]); // List of POs
-  const [selectedPo, setSelectedPo] = useState(null); // Selected PO for PDF preview
+const Approver = ({ username }) => {
+  const [poList, setPoList] = useState([]);
+  const [selectedPo, setSelectedPo] = useState(null);
   const [showPDFPreview, setShowPDFPreview] = useState(false);
 
-  // Fetch the list of POs on component mount
   useEffect(() => {
     const fetchPoList = async () => {
       try {
         const response = await axios.get("http://13.234.47.87:5000/api/project-orders/all");
-        
-        // Check if the response data is an array
         if (Array.isArray(response.data)) {
           const formattedPoList = response.data.map((po) => ({
             ...po,
-            poDate: po.poDate ? po.poDate.split('T')[0] : '', // Format date to "yyyy-MM-dd"
+            poDate: po.poDate ? po.poDate.split('T')[0] : '',
           }));
           setPoList(formattedPoList);
         } else {
@@ -33,16 +30,15 @@ const Approver = () => {
     fetchPoList();
   }, []);
 
-  // Handler to mark a PO as approved
   const handleApprove = async (po) => {
     try {
-      const updatedPo = { ...po, status: "Approved" };
+      const updatedPo = { ...po, status: "Approved", approvedBy: username };
       const response = await axios.put(`http://13.234.47.87:5000/api/project-orders/${po.poNumber}`, updatedPo);
 
       if (response.status === 200) {
         setPoList((prevList) =>
           prevList.map((item) =>
-            item.poNumber === po.poNumber ? { ...item, status: "Approved" } : item
+            item.poNumber === po.poNumber ? { ...item, status: "Approved", approvedBy: username } : item
           )
         );
       }
@@ -51,7 +47,6 @@ const Approver = () => {
     }
   };
 
-  // Handler to mark a PO as pending
   const handlePending = async (po) => {
     try {
       const updatedPo = { ...po, status: "Pending" };
@@ -69,13 +64,11 @@ const Approver = () => {
     }
   };
 
-  // Handler for selecting a PO to preview
   const handlePoClick = (po) => {
     setSelectedPo(po);
     setShowPDFPreview(true);
   };
 
-  // Close PDF Preview
   const handleClosePDFPreview = () => {
     setShowPDFPreview(false);
     setSelectedPo(null);
