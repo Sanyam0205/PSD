@@ -32,20 +32,21 @@ function UserManagement() {
 
   const handleDelete = async (userId) => {
     try {
-      const adminCount = users.filter(user => user.role === 'admin').length;
+        const adminCount = users.filter(user => user.role === 'admin').length;
 
-      const userToDelete = users.find(user => user._id === userId);
-      if (userToDelete.role === 'admin' && adminCount <= 1) {
-        alert('There must be at least one admin. Deletion is not allowed.');
-        return;
-      }
+        const userToDelete = users.find(user => user._id === userId);
+        if (userToDelete.role === 'admin' && adminCount <= 1) {
+            alert('There must be at least one admin. Deletion is not allowed.');
+            return;
+        }
 
-      await axios.delete(`http://13.234.47.87:5000/api/users/${userId}`);
-      fetchUsers(); // Refresh the user list after deletion
+        await axios.delete(`http://13.234.47.87:5000/api/users/${userId}`);
+        fetchUsers(); // Refresh the user list after deletion
     } catch (error) {
-      console.error('Error deleting user:', error);
+        console.error('Error deleting user:', error);
     }
-  };
+};
+
 
   const handleEdit = (user) => {
     setEditingUserId(user._id);
