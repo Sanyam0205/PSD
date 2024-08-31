@@ -27,9 +27,11 @@ function App() {
   const [phoneNumber, setPhoneNumber] = useState(initialPhoneNumber);
   const [email, setEmail] = useState(initialEmail);
 
-  const handleLogin = (userRole, userName) => {
+  const handleLogin = (userRole, userName, phoneNumber, userEmail) => {
     setRole(userRole);
     setUsername(userName);
+    setPhoneNumber(phoneNumber);
+    setEmail(userEmail);
     
     // Logging the logged-in user and their role
     console.log(`User logged in: ${userName}`);
@@ -52,7 +54,7 @@ function App() {
   return (
     <div className="App">
       <Router>
-        {isAuthenticated && <Sidebar role={role} username={username} onLogout={handleLogout} />}
+        {isAuthenticated && <Sidebar role={role} username={username} phoneNumber={phoneNumber} email={email} onLogout={handleLogout} />}
 
         <div className={`main-content ${role ? 'with-sidebar' : ''}`}>
           <Routes>

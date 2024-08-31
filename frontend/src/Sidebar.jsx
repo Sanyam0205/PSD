@@ -16,7 +16,7 @@ function Sidebar({ role, onLogout, username, phoneNumber, email }) {
   return (
     <div className="sidebar">
       <div className="profile-section" onClick={() => setIsExpanded(!isExpanded)}>
-        <h3>{username}</h3>
+        <h3>HELLO {username}</h3>
         {isExpanded && (
           <div className="user-details">
             <p>Email: {email}</p>

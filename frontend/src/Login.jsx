@@ -14,7 +14,7 @@ function Login({ onLogin }) {
         try {
             const response = await axios.post('http://13.234.47.87:5000/api/login', { email, password });
     
-            const { role, firstName, id, phoneNumber, email: userEmail } = response.data; 
+            const { role, firstName, id, phoneNumber, email } = response.data; 
             console.log('Login successful:', response.data);
     
             // Save the user information in localStorage
@@ -24,7 +24,7 @@ function Login({ onLogin }) {
             localStorage.setItem('phoneNumber', phoneNumber);
             localStorage.setItem('email', email);
     
-            onLogin(role, firstName);
+            onLogin(role, firstName, phoneNumber, email);
     
             switch (role) {
                 case 'Creator':
