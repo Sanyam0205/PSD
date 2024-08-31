@@ -79,32 +79,7 @@ function UserManagement() {
       console.error('Error updating user:', error);
     }
   };
-const handleUpdate = async () => {
-  try {
-    const currentUser = users.find(user => user._id === editingUserId);
-
-    // Count how many admins there would be if we changed the current user's role
-    const remainingAdminCount = users.filter(user => user.role === 'admin' && user._id !== currentUser._id).length;
-
-    // If the current user is an admin and we're changing them to a non-admin role,
-    // ensure there's at least one other admin left.
-    if (currentUser.role === 'admin' && editableUser.role !== 'admin' && remainingAdminCount < 1) {
-      alert('There must be at least one admin. Role change is not allowed.');
-      return;
-    }
-
-    const updateData = { ...editableUser };
-    if (!editableUser.password) {
-      delete updateData.password; // Remove password from update if it's empty
-    }
-
-    await axios.put(`http://13.234.47.87:5000/api/users/${editingUserId}`, updateData);
-    setEditingUserId(null); // Exit edit mode
-    fetchUsers(); // Refresh the user list after updating
-  } catch (error) {
-    console.error('Error updating user:', error);
-  }
-};
+  
   
   
   
