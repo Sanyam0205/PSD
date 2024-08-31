@@ -15,7 +15,7 @@ function UserManagement() {
     role: '',
     password: ''  // New password field
   });
-  const roles = ['creator', 'viewer', 'approver', 'admin'];
+  const roles = ['Creator', 'Viewer', 'Approver', 'Admin'];
 
   useEffect(() => {
     fetchUsers();
