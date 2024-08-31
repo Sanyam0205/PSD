@@ -10,17 +10,22 @@ function Login({ onLogin }) {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-
+    
         try {
             const response = await axios.post('http://13.234.47.87:5000/api/login', { email, password });
-
-            const { role, username, id } = response.data; // Assuming the API returns user id as well
+    
+            const { role, firstName, id, phoneNumber, email: userEmail } = response.data; 
             console.log('Login successful:', response.data);
-
-            localStorage.setItem('userId', id); // Save the user ID
-
-            onLogin(role, username);
-
+    
+            // Save the user information in localStorage
+            localStorage.setItem('userId', id);
+            localStorage.setItem('userRole', role);
+            localStorage.setItem('username', firstName);
+            localStorage.setItem('phoneNumber', phoneNumber);
+            localStorage.setItem('email', email);
+    
+            onLogin(role, firstName);
+    
             switch (role) {
                 case 'Creator':
                     navigate('/creator');

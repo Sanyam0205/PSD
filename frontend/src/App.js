@@ -19,22 +19,32 @@ import './App.css';
 function App() {
   const initialRole = localStorage.getItem('userRole') || '';
   const initialUsername = localStorage.getItem('username') || '';
+  const initialPhoneNumber = localStorage.getItem('phoneNumber') || '';
+  const initialEmail = localStorage.getItem('email') || '';
 
   const [role, setRole] = useState(initialRole);
   const [username, setUsername] = useState(initialUsername);
+  const [phoneNumber, setPhoneNumber] = useState(initialPhoneNumber);
+  const [email, setEmail] = useState(initialEmail);
 
   const handleLogin = (userRole, userName) => {
     setRole(userRole);
     setUsername(userName);
-    localStorage.setItem('userRole', userRole);
-    localStorage.setItem('username', userName);
+    
+    // Logging the logged-in user and their role
+    console.log(`User logged in: ${userName}`);
+    console.log(`Role: ${userRole}`);
   };
 
   const handleLogout = () => {
     setRole('');
     setUsername('');
+    setPhoneNumber('');
+    setEmail('');
     localStorage.removeItem('userRole');
     localStorage.removeItem('username');
+    localStorage.removeItem('phoneNumber');
+    localStorage.removeItem('email');
   };
 
   const isAuthenticated = !!role;

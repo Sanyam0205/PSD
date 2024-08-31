@@ -3,24 +3,9 @@ import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import './Sidebar.css';
 
-function Sidebar({ role, onLogout, username }) {
+function Sidebar({ role, onLogout, username, phoneNumber, email }) {
   const navigate = useNavigate();
-  const [userDetails, setUserDetails] = useState(null);
   const [isExpanded, setIsExpanded] = useState(false);
-
-  useEffect(() => {
-    const userId = localStorage.getItem('userId');
-
-    if (userId) {
-      axios.get(`http://13.234.47.87:5000/api/users/${userId}`)
-        .then(response => {
-          setUserDetails(response.data);
-        })
-        .catch(error => {
-          console.error('Error fetching user details:', error);
-        });
-    }
-  }, []);
 
   const handleLogout = () => {
     onLogout();
@@ -32,10 +17,11 @@ function Sidebar({ role, onLogout, username }) {
     <div className="sidebar">
       <div className="profile-section" onClick={() => setIsExpanded(!isExpanded)}>
         <h3>{username}</h3>
-        {isExpanded && userDetails && (
+        {isExpanded && (
           <div className="user-details">
-            <p>Email: {userDetails.email}</p>
-            <p>Phone: {userDetails.phoneNumber}</p>
+            <p>Email: {email}</p>
+            <p>Phone: {phoneNumber}</p>
+            <p>Role: {role}</p>
           </div>
         )}
       </div>
