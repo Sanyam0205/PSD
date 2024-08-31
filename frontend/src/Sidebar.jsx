@@ -15,16 +15,16 @@ function Sidebar({ role, onLogout, username, phoneNumber, email }) {
 
   return (
     <div className="sidebar">
-      <div className="profile-section" onClick={() => setIsExpanded(!isExpanded)}>
-        <h3>HELLO {username}</h3>
-        {isExpanded && (
-          <div className="user-details">
-            <p>Email: {email}</p>
-            <p>Phone: {phoneNumber}</p>
-            <p>Role: {role}</p>
-          </div>
-        )}
-      </div>
+    <div className="profile-section" onClick={() => setIsExpanded(!isExpanded)}>
+      <h3>Hello {username.charAt(0).toUpperCase() + username.slice(1).toLowerCase()}</h3>
+      {/* {isExpanded && (
+        <div className="user-details">
+          <p>Email: {email}</p>
+          <p>Phone: {phoneNumber}</p>
+          <p>Role: {role}</p>
+        </div>
+      )} */}
+    </div>
 
       <ul>
         {role === 'Creator' && (
@@ -37,7 +37,6 @@ function Sidebar({ role, onLogout, username, phoneNumber, email }) {
         {role === 'Viewer' && (
           <>
             <li><Link to="/viewer">Home</Link></li>
-            <li><Link to="/projectorder">Project Order</Link></li>
           </>
         )}
         {role === 'Approver' && (

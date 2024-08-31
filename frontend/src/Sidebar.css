@@ -1,6 +1,6 @@
 /* Sidebar.css */
 .sidebar {
-    width: 230px;
+    width: 200px;
     background-color: #f4f4f4;
     padding: 15px;
     position: fixed;
@@ -73,3 +73,5 @@
     font-size: 14px;
     color: #555;
 }
+
+
