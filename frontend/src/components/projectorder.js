@@ -9,23 +9,16 @@ const ProjectOrd = () => {
   const [poNumbers, setPoNumbers] = useState([]);
   const [searchedPoNumber, setSearchedPoNumber] = useState('');
   const [searchedProjectOrder, setSearchedProjectOrder] = useState(null);
-  // const [newItem, setNewItem] = useState({
-  //   sno: '',
-  //   description: '',
-  //   unit: '',
-  //   quantity: 0,
-  //   ratePerUnit: 0,
-  //   gstPercentage: 0,
-  //   discount: 0,
-  //   amount: 0,
-  //   subItems: [], // Initialize subItems for new item
-  // });
   const [signature, setSignature] = useState(null);
   const [signatureUrl, setSignatureUrl] = useState('');
   const [showPDFPreview, setShowPDFPreview] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
-
+  const [vendors, setVendors] = useState([]);
+  const [locations, setLocations] = useState([]);
+  const [delivery ,setdelivery] = useState([]);
+  const [signatureFile, setSignatureFile] = useState(null);
   useEffect(() => {
+
     const fetchPoNumbers = async () => {
       try {
         const response = await axios.get('http://13.234.47.87:5000/api/project-orders/all');
@@ -38,9 +31,81 @@ const ProjectOrd = () => {
         console.error('Error fetching PO numbers:', error);
       }
     };
+    const fetchDelivery = async () => {
+      try {
+        const response = await axios.get('http://13.234.47.87:5000/api/delivery');
+        setdelivery(response.data);
+      } catch (error) {
+        console.error('Error fetching delivery:', error);
+      }
+    };
+      const fetchLocations = async () => {
+            try {
+              const response = await axios.get('http://13.234.47.87:5000/api/location');
+              setLocations(response.data);
+            } catch (error) {
+              console.error('Error fetching locations:', error);
+            }
+          };
 
-    fetchPoNumbers();
-  }, []);
+          fetchVendors();
+          fetchLocations();
+          fetchPoNumbers();
+          fetchDelivery();
+        }, []);
+
+      const fetchVendors = async () => {
+        try {
+          const response = await axios.get('http://13.234.47.87:5000/api/vendors');
+          setVendors(response.data);
+        } catch (error) {
+          console.error('Error fetching vendors:', error);
+        }
+      };
+      const getOptionLabel = (option) => `${option.name} - ${option.vendorCode}`;
+      const getOptLabel = (option) => `${option.billtoname} - ${option.locationCode}`;
+      const getdeliveryLabel = (option) => `${option.billtoname} - ${option.locationCode}`;
+
+        const handleLocationChange = (selectedOption) => {
+          setSearchedProjectOrder(prevState => ({
+            ...prevState,
+            locationCode: selectedOption.locationCode,
+            billtoname: selectedOption.billtoname,
+            billtocp: selectedOption.billtocp,
+            billToAddress: selectedOption.billToAddress,
+            billToDistrict: selectedOption.billToDistrict,
+            billToState: selectedOption.billToState,
+            billToPinCode: selectedOption.billToPinCode,
+            billToContact: selectedOption.billToContact,
+            billToEmail: selectedOption.billToEmail,
+            billToGstNumber: selectedOption.billToGstNumber,
+          }));
+        };
+
+      const handleVendorChange = (selectedOption) => {
+        setSearchedProjectOrder(prevState => ({
+          ...prevState,
+          vendorCode: selectedOption.vendorCode,
+          name: selectedOption.name,
+          // ... other vendor fields ...
+        }));
+      };
+
+      const handleDeliveryChange = (selectedOption) => {
+        setSearchedProjectOrder(prevState => ({
+          ...prevState,
+          deliveryLocationCode: selectedOption.locationCode,
+          deliveryName: selectedOption.billtoname,
+          delcp: selectedOption.billtocp,
+          shippingAddress: selectedOption.billToAddress,
+          deliveryDistrict: selectedOption.billToDistrict,
+          deliveryState: selectedOption.billToState,
+          deliveryPinCode: selectedOption.billToPinCode,
+          deliveryContact: selectedOption.billToContact,
+          deliveryEmail: selectedOption.billToEmail,
+          deliveryGstNumber: selectedOption.billToGstNumber,
+        }));
+      };
 
   const calculateAmount = (item) => {
     const quantity = parseFloat(item.quantity) || 0;
@@ -141,36 +206,40 @@ const handleEditSubItemChange = (e, itemIndex, subIndex, field) => {
 };
 
   
-  const handleSignatureChange = (event) => {
-    const file = event.target.files[0];
-    if (file) {
-      console.log('File selected:', file);
-      setSignature(file);
-    } else {
-      console.log('No file selected');
-    }
-  };
+const handleSignatureChange = (event) => {
+  const file = event.target.files[0];
+  if (file) {
+    setSignatureFile(file);
+    setSignatureUrl(URL.createObjectURL(file)); // Preview the new signature
+  }
+};
 
-  const handlesignUpload = async () => {
-    if (!signature) {
-      console.log('No signature file selected');
-      return;
-    }
+const handleSignatureUpload = async () => {
+  if (!signatureFile) {
+    console.log('No new signature file selected');
+    return;
+  }
 
-    const formData = new FormData();
-    formData.append('signature', signature);
+  const formData = new FormData();
+  formData.append('signature', signatureFile);
 
-    try {
-      console.log('Uploading signature...');
-      const response = await axios.post('http://13.234.47.87:5000/upload', formData, {
-        headers: { 'Content-Type': 'multipart/form-data' },
-      });
-      console.log('Upload response:', response);
-      setSignatureUrl(response.data.filePath);
-    } catch (error) {
-      console.error('Error uploading signature', error);
-    }
-  };
+  try {
+    console.log('Uploading signature...');
+    const response = await axios.post('http://13.234.47.87:5000/upload', formData, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    });
+    console.log('Upload response:', response);
+    setSignatureUrl(response.data.filePath);
+    
+    // Update the searchedProjectOrder state with the new signature path
+    setSearchedProjectOrder(prevState => ({
+      ...prevState,
+      signature: response.data.filePath
+    }));
+  } catch (error) {
+    console.error('Error uploading signature', error);
+  }
+};
 
   const handleAddSubItem = (index) => {
     const updatedItems = [...searchedProjectOrder.items];
@@ -265,7 +334,7 @@ const handleEditSubItemChange = (e, itemIndex, subIndex, field) => {
       alert('Error updating project order');
     }
   };
-
+  
   return (
     <div className="form-container">
       {!isEditing ? (
@@ -349,17 +418,21 @@ const handleEditSubItemChange = (e, itemIndex, subIndex, field) => {
                 onChange={(e) => handleEditProjectOrderChange(e, "topsection")}
               />
             </div>
-
+            <div className="grid">
               <div className="vendor-section">
                 <h3>Vendor Details</h3>
-                <div>
-                  <label>Vendor Code:</label>
-                  <input
-                    type="text"
-                    value={searchedProjectOrder.vendorCode}
-                    onChange={(e) => handleEditProjectOrderChange(e, "vendorCode")}
-                  />
-                </div>
+                <div className="vendor-code">
+                <label htmlFor="vendorCode">Vendor:</label>
+                <Select
+                  id="vendorCode"
+                  options={vendors}
+                  getOptionLabel={getOptionLabel}
+                  getOptionValue={(option) => option.vendorCode}
+                  onChange={handleVendorChange}
+                  placeholder="Select a vendor..."
+                  value={vendors.find(v => v.vendorCode === searchedProjectOrder.vendorCode)}
+                />
+              </div>
                 <div>
                   <label>Name:</label>
                   <input
@@ -436,6 +509,18 @@ const handleEditSubItemChange = (e, itemIndex, subIndex, field) => {
               <div className="bill-to-section">
                 <h3>Bill to Address</h3>
                 <div>
+                  <label htmlFor="locationCode">Location:</label>
+                  <Select
+                    id="locationCode"
+                    options={locations} // Change this from delivery to locations
+                    getOptionLabel={getOptLabel}
+                    getOptionValue={(option) => option.locationCode}
+                    onChange={handleLocationChange}
+                    placeholder="Select a Location..."
+                    value={locations.find(l => l.locationCode === searchedProjectOrder.locationCode)}
+                  />
+                </div>
+                <div>
                   <label>Name:</label>
                   <input
                     type="text"
@@ -511,6 +596,18 @@ const handleEditSubItemChange = (e, itemIndex, subIndex, field) => {
               <div className="delivery-section">
                 <h3>Delivery Details</h3>
                 <div>
+                  <label htmlFor="deliveryLocationCode">Location:</label>
+                  <Select
+                    id="deliveryLocationCode"
+                    options={locations}
+                    getOptionLabel={getOptLabel}
+                    getOptionValue={(option) => option.locationCode}
+                    onChange={handleDeliveryChange}
+                    placeholder="Select a Location..."
+                    value={locations.find(l => l.locationCode === searchedProjectOrder.deliveryLocationCode)}
+                  />
+                </div>
+                <div>
                   <label>Name:</label>
                   <input
                     type="text"
@@ -582,6 +679,7 @@ const handleEditSubItemChange = (e, itemIndex, subIndex, field) => {
                     onChange={(e) => handleEditProjectOrderChange(e, "deliveryGstNumber")}
                   />
                 </div>
+              </div>
               </div>
             <div>
               <h3>Items</h3>
@@ -716,8 +814,7 @@ const handleEditSubItemChange = (e, itemIndex, subIndex, field) => {
                 topsection={searchedProjectOrder.topsection}
                 Notes={searchedProjectOrder.Notes}
                 tnc={searchedProjectOrder.tnc}
-
-                signature={signatureUrl}
+                signature={searchedProjectOrder.signature}
                 // Add more props as per your ProjectOrderPDF component requirements
               />
             </PDFViewer>
@@ -730,16 +827,29 @@ const handleEditSubItemChange = (e, itemIndex, subIndex, field) => {
               Close PDF
             </button>
           </div>
-          <div className="signature-section">
-            <label>Signature:</label>
-            <input type="file" accept="image/*" onChange={handleSignatureChange} />
-            <button type="button" onClick={handlesignUpload}>
-              Upload Signature
+        <div className="signature-section">
+          <label>Signature:</label>
+          {searchedProjectOrder.signature && (
+            <img 
+              src={`http://13.234.47.87:5000${searchedProjectOrder.signature}`} 
+              alt="Current Signature" 
+              style={{maxWidth: '200px', marginBottom: '10px'}}
+            />
+          )}
+          <input type="file" accept="image/*" onChange={handleSignatureChange} />
+          {signatureFile && (
+            <button type="button" onClick={handleSignatureUpload}>
+              Upload New Signature
             </button>
-            {signatureUrl && (
-              <img src={`http://13.234.47.87:5000${signatureUrl}`} alt="Signature" />
-            )}
-          </div>
+          )}
+          {signatureUrl && signatureUrl !== searchedProjectOrder.signature && (
+            <img 
+              src={signatureUrl} 
+              alt="New Signature" 
+              style={{maxWidth: '200px', marginTop: '10px'}}
+            />
+          )}
+        </div>
           <button type="submit">Update Project Order</button>
         </form>
       </div>

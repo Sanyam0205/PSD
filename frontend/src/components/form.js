@@ -99,12 +99,17 @@ const Form = () => {
   );
 
   const [showPDFPreview, setShowPDFPreview] = useState(false); // Add this line
-
+  const [selectedCompany, setSelectedCompany] = useState('GIRIK ENTERPRISES');
   const [signature, setSignature] = useState(null);
   const [signatureUrl, setSignatureUrl] = useState('');
   const [vendors, setVendors] = useState([]);
   const [location, setlocation] = useState([]);
   const [delivery ,setdelivery] = useState([]);
+  const companies = [
+    { value: 'GIRIK ENTERPRISES', label: 'GIRIK ENTERPRISES' },
+    { value: 'REKART INNOVATIONS', label: 'REKART INNOVATIONS' },
+    // Add more companies as needed
+  ];
 
   useEffect(() => {
     const fetchVendor = async () => {
@@ -165,6 +170,7 @@ const Form = () => {
     };
     fetchBillingDetails();
   }, [locationCode]);
+
   useEffect(() => {
     const fetchDeliveryDetails = async () => {
       try {
@@ -232,6 +238,9 @@ const Form = () => {
   };
   const handledellocationChange = (selectedOption) => {
     setDeliveryLocationCode(selectedOption.locationCode);
+  };
+  const handleCompanyChange = (selectedOption) => {
+    setSelectedCompany(selectedOption.value);
   };
   const resetForm = () => {
     setName('');
@@ -708,6 +717,15 @@ const Form = () => {
     <div className="form-container">
       {error && <p className="error">{error}</p>}
       <form onSubmit={handleSubmit} className="form">
+      <div className="company-selection">
+        <label>Select Company:</label>
+        <Select
+          options={companies}
+          onChange={handleCompanyChange}
+          value={companies.find(company => company.value === selectedCompany)}
+          placeholder="Select a company..."
+        />
+      </div>
       <div className="po-section">
         <h2>PO Details</h2>
         <div className="po-details-row">
@@ -1199,6 +1217,7 @@ const Form = () => {
             Notes={Notes}
             tnc={tnc}
             signature={signatureUrl}
+            selectedCompany={selectedCompany}
           />
         </PDFViewer>
       )}

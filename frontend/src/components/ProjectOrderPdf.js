@@ -501,10 +501,9 @@ const ProjectOrderPDF = (props) => {
         <Page key={i} size="A4" orientation="landscape" style={styles.page}>
           {/* Header */}
           <View style={styles.header}>
-            <Text style={styles.headerTitle}>GIRIK ENTERPRISES</Text>
+            <Text style={styles.headerTitle}>{companyDetails.name}</Text>
             <Text style={styles.headerText}>
-              Email id:- girik.enterprices24@gmail.com | Contact number:-
-              9560666158
+              Email id:- {companyDetails.email} | Contact number:- {companyDetails.contact}
             </Text>
           </View>
           <View style={styles.itemsrow}>
@@ -545,14 +544,9 @@ const ProjectOrderPDF = (props) => {
   
           {/* Footer */}
           <View style={styles.footer}>
-            <Text style={styles.footerTextBoldUnderline}>
-              GIRIK ENTERPRISES
-            </Text>
-            <Text style={styles.footerText}>
-              736A/5, PATEL NAGAR, JHARSA ROAD, POLICE LINE, BACK GATE,
-              GURGAON, HARYANA 122006
-            </Text>
-          </View>
+                <Text style={styles.footerTextBoldUnderline}>{companyDetails.name}</Text>
+                <Text style={styles.footerText}>{companyDetails.address}</Text>
+              </View>
           {i + rowsPerPage >= rows.length && (
             <View style={styles.section}>
               <Text style={[styles.texthead]}>
@@ -570,15 +564,44 @@ const ProjectOrderPDF = (props) => {
       );
     }
     return pages;
+
   };
+  const getCompanyDetails = (company) => {
+    switch(company) {
+      case 'GIRIK ENTERPRISES':
+        return {
+          name: 'GIRIK ENTERPRISES',
+          email: 'girik.enterprices24@gmail.com',
+          contact: '9560666158',
+          address: '736A/5, PATEL NAGAR, JHARSA ROAD, POLICE LINE, BACK GATE, GURGAON, HARYANA 122006'
+        };
+      case 'REKART INNOVATIONS':
+        return {
+          name: 'REKART INNOVATIONS',
+          email: 'info@rekartinnovations.com',
+          contact: '9876543210',
+          address: '123 Innovation Street, Tech Park, Bangalore, Karnataka 560001'
+        };
+      // Add more cases for other companies
+      default:
+        return {
+          name: 'GIRIK ENTERPRISES',
+          email: 'girik.enterprices24@gmail.com',
+          contact: '9560666158',
+          address: '736A/5, PATEL NAGAR, JHARSA ROAD, POLICE LINE, BACK GATE, GURGAON, HARYANA 122006'
+        };
+    }
+  };
+
+  const companyDetails = getCompanyDetails(props.selectedCompany);
 
   return (
     <Document>
       <Page size="A4" orientation="landscape" style={styles.page}>
-        <View style={styles.header}>
-          <Text style={styles.headerTitle}>GIRIK ENTERPRISES</Text>
+      <View style={styles.header}>
+          <Text style={styles.headerTitle}>{companyDetails.name}</Text>
           <Text style={styles.headerText}>
-            Email id:- girik.enterprices24@gmail.com | Contact number:- 9560666158
+            Email id:- {companyDetails.email} | Contact number:- {companyDetails.contact}
           </Text>
         </View>
         <View style={styles.headerRight}>
@@ -723,11 +746,9 @@ const ProjectOrderPDF = (props) => {
         </View>
 
         <View style={styles.footer}>
-          <Text style={styles.footerTextBoldUnderline}>GIRIK ENTERPRISES</Text>
-          <Text style={styles.footerText}>
-            736A/5, PATEL NAGAR, JHARSA ROAD, POLICE LINE, BACK GATE, GURGAON, HARYANA 122006
-          </Text>
-        </View>
+                <Text style={styles.footerTextBoldUnderline}>{companyDetails.name}</Text>
+                <Text style={styles.footerText}>{companyDetails.address}</Text>
+              </View>
         <View style={styles.section}>
                 <Text style={styles.texthead}>Subject:</Text>
                 <Text style={styles.text}>{props.topsection}</Text>
@@ -737,25 +758,25 @@ const ProjectOrderPDF = (props) => {
             {renderItemsTable()}
             <Page size="A4" orientation="landscape" style={styles.page}>
             <View style={styles.header}>
-                <Text style={styles.headerTitle}>GIRIK ENTERPRISES</Text>
-                <Text style={styles.headerText}>
-                  Email id:- girik.enterprices24@gmail.com | Contact number:- 9560666158
-                </Text>
-              </View>
+              <Text style={styles.headerTitle}>{companyDetails.name}</Text>
+              <Text style={styles.headerText}>
+                Email id:- {companyDetails.email} | Contact number:- {companyDetails.contact}
+              </Text>
+            </View>
               <View style={styles.section}>
                 <Text style={[styles.texthead]}>Notes:</Text>
                 <Text style={styles.text}>{props.Notes}</Text>
               </View>
               <View style={styles.footer}>
-                <Text style={styles.footerTextBoldUnderline}>GIRIK ENTERPRISES</Text>
-                <Text style={styles.footerText}>736A/5, PATEL NAGAR, JHARSA ROAD, POLICE LINE, BACK GATE, GURGAON, HARYANA 122006</Text>
+                <Text style={styles.footerTextBoldUnderline}>{companyDetails.name}</Text>
+                <Text style={styles.footerText}>{companyDetails.address}</Text>
               </View>
               </Page>
               <Page size="A4" orientation="landscape" style={styles.page}>
               <View style={styles.header}>
-                <Text style={styles.headerTitle}>GIRIK ENTERPRISES</Text>
+                <Text style={styles.headerTitle}>{companyDetails.name}</Text>
                 <Text style={styles.headerText}>
-                  Email id:- girik.enterprices24@gmail.com | Contact number:- 9560666158
+                  Email id:- {companyDetails.email} | Contact number:- {companyDetails.contact}
                 </Text>
               </View>
               <View style={styles.section}>
@@ -771,8 +792,8 @@ const ProjectOrderPDF = (props) => {
                 </View>
               )}
               <View style={styles.footer}>
-                <Text style={styles.footerTextBoldUnderline}>GIRIK ENTERPRISES</Text>
-                <Text style={styles.footerText}>736A/5, PATEL NAGAR, JHARSA ROAD, POLICE LINE, BACK GATE, GURGAON, HARYANA 122006</Text>
+                <Text style={styles.footerTextBoldUnderline}>{companyDetails.name}</Text>
+                <Text style={styles.footerText}>{companyDetails.address}</Text>
               </View>
             </Page>
     </Document>
