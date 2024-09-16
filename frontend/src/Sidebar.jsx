@@ -3,35 +3,77 @@ import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import './Sidebar.css';
 
-function Sidebar({ role, onLogout, username }) {
+function Sidebar({ onLogout }) {
   const navigate = useNavigate();
+  // const location = useLocation();
   const [userDetails, setUserDetails] = useState(null);
   const [isExpanded, setIsExpanded] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [role, setRole] = useState('');
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
 
   useEffect(() => {
-    const userId = localStorage.getItem('userId');
+    const checkAuth = () => {
+      const authStatus = localStorage.getItem('isAuthenticated');
+      const storedFirstName = localStorage.getItem('firstName');
+      const storedLastName = localStorage.getItem('lastName');
+      const storedRole = localStorage.getItem('userRole');
 
-    if (userId) {
-      axios.get(`http://13.234.47.87:5000/api/users/${userId}`)
-        .then(response => {
-          setUserDetails(response.data);
-        })
-        .catch(error => {
-          console.error('Error fetching user details:', error);
-        });
-    }
+      setIsAuthenticated(authStatus === 'true');
+      setRole(storedRole || '');
+      setFirstName(storedFirstName || '');
+      setLastName(storedLastName || '');
+    };
+
+    checkAuth();
+    window.addEventListener('storage', checkAuth);
+
+    return () => {
+      window.removeEventListener('storage', checkAuth);
+    };
   }, []);
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      const userId = localStorage.getItem('userId');
+      if (userId) {
+        axios.get(`http://13.234.47.87:5000/api/users/${userId}`)
+          .then(response => {
+            setUserDetails(response.data);
+          })
+          .catch(error => {
+            console.error('Error fetching user details:', error);
+            // Set basic user details from localStorage if API call fails
+            setUserDetails({
+              firstName: localStorage.getItem('firstName') || 'N/A',
+              lastName: localStorage.getItem('lastName') || 'N/A',
+              email: localStorage.getItem('email') || 'N/A',
+              phoneNumber: localStorage.getItem('phoneNumber') || 'N/A'
+            });
+          });
+      }
+    }
+  }, [isAuthenticated]);
 
   const handleLogout = () => {
     onLogout();
-    localStorage.removeItem('userId'); // Clear the user ID on logout
+    localStorage.removeItem('userId');
+    localStorage.removeItem('userRole');
+    localStorage.removeItem('firstName');
+    localStorage.removeItem('lastName');
+    localStorage.removeItem('email');
+    localStorage.removeItem('phoneNumber');
+    localStorage.setItem('isAuthenticated', 'false');
+    setIsAuthenticated(false);
     navigate('/');
   };
+
 
   return (
     <div className="sidebar">
       <div className="profile-section" onClick={() => setIsExpanded(!isExpanded)}>
-        <h3>{username}</h3>
+        <h3>{userDetails ? `${userDetails.firstName} ${userDetails.lastName}` : `${firstName} ${lastName}`}</h3>
         {isExpanded && userDetails && (
           <div className="user-details">
             <p>Email: {userDetails.email}</p>

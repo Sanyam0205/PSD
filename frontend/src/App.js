@@ -18,23 +18,23 @@ import './App.css';
 
 function App() {
   const initialRole = localStorage.getItem('userRole') || '';
-  const initialUsername = localStorage.getItem('username') || '';
+  const initialFirstName = localStorage.getItem('firstName') || '';
 
   const [role, setRole] = useState(initialRole);
-  const [username, setUsername] = useState(initialUsername);
+  const [firstName, setFirstName] = useState(initialFirstName);
 
-  const handleLogin = (userRole, userName) => {
+  const handleLogin = (userRole, firstName) => {
     setRole(userRole);
-    setUsername(userName);
+    setFirstName(firstName);
     localStorage.setItem('userRole', userRole);
-    localStorage.setItem('username', userName);
+    localStorage.setItem('firstName', firstName);
   };
 
   const handleLogout = () => {
     setRole('');
-    setUsername('');
+    setFirstName('');
     localStorage.removeItem('userRole');
-    localStorage.removeItem('username');
+    localStorage.removeItem('firstName');
   };
 
   const isAuthenticated = !!role;
@@ -42,7 +42,7 @@ function App() {
   return (
     <div className="App">
       <Router>
-        {isAuthenticated && <Sidebar role={role} username={username} onLogout={handleLogout} />}
+        {isAuthenticated && <Sidebar role={role} firstName={firstName} onLogout={handleLogout} />}
 
         <div className={`main-content ${role ? 'with-sidebar' : ''}`}>
           <Routes>
@@ -110,7 +110,7 @@ function App() {
               path="/approver"
               element={
                 <PrivateRoute isAuthenticated={isAuthenticated} role={role} allowedRoles={['Approver']}>
-                  <Approver username={username} />
+                  <Approver firstName={firstName} />
                 </PrivateRoute>
               }
             />

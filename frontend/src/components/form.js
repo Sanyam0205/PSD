@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrash } from '@fortawesome/free-solid-svg-icons';
 import { PDFViewer } from '@react-pdf/renderer';
 import ProjectOrderPDF from './ProjectOrderPdf';
-import './custom.css';
+import  './custom.css';
 import Select from 'react-select'; 
 
 const Form = () => {
@@ -365,10 +365,18 @@ const Form = () => {
 
   const getNextSeriesPoNumber = async () => {
     try {
-      const response = await fetch('http://13.234.47.87:5000/api/series/next-po-number');
+      const response = await fetch('http://13.234.47.87:5000/api/series/next-po-number', {
+        method: 'POST', // Change this to POST
+      });
       const data = await response.json();
       console.log('Fetched series number:', data);
-      return data.seriesNumber || '00000001'; // Fallback if seriesNumber is undefined
+      
+      if (data.seriesNumber) {
+        return data.seriesNumber; // Return the number provided by the backend
+      } else {
+        console.error('No series number returned from the server');
+        return '00000001'; // Fallback value
+      }
     } catch (error) {
       console.error('Error fetching next PO number:', error);
       return '00000001'; // Fallback value
@@ -696,34 +704,60 @@ const Form = () => {
     <div className="form-container">
       {error && <p className="error">{error}</p>}
       <form onSubmit={handleSubmit} className="form">
-        <div className="po-section">
-          <div className="po-number-section">
-            <h2>PO Number</h2>
-            <div>
-              <label>PO Number:</label>
-              <input type="text" name="poNumber" value={poNumber} onChange={handleProjectOrderChange} readOnly />
-            </div>
-            <div>
-              <label>PO Date:</label>
-              <input type="date" name="poDate" value={poDate} onChange={handleProjectOrderChange} />
-            </div>
-            <div>
-              <label>PO Delivery Date:</label>
-              <input type="date" name="podeliverydate" value={podeliverydate} onChange={handleProjectOrderChange} />
-            </div>
-            <div className="type-section">
-              <label>Type:</label>
-              <label className="custom-radio">
-                <input type="radio" name="type" value="material" onChange={handleTypeChange} />
-                <span className="custom-radio-button"></span> Material
-              </label>
-              <label className="custom-radio">
-                <input type="radio" name="type" value="service" onChange={handleTypeChange} />
-                <span className="custom-radio-button"></span> Service
-              </label>
-            </div>
+      <div className="po-section">
+        <h2>PO Details</h2>
+        <div className="po-details-row">
+          <div className="po-detail-column">
+            <label>PO Number:</label>
+            <input 
+              type="text" 
+              name="poNumber" 
+              value={poNumber} 
+              onChange={handleProjectOrderChange} 
+              readOnly 
+            />
+          </div>
+          <div className="po-detail-column">
+            <label>PO Date:</label>
+            <input 
+              type="date" 
+              name="poDate" 
+              value={poDate} 
+              onChange={handleProjectOrderChange} 
+            />
+          </div>
+          <div className="po-detail-column">
+            <label>PO Delivery Date:</label>
+            <input 
+              type="date" 
+              name="podeliverydate" 
+              value={podeliverydate} 
+              onChange={handleProjectOrderChange} 
+            />
           </div>
         </div>
+        <div className="type-section">
+          <label>Type:</label>
+          <label className="custom-radio">
+            <input 
+              type="radio" 
+              name="type" 
+              value="material" 
+              onChange={handleTypeChange} 
+            />
+            <span className="custom-radio-button"></span> Material
+          </label>
+          <label className="custom-radio">
+            <input 
+              type="radio" 
+              name="type" 
+              value="service" 
+              onChange={handleTypeChange} 
+            />
+            <span className="custom-radio-button"></span> Service
+          </label>
+        </div>
+      </div>
         <div className="custom-text-section">
           <label>Top Section:</label>
           <textarea value={topsection} onChange={(e) => settopsection(e.target.value)} />

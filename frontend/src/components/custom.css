@@ -191,7 +191,7 @@ button {
 
 button:hover {
   background-color: #0056b3;
-  transform: scale(1.1);
+  /* transform: scale(1.1); */
   box-shadow: 0 5px 8px rgba(0, 0, 0, 0.3); /* Enhanced shadow on hover */
 }
 
@@ -404,4 +404,30 @@ option {
   select {
     width: 100%; /* Ensure full width on smaller screens */
   }
+}
+.po-section {
+  margin-bottom: 20px;
+}
+
+.po-details-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  margin-bottom: 15px;
+}
+
+.po-detail-column {
+  flex: 1;
+}
+
+.po-detail-column label {
+  display: block;
+  margin-bottom: 5px;
+}
+
+.po-detail-column input {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
 }

@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import './custom.css';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTrash } from '@fortawesome/free-solid-svg-icons';
 import ProjectOrderPDF from './ProjectOrderPdf';
 import { PDFViewer } from '@react-pdf/renderer';
 import Select from 'react-select';
@@ -30,10 +28,10 @@ const ProjectOrd = () => {
   useEffect(() => {
     const fetchPoNumbers = async () => {
       try {
-        const response = await axios.get('http://13.234.47.87:5000/api/project-orders/all'); // Adjust the endpoint as needed
+        const response = await axios.get('http://13.234.47.87:5000/api/project-orders/all');
         const poOptions = response.data.map(po => ({
           value: po.poNumber,
-          label: `${po.poNumber} - ${po.name}`
+          label: `${po.poNumber} - ${po.name}`,
         }));
         setPoNumbers(poOptions);
       } catch (error) {
@@ -43,6 +41,45 @@ const ProjectOrd = () => {
 
     fetchPoNumbers();
   }, []);
+
+  const calculateAmount = (item) => {
+    const quantity = parseFloat(item.quantity) || 0;
+    const ratePerUnit = parseFloat(item.ratePerUnit) || 0;
+    const gstPercentage = parseFloat(item.gstPercentage) || 0;
+    const discount = parseFloat(item.discount) || 0;
+
+    const baseAmount = quantity * ratePerUnit;
+    const discountAmount = (baseAmount * discount) / 100;
+    const amountAfterDiscount = baseAmount - discountAmount;
+    const gstAmount = (amountAfterDiscount * gstPercentage) / 100;
+    
+    return amountAfterDiscount + gstAmount;
+  };
+
+  const calculateItemTotalAmount = (item) => {
+    const itemAmount = calculateAmount(item);
+    const subItemsAmount = item.subItems ? item.subItems.reduce((total, subItem) => total + calculateAmount(subItem), 0) : 0;
+    return itemAmount + subItemsAmount;
+  };
+  
+  const calculateTotalAmount = (items) => {
+    return items.reduce((total, item) => total + calculateItemTotalAmount(item), 0);
+  };
+  
+  const recalculateAmounts = (items) => {
+    return items.map(item => {
+      const updatedSubItems = item.subItems ? item.subItems.map(subItem => ({
+        ...subItem,
+        amount: calculateAmount(subItem)
+      })) : [];
+      return { 
+        ...item, 
+        amount: calculateAmount(item),
+        totalAmount: calculateItemTotalAmount({...item, subItems: updatedSubItems}),
+        subItems: updatedSubItems
+      };
+    });
+  };
 
   const handleSelectChange = (selectedOption) => {
     setSearchedPoNumber(selectedOption ? selectedOption.value : null);
@@ -55,7 +92,7 @@ const ProjectOrd = () => {
       const response = await axios.get(`http://13.234.47.87:5000/api/project-orders/${searchedPoNumber}`);
       const formattedProjectOrder = {
         ...response.data,
-        poDate: response.data.poDate.split('T')[0] // Format date to "yyyy-MM-dd"
+        poDate: response.data.poDate.split('T')[0], // Format date to "yyyy-MM-dd"
       };
       setSearchedProjectOrder(formattedProjectOrder);
       setShowPDFPreview(true);
@@ -66,9 +103,43 @@ const ProjectOrd = () => {
   };
 
   const handleEditProjectOrderChange = (e, field) => {
-    const value = e.target.value;
+    const value = e.target.type === 'number' ? parseFloat(e.target.value) : e.target.value;
     setSearchedProjectOrder({ ...searchedProjectOrder, [field]: value });
   };
+
+const handleEditItemChange = (e, index, field) => {
+  const value = e.target.type === 'number' ? parseFloat(e.target.value) : e.target.value;
+  const updatedItems = [...searchedProjectOrder.items];
+  updatedItems[index] = { ...updatedItems[index], [field]: value };
+
+  const recalculatedItems = recalculateAmounts(updatedItems);
+  const totalAmount = calculateTotalAmount(recalculatedItems);
+
+  setSearchedProjectOrder({
+    ...searchedProjectOrder,
+    items: recalculatedItems,
+    totalAmount: totalAmount
+  });
+};
+
+const handleEditSubItemChange = (e, itemIndex, subIndex, field) => {
+  const value = e.target.type === 'number' ? parseFloat(e.target.value) : e.target.value;
+  const updatedItems = [...searchedProjectOrder.items];
+  updatedItems[itemIndex].subItems[subIndex] = { 
+    ...updatedItems[itemIndex].subItems[subIndex], 
+    [field]: value 
+  };
+
+  const recalculatedItems = recalculateAmounts(updatedItems);
+  const totalAmount = calculateTotalAmount(recalculatedItems);
+
+  setSearchedProjectOrder({
+    ...searchedProjectOrder,
+    items: recalculatedItems,
+    totalAmount: totalAmount
+  });
+};
+
   
   const handleSignatureChange = (event) => {
     const file = event.target.files[0];
@@ -101,94 +172,89 @@ const ProjectOrd = () => {
     }
   };
 
-  const calculateAmount = (item) => {
-    if (item.subItems && item.subItems.length > 0) {
-      return item.subItems.reduce((total, subItem) => {
-        const discountAmount = (subItem.ratePerUnit * subItem.quantity * subItem.discount) / 100;
-        const amountAfterDiscount = subItem.ratePerUnit * subItem.quantity - discountAmount;
-        const gstAmount = (amountAfterDiscount * subItem.gstPercentage) / 100;
-        return total + amountAfterDiscount + gstAmount;
-      }, 0);
-    } else {
-      const discountAmount = (item.ratePerUnit * item.quantity * item.discount) / 100;
-      const amountAfterDiscount = item.ratePerUnit * item.quantity - discountAmount;
-      const gstAmount = (amountAfterDiscount * item.gstPercentage) / 100;
-      return amountAfterDiscount + gstAmount;
-    }
-  };
-
-  const calculateTotalAmount = (items) => {
-    return items.reduce((total, item) => total + item.amount, 0);
-  };
-
-  const handleEditItemChange = (e, index, field) => {
-    const value = e.target.value;
-    const updatedItems = [...searchedProjectOrder.items];
-    updatedItems[index][field] = value;
-
-    // Update amount for the item if quantity, ratePerUnit, GST, or discount is changed
-    if (['quantity', 'ratePerUnit', 'gstPercentage', 'discount'].includes(field)) {
-      updatedItems[index].amount = calculateAmount(updatedItems[index]);
-    }
-
-    setSearchedProjectOrder({ ...searchedProjectOrder, items: updatedItems });
-  };
-
-  const handleEditSubItemChange = (e, index, subIndex, field) => {
-    const value = e.target.value;
-    const updatedItems = [...searchedProjectOrder.items];
-    const updatedSubItems = [...updatedItems[index].subItems];
-    updatedSubItems[subIndex][field] = value;
-  
-    // Recalculate amount for sub-item and item
-    updatedItems[index].subItems = updatedSubItems;
-    updatedItems[index].amount = calculateAmount(updatedItems[index]);
-  
-    setSearchedProjectOrder({ ...searchedProjectOrder, items: updatedItems });
-  };
-  
-  
-  const handleDeleteSubItem = (index, subIndex) => {
-    const updatedItems = [...searchedProjectOrder.items];
-    updatedItems[index].subItems.splice(subIndex, 1);
-  
-    setSearchedProjectOrder({ ...searchedProjectOrder, items: updatedItems });
-  };
-  
-  
   const handleAddSubItem = (index) => {
-    if (searchedProjectOrder.items && searchedProjectOrder.items[index]) {
-      const items = [...searchedProjectOrder.items];
-      if (!items[index].subItems) {
-        items[index].subItems = [];
-      }
-      items[index].subItems.push({
-        description: '',
-        quantity: 0,
-        ratePerUnit: 0
-      });
-      setSearchedProjectOrder({ ...searchedProjectOrder, items });
+    const updatedItems = [...searchedProjectOrder.items];
+    if (!updatedItems[index].subItems) {
+      updatedItems[index].subItems = [];
     }
-  };
-
-  const handleaddSubItem = () => {
-    const newSubItem = {
+    updatedItems[index].subItems.push({
       description: '',
       quantity: 0,
-      rate: 0
-    };
-    setNewItem({
-      ...newItem,
-      subItems: [...(newItem.subItems || []), newSubItem]
+      ratePerUnit: 0,
+      gstPercentage: 0,
+      discount: 0,
+      amount: 0
+    });
+  
+    const recalculatedItems = recalculateAmounts(updatedItems);
+    const totalAmount = calculateTotalAmount(recalculatedItems);
+  
+    setSearchedProjectOrder({
+      ...searchedProjectOrder,
+      items: recalculatedItems,
+      totalAmount: totalAmount
     });
   };
+
+  const handleDeleteSubItem = (itemIndex, subIndex) => {
+    const updatedItems = [...searchedProjectOrder.items];
+    updatedItems[itemIndex].subItems.splice(subIndex, 1);
   
+    const recalculatedItems = recalculateAmounts(updatedItems);
+    const totalAmount = calculateTotalAmount(recalculatedItems);
   
+    setSearchedProjectOrder({
+      ...searchedProjectOrder,
+      items: recalculatedItems,
+      totalAmount: totalAmount
+    });
+  };
+
+  const handleAddNewItem = () => {
+    const newItem = {
+      sno: searchedProjectOrder.items.length + 1,
+      description: '',
+      unit: '',
+      quantity: 0,
+      ratePerUnit: 0,
+      gstPercentage: 0,
+      discount: 0,
+      amount: 0,
+      subItems: [],
+    };
+
+    const updatedItems = [...searchedProjectOrder.items, newItem];
+    const recalculatedItems = recalculateAmounts(updatedItems);
+    const totalAmount = calculateTotalAmount(recalculatedItems);
+
+    setSearchedProjectOrder({
+      ...searchedProjectOrder,
+      items: recalculatedItems,
+      totalAmount: totalAmount
+    });
+  };
+
+  const handleDeleteItem = (index) => {
+    const updatedItems = searchedProjectOrder.items.filter((_, i) => i !== index);
+
+    // Update sno for remaining items after deletion
+    const updatedItemsWithSno = updatedItems.map((item, idx) => ({
+      ...item,
+      sno: idx + 1, // Update sno starting from 1
+    }));
+
+    setSearchedProjectOrder({
+      ...searchedProjectOrder,
+      items: updatedItemsWithSno,
+      totalAmount: calculateTotalAmount(updatedItemsWithSno),
+    });
+  };
+
   const handleEditSubmit = async (e) => {
     e.preventDefault();
     const updatedProjectOrder = {
       ...searchedProjectOrder,
-      totalAmount: calculateTotalAmount(searchedProjectOrder.items)
+      totalAmount: calculateTotalAmount(searchedProjectOrder.items),
     };
 
     try {
@@ -210,49 +276,8 @@ const ProjectOrd = () => {
     setNewItem(updatedItem);
   };
 
-  const handleAddNewItem = () => {
-    const newSno = searchedProjectOrder.items.length + 1;
-    const newItemToAdd = { ...newItem, sno: newSno };
-
-    const updatedItems = [...searchedProjectOrder.items, newItemToAdd];
-    setSearchedProjectOrder({
-      ...searchedProjectOrder,
-      items: updatedItems,
-      totalAmount: calculateTotalAmount(updatedItems)
-    });
-
-    // Reset newItem state for next entry
-    setNewItem({
-      sno: newSno + 1,
-      description: '',
-      unit: '',
-      quantity: 0,
-      ratePerUnit: 0,
-      gstPercentage: 0,
-      discount: 0,
-      amount: 0,
-      subItems: []
-    });
-  };
-
-  const handleDeleteItem = (index) => {
-    const updatedItems = searchedProjectOrder.items.filter((_, i) => i !== index);
-
-    // Update sno for remaining items after deletion
-    const updatedItemsWithSno = updatedItems.map((item, idx) => ({
-      ...item,
-      sno: idx + 1 // Update sno starting from 1
-    }));
-
-    setSearchedProjectOrder({
-      ...searchedProjectOrder,
-      items: updatedItemsWithSno,
-      totalAmount: calculateTotalAmount(updatedItemsWithSno)
-    });
-  };
-  
   return (
-    <div className='form-container'>
+    <div className="form-container">
       {!isEditing ? (
         <>
           {showPDFPreview && searchedProjectOrder && (
@@ -303,20 +328,20 @@ const ProjectOrd = () => {
             </PDFViewer>
           )}
           {!showPDFPreview && (
-            <div >
-            {/* Search project order by PO number */}
-            <form onSubmit={handleSearchProjectOrder} className="search-form">
-              <div className="search-section">
-                <label>Search Project Order by PO Number:</label>
-                <Select 
-                  options={poNumbers}
-                  onChange={handleSelectChange}
-                  placeholder="Enter or select PO number"
-                  isClearable
-                />
-                <button type="submit">Search</button>
-              </div>
-            </form>
+            <div>
+              {/* Search project order by PO number */}
+              <form onSubmit={handleSearchProjectOrder} className="search-form">
+                <div className="search-section">
+                  <label>Search Project Order by PO Number:</label>
+                  <Select
+                    options={poNumbers}
+                    onChange={handleSelectChange}
+                    placeholder="Enter or select PO number"
+                    isClearable
+                  />
+                  <button type="submit">Search</button>
+                </div>
+              </form>
             </div>
           )}
           {showPDFPreview && (
@@ -327,11 +352,19 @@ const ProjectOrd = () => {
         <div className="edit-section">
           <h2>Edit Project Order</h2>
           <form onSubmit={handleEditSubmit}>
-            <div className='custom-text-section'>
+            <div className="custom-text-section">
               <label>Top Section:</label>
-              <textarea 
-                value={searchedProjectOrder.topsection} 
-                onChange={(e) => handleEditProjectOrderChange(e, "topsection")} 
+              <textarea
+                value={searchedProjectOrder.topsection}
+                onChange={(e) => handleEditProjectOrderChange(e, "topsection")}
+              />
+            </div>
+            <div>
+              <label>Vendor Code:</label>
+              <input
+                type="text"
+                value={searchedProjectOrder.vendorCode}
+                onChange={(e) => handleEditProjectOrderChange(e, "vendorCode")}
               />
             </div>
             <div>
@@ -425,232 +458,227 @@ const ProjectOrd = () => {
               />
             </div>
 
-            {searchedProjectOrder.items.length > 0 && (
-              <div>
-                <h3>Items</h3>
-                <ul>
-                  {searchedProjectOrder.items.map((item, index) => (
-                    <li key={index} className="item">
-                      <div className="item-fields">
-                        <div className="item-field">
-                          <label>Serial No:</label>
-                          <input type="text" value={item.sno} readOnly />
-                        </div>
-                        <div className="item-field">
-                          <label>Description:</label>
-                          <input
-                            type="text"
-                            name="description"
-                            value={item.description}
-                            onChange={(e) => handleEditItemChange(e, index, "description")}
-                          />
-                        </div>
-                        {/* Other fields remain unchanged */}
+            <div>
+              <h3>Items</h3>
+              {searchedProjectOrder.items.map((item, index) => (
+                <div key={index} className="item">
+                  <input
+                    type="text"
+                    value={item.description}
+                    onChange={(e) => handleEditItemChange(e, index, "description")}
+                  />
+                  <input
+                    type="number"
+                    value={item.quantity}
+                    onChange={(e) => handleEditItemChange(e, index, "quantity")}
+                  />
+                  <input
+                    type="number"
+                    value={item.ratePerUnit}
+                    onChange={(e) => handleEditItemChange(e, index, "ratePerUnit")}
+                  />
+                  <input
+                    type="number"
+                    value={item.gstPercentage}
+                    onChange={(e) => handleEditItemChange(e, index, "gstPercentage")}
+                  />
+                  <input
+                    type="number"
+                    value={item.discount}
+                    onChange={(e) => handleEditItemChange(e, index, "discount")}
+                  />
+                    {/* <span>Item Amount: {(item.amount || 0).toFixed(2)}</span> */}
+                    <span>Total Amount (including sub-items): {(item.totalAmount || 0).toFixed(2)}</span>
+                  
+                  {/* Sub-items section */}
+                  <div>
+                    <h4>Sub-items</h4>
+                    {item.subItems && item.subItems.map((subItem, subIndex) => (
+                      <div key={subIndex} className="sub-item">
+                        <input
+                          type="text"
+                          value={subItem.description}
+                          onChange={(e) => handleEditSubItemChange(e, index, subIndex, "description")}
+                        />
+                        <input
+                          type="number"
+                          value={subItem.quantity}
+                          onChange={(e) => handleEditSubItemChange(e, index, subIndex, "quantity")}
+                        />
+                        <input
+                          type="number"
+                          value={subItem.ratePerUnit}
+                          onChange={(e) => handleEditSubItemChange(e, index, subIndex, "ratePerUnit")}
+                        />
+                        <input
+                          type="number"
+                          value={subItem.gstPercentage}
+                          onChange={(e) => handleEditSubItemChange(e, index, subIndex, "gstPercentage")}
+                        />
+                        <input
+                          type="number"
+                          value={subItem.discount}
+                          onChange={(e) => handleEditSubItemChange(e, index, subIndex, "discount")}
+                        />
+                        <span>Amount: {(subItem.amount || 0).toFixed(2)}</span>
+                        <button type="button" onClick={() => handleDeleteSubItem(index, subIndex)}>Delete Sub-item</button>
                       </div>
-                      <button
-                            type="button"
-                            onClick={() => handleDeleteItem(index)}
-                          >
-                            Delete Item
-                          </button>
-
-                      {/* Sub-items Section */}
-                      {item.subItems && item.subItems.length > 0 && (
-                        <div className="sub-items-section">
-                          <h4>Sub-items</h4>
-                          <ul>
-                            {item.subItems.map((subItem, subIndex) => (
-                              <li key={subIndex} className="sub-item">
-                                <div className="sub-item-field">
-                                  <label>Sub-item Description:</label>
-                                  <input
-                                    type="text"
-                                    value={subItem.description}
-                                    onChange={(e) => handleEditSubItemChange(e, index, subIndex, "description")}
-                                  />
-                                </div>
-                                <div className="sub-item-field">
-                                  <label>Quantity:</label>
-                                  <input
-                                    type="number"
-                                    value={subItem.quantity}
-                                    onChange={(e) => handleEditSubItemChange(e, index, subIndex, "quantity")}
-                                  />
-                                </div>
-                                <div className="sub-item-field">
-                                  <label>Rate:</label>
-                                  <input
-                                    type="number"
-                                    value={subItem.ratePerUnit}
-                                    onChange={(e) => handleEditSubItemChange(e, index, subIndex, "rate")}
-                                  />
-                                </div>
-                                <button
-                                  type="button"
-                                  className="delete-button"
-                                  onClick={() => handleDeleteSubItem(index, subIndex)}
-                                >
-                                  <FontAwesomeIcon icon={faTrash} />
-                                </button>
-                              </li>
-                            ))}
-                          </ul>
-                          <button
-                            type="button"
-                            onClick={() => handleAddSubItem(index)}
-                          >
-                            Add Sub-item
-                          </button>
-                        </div>
-                      )}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            )}
-
+                    ))}
+                    <button type="button" onClick={() => handleAddSubItem(index)}>Add Sub-item</button>
+                  </div>
+                  
+                  <button type="button" onClick={() => handleDeleteItem(index)}>Delete Item</button>
+                </div>
+              ))}
+              <button type="button" onClick={handleAddNewItem}>Add New Item</button>
+            </div>
             <div>
               <label>Total Amount:</label>
               <input
                 type="number"
-                name="totalAmount"
-                value={calculateTotalAmount(searchedProjectOrder.items)}
+                value={(searchedProjectOrder.totalAmount || 0).toFixed(2)}
                 readOnly
               />
             </div>
-            <h3>Add New Item</h3>
-              <div className="item-fields">
+
+            {/* <h3>Add New Item</h3>
+            <div className="item-fields">
+              <div className="item-field">
+                <label>Description:</label>
+                <input
+                  type="text"
+                  name="description"
+                  value={newItem.description}
+                  onChange={handleNewItemChange}
+                />
+              </div>
+              <div className="item-field">
+                <label>Unit:</label>
+                <select
+                  name="unit"
+                  value={newItem.unit}
+                  onChange={(e) => handleNewItemChange(e, "unit")}
+                >
+                  <option value="choose">Select One</option>
+                  <option value="kg">Kilogram (kg)</option>
+                  <option value="metricTon">Metric Ton</option>
+                  <option value="metre">Metre (m)</option>
+                  <option value="squareMetre">Square Metre (m²)</option>
+                  <option value="cubicMetre">Cubic Metre (m³)</option>
+                  <option value="litre">Litre (L)</option>
+                  <option value="gallon">Gallon</option>
+                  <option value="pcs">PCS</option>
+                  <option value="nos">Nos</option>
+                </select>
+              </div>
+              <div className="item-field">
+                <label>Quantity:</label>
+                <input
+                  type="number"
+                  name="quantity"
+                  value={newItem.quantity}
+                  onChange={handleNewItemChange}
+                />
+              </div>
+              <div className="item-field">
+                <label>Rate Per Unit:</label>
+                <input
+                  type="number"
+                  name="ratePerUnit"
+                  value={newItem.ratePerUnit}
+                  onChange={handleNewItemChange}
+                />
+              </div>
+              <div className="item-field">
+                <label>GST:</label>
+                <input
+                  type="text"
+                  name="gstPercentage"
+                  value={newItem.gstPercentage}
+                  onChange={handleNewItemChange}
+                />
+              </div>
+              <div className="item-field">
+                <label>Discount:</label>
+                <input
+                  type="text"
+                  name="discount"
+                  value={newItem.discount}
+                  onChange={handleNewItemChange}
+                />
+              </div>
+              <div className="item-field">
+                <label>Amount:</label>
+                <input
+                  type="number"
+                  name="amount"
+                  value={newItem.amount}
+                  readOnly
+                />
+              </div>
+              <button
+                type="button"
+            onClick={handleAddNewItem}
+          >
+            Add Item
+          </button>
+        </div>
+
+        <div className="sub-items-section">
+          <h4>Sub-Items</h4>
+          {newItem.subItems && newItem.subItems.length > 0 ? (
+            newItem.subItems.map((subItem, subIndex) => (
+              <div key={subIndex} className="sub-item-fields">
                 <div className="item-field">
                   <label>Description:</label>
                   <input
                     type="text"
                     name="description"
-                    value={newItem.description}
-                    onChange={handleNewItemChange}
+                    value={subItem.description}
+                    onChange={(e) => handleEditSubItemChange(e, subIndex, "description")}
                   />
-                </div>
-                <div className="item-field">
-                  <label>Unit:</label>
-                  <select
-                    name="unit"
-                    value={newItem.unit}
-                    onChange={(e) => handleNewItemChange(e, "unit")}
-                  >
-                    <option value="choose">Select One</option>
-                    <option value="kg">Kilogram (kg)</option>
-                    <option value="metricTon">Metric Ton</option>
-                    <option value="metre">Metre (m)</option>
-                    <option value="squareMetre">Square Metre (m²)</option>
-                    <option value="cubicMetre">Cubic Metre (m³)</option>
-                    <option value="litre">Litre (L)</option>
-                    <option value="gallon">Gallon</option>
-                    <option value="pcs">PCS</option>
-                    <option value="nos">Nos</option>
-                  </select>
                 </div>
                 <div className="item-field">
                   <label>Quantity:</label>
                   <input
                     type="number"
                     name="quantity"
-                    value={newItem.quantity}
-                    onChange={handleNewItemChange}
+                    value={subItem.quantity}
+                    onChange={(e) => handleEditSubItemChange(e, subIndex, "quantity")}
                   />
                 </div>
                 <div className="item-field">
-                  <label>Rate Per Unit:</label>
+                  <label>Rate:</label>
                   <input
                     type="number"
-                    name="ratePerUnit"
-                    value={newItem.ratePerUnit}
-                    onChange={handleNewItemChange}
+                    name="rate"
+                    value={subItem.rate}
+                    onChange={(e) => handleEditSubItemChange(e, subIndex, "rate")}
                   />
                 </div>
-                <div className="item-field">
-                  <label>GST:</label>
-                  <input
-                    type="text"
-                    name="gstPercentage"
-                    value={newItem.gstPercentage}
-                    onChange={handleNewItemChange}
-                  />
-                </div>
-                <div className="item-field">
-                  <label>Discount:</label>
-                  <input
-                    type="text"
-                    name="discount"
-                    value={newItem.discount}
-                    onChange={handleNewItemChange}
-                  />
-                </div>
-                <div className="item-field">
-                  <label>Amount:</label>
-                  <input
-                    type="number"
-                    name="amount"
-                    value={newItem.amount}
-                    readOnly
-                  />
-                </div>
-                <button type="button" onClick={handleAddNewItem}>
-                  Add Item
+                <button type="button" onClick={() => handleDeleteSubItem(subIndex)}>
+                  Remove Sub-Item
                 </button>
               </div>
+            ))
+          ) : (
+            <p>No sub-items added yet.</p>
+          )}
+          <button type="button" onClick={handleAddSubItem}>
+            Add Sub-Item
+          </button>
+        </div> */}
 
-              <div className="sub-items-section">
-                <h4>Sub-Items</h4>
-                {newItem.subItems && newItem.subItems.length > 0 ? (
-                  newItem.subItems.map((subItem, subIndex) => (
-                    <div key={subIndex} className="sub-item-fields">
-                      <div className="item-field">
-                        <label>Description:</label>
-                        <input
-                          type="text"
-                          name="description"
-                          value={subItem.description}
-                          onChange={(e) => handleEditSubItemChange(e, subIndex, "description")}
-                        />
-                      </div>
-                      <div className="item-field">
-                        <label>Quantity:</label>
-                        <input
-                          type="number"
-                          name="quantity"
-                          value={subItem.quantity}
-                          onChange={(e) => handleEditSubItemChange(e, subIndex, "quantity")}
-                        />
-                      </div>
-                      <div className="item-field">
-                        <label>Rate:</label>
-                        <input
-                          type="number"
-                          name="rate"
-                          value={subItem.rate}
-                          onChange={(e) => handleEditSubItemChange(e, subIndex, "rate")}
-                        />
-                      </div>
-                      <button type="button" onClick={() => handleDeleteSubItem(subIndex)}>
-                        Remove Sub-Item
-                      </button>
-                    </div>
-                  ))
-                ) : (
-                  <p>No sub-items added yet.</p>
-                )}
-                <button type="button" onClick={handleaddSubItem}>
-                  Add Sub-Item
-                </button>
+        <div className="custom-text-section">
+          <label>Top Section:</label>
+          <textarea value={searchedProjectOrder.Notes} onChange={(e) => handleEditItemChange(e.target.value)} />
+        </div>
+        <div className="custom-text-section">
+          <label>Top Section:</label>
+          <textarea value={searchedProjectOrder.tnc} onChange={(e) => handleEditItemChange(e.target.value)} />
+          </div>
 
-            <div className='custom-text-section'>
-              <label>Top Section:</label>
-              <textarea value={searchedProjectOrder.Notes} onChange={(e) => handleEditItemChange(e.target.value)} />
-            </div>
-            <div className='custom-text-section'>
-              <label>Top Section:</label>
-              <textarea value={searchedProjectOrder.tnc} onChange={(e) => handleEditItemChange(e.target.value)} />
-            </div>
-            {showPDFPreview &&  (
+          {showPDFPreview && (
             <PDFViewer width="100%" height="600">
               <ProjectOrderPDF
                 vendorCode={searchedProjectOrder.vendorCode}
@@ -692,28 +720,36 @@ const ProjectOrd = () => {
                 topsection={searchedProjectOrder.topsection}
                 Notes={searchedProjectOrder.Notes}
                 tnc={searchedProjectOrder.tnc}
+
                 signature={signatureUrl}
                 // Add more props as per your ProjectOrderPDF component requirements
               />
             </PDFViewer>
           )}
-            <button type="button" onClick={() => setShowPDFPreview(true)}>Preview PDF</button>
-            <div>
-            </div>
-            <button type="button" onClick={() => setShowPDFPreview(false)}>Close PDF</button>
-            </div>
-            <div className="signature-section">
-              <label>Signature:</label>
-              <input type="file" accept="image/*" onChange={handleSignatureChange} />
-              <button type="button" onClick={handlesignUpload}>Upload Signature</button>
-              {signatureUrl && <img src={`http://13.234.47.87:5000${signatureUrl}`} alt="Signature"  />}
-            </div>
-              <button type="submit">Update Project Order</button>
-            </form>
+          <button type="button" onClick={() => setShowPDFPreview(true)}>
+            Preview PDF
+          </button>
+          <div>
+            <button type="button" onClick={() => setShowPDFPreview(false)}>
+              Close PDF
+            </button>
           </div>
-        )}
+          <div className="signature-section">
+            <label>Signature:</label>
+            <input type="file" accept="image/*" onChange={handleSignatureChange} />
+            <button type="button" onClick={handlesignUpload}>
+              Upload Signature
+            </button>
+            {signatureUrl && (
+              <img src={`http://13.234.47.87:5000${signatureUrl}`} alt="Signature" />
+            )}
+          </div>
+          <button type="submit">Update Project Order</button>
+        </form>
       </div>
-  );
-};
-
-export default ProjectOrd;
+    )}
+  </div>
+    );
+  };
+  
+  export default ProjectOrd;

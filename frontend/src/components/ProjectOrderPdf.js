@@ -79,7 +79,7 @@ const numberToWords = (num) => {
 };
 
 const formatNumber = (value) => {
-  return value.toLocaleString('en-IN');
+  return value;
 };
 
 

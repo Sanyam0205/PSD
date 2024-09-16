@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import styles from './Signin.module.css';
 
@@ -7,19 +7,26 @@ function Login({ onLogin }) {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const navigate = useNavigate();
+    const location = useLocation();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-
+    
         try {
-            const response = await axios.post('http://13.234.47.87:5000/api/login', { email, password });
-
-            const { role, username, id } = response.data; // Assuming the API returns user id as well
-            console.log('Login successful:', response.data);
-
-            localStorage.setItem('userId', id); // Save the user ID
-
-            onLogin(role, username);
+          const response = await axios.post('http://13.234.47.87:5000/api/login', { email, password });
+    
+          const { role, firstName, lastName, id, email: userEmail, phoneNumber } = response.data;
+          console.log('Login successful:', response.data);
+    
+          localStorage.setItem('userId', id);
+          localStorage.setItem('userRole', role);
+          localStorage.setItem('firstName', firstName);
+          localStorage.setItem('lastName', lastName);
+          localStorage.setItem('isAuthenticated', 'true');
+          localStorage.setItem('email', userEmail);
+          localStorage.setItem('phoneNumber', phoneNumber);
+    
+          onLogin(role, firstName);
 
             switch (role) {
                 case 'Creator':
@@ -42,6 +49,31 @@ function Login({ onLogin }) {
             console.error('Login failed:', error);
         }
     };
+
+    React.useEffect(() => {
+        const isAuthenticated = localStorage.getItem('isAuthenticated');
+        const userRole = localStorage.getItem('userRole');
+        
+        if (isAuthenticated === 'true' && userRole && location.pathname === '/') {
+            switch (userRole) {
+                case 'Creator':
+                    navigate('/creator');
+                    break;
+                case 'Viewer':
+                    navigate('/viewer');
+                    break;
+                case 'Approver':
+                    navigate('/approver');
+                    break;
+                case 'Admin':
+                    navigate('/home');
+                    break;
+                default:
+                    console.error('Unknown role:', userRole);
+                    break;
+            }
+        }
+    }, [navigate, location]);
 
     return (
         <div className={styles.container}>

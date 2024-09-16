@@ -4,7 +4,7 @@ import { PDFViewer } from "@react-pdf/renderer";
 import ProjectOrderPDF from "./components/ProjectOrderPdf.js";
 import styles from './Approver.css';
 
-const Approver = ({ username }) => {
+const Approver = ({ firstName }) => {
   const [poList, setPoList] = useState([]);
   const [selectedPo, setSelectedPo] = useState(null);
   const [showPDFPreview, setShowPDFPreview] = useState(false);
@@ -32,13 +32,13 @@ const Approver = ({ username }) => {
 
   const handleApprove = async (po) => {
     try {
-      const updatedPo = { ...po, status: "Approved", approvedBy: username };
+      const updatedPo = { ...po, status: "Approved", approvedBy: firstName };
       const response = await axios.put(`http://13.234.47.87:5000/api/project-orders/${po.poNumber}`, updatedPo);
 
       if (response.status === 200) {
         setPoList((prevList) =>
           prevList.map((item) =>
-            item.poNumber === po.poNumber ? { ...item, status: "Approved", approvedBy: username } : item
+            item.poNumber === po.poNumber ? { ...item, status: "Approved", approvedBy: firstName } : item
           )
         );
       }
