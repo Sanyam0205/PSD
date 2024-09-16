@@ -16,7 +16,6 @@ function Sidebar({ role, onLogout, username, phoneNumber, email }) {
     localStorage.removeItem('email');
     localStorage.removeItem('phoneNumber');
     localStorage.setItem('isAuthenticated', 'false');
-    setIsAuthenticated(false);
     navigate('/');
   };
 
