@@ -9,17 +9,17 @@ const ProjectOrd = () => {
   const [poNumbers, setPoNumbers] = useState([]);
   const [searchedPoNumber, setSearchedPoNumber] = useState('');
   const [searchedProjectOrder, setSearchedProjectOrder] = useState(null);
-  const [newItem, setNewItem] = useState({
-    sno: '',
-    description: '',
-    unit: '',
-    quantity: 0,
-    ratePerUnit: 0,
-    gstPercentage: 0,
-    discount: 0,
-    amount: 0,
-    subItems: [], // Initialize subItems for new item
-  });
+  // const [newItem, setNewItem] = useState({
+  //   sno: '',
+  //   description: '',
+  //   unit: '',
+  //   quantity: 0,
+  //   ratePerUnit: 0,
+  //   gstPercentage: 0,
+  //   discount: 0,
+  //   amount: 0,
+  //   subItems: [], // Initialize subItems for new item
+  // });
   const [signature, setSignature] = useState(null);
   const [signatureUrl, setSignatureUrl] = useState('');
   const [showPDFPreview, setShowPDFPreview] = useState(false);
@@ -266,16 +266,6 @@ const handleEditSubItemChange = (e, itemIndex, subIndex, field) => {
     }
   };
 
-  const handleNewItemChange = (e) => {
-    const { name, value } = e.target;
-    const updatedItem = { ...newItem, [name]: value };
-
-    // Update item calculations
-    updatedItem.amount = calculateAmount(updatedItem);
-
-    setNewItem(updatedItem);
-  };
-
   return (
     <div className="form-container">
       {!isEditing ? (
@@ -359,105 +349,240 @@ const handleEditSubItemChange = (e, itemIndex, subIndex, field) => {
                 onChange={(e) => handleEditProjectOrderChange(e, "topsection")}
               />
             </div>
-            <div>
-              <label>Vendor Code:</label>
-              <input
-                type="text"
-                value={searchedProjectOrder.vendorCode}
-                onChange={(e) => handleEditProjectOrderChange(e, "vendorCode")}
-              />
-            </div>
-            <div>
-              <label>Name:</label>
-              <input
-                type="text"
-                name="name"
-                value={searchedProjectOrder.name}
-                onChange={(e) => handleEditProjectOrderChange(e, "name")}
-              />
-            </div>
-            <div>
-              <label>Address:</label>
-              <input
-                type="text"
-                name="address"
-                value={searchedProjectOrder.address}
-                onChange={(e) => handleEditProjectOrderChange(e, "address")}
-              />
-            </div>
-            <div>
-              <label>Email:</label>
-              <input
-                type="email"
-                name="email"
-                value={searchedProjectOrder.email}
-                onChange={(e) => handleEditProjectOrderChange(e, "email")}
-              />
-            </div>
-            <div>
-              <label>GST Number:</label>
-              <input
-                type="text"
-                name="gstNumber"
-                value={searchedProjectOrder.gstNumber}
-                onChange={(e) => handleEditProjectOrderChange(e, "gstNumber")}
-              />
-            </div>
-            <div>
-              <label>Bill To Address:</label>
-              <input
-                type="text"
-                name="billToAddress"
-                value={searchedProjectOrder.billToAddress}
-                onChange={(e) => handleEditProjectOrderChange(e, "billToAddress")}
-              />
-            </div>
-            <div>
-              <label>Shipping Address:</label>
-              <input
-                type="text"
-                name="shippingAddress"
-                value={searchedProjectOrder.shippingAddress}
-                onChange={(e) => handleEditProjectOrderChange(e, "shippingAddress")}
-              />
-            </div>
-            <div>
-              <label>Pin Code:</label>
-              <input
-                type="text"
-                name="pinCode"
-                value={searchedProjectOrder.pinCode}
-                onChange={(e) => handleEditProjectOrderChange(e, "pinCode")}
-              />
-            </div>
-            <div>
-              <label>State:</label>
-              <input
-                type="text"
-                name="state"
-                value={searchedProjectOrder.state}
-                onChange={(e) => handleEditProjectOrderChange(e, "state")}
-              />
-            </div>
-            <div>
-              <label>Shipping Phone Number:</label>
-              <input
-                type="text"
-                name="shippingPhoneNumber"
-                value={searchedProjectOrder.shippingPhoneNumber}
-                onChange={(e) => handleEditProjectOrderChange(e, "shippingPhoneNumber")}
-              />
-            </div>
-            <div>
-              <label>PO Date:</label>
-              <input
-                type="date"
-                name="poDate"
-                value={searchedProjectOrder.poDate}
-                onChange={(e) => handleEditProjectOrderChange(e, "poDate")}
-              />
-            </div>
 
+              <div className="vendor-section">
+                <h3>Vendor Details</h3>
+                <div>
+                  <label>Vendor Code:</label>
+                  <input
+                    type="text"
+                    value={searchedProjectOrder.vendorCode}
+                    onChange={(e) => handleEditProjectOrderChange(e, "vendorCode")}
+                  />
+                </div>
+                <div>
+                  <label>Name:</label>
+                  <input
+                    type="text"
+                    value={searchedProjectOrder.name}
+                    onChange={(e) => handleEditProjectOrderChange(e, "name")}
+                  />
+                </div>
+                <div>
+                  <label>Contact Person:</label>
+                  <input
+                    type="text"
+                    value={searchedProjectOrder.contactperson}
+                    onChange={(e) => handleEditProjectOrderChange(e, "contactperson")}
+                  />
+                </div>
+                <div>
+                  <label>Address:</label>
+                  <input
+                    type="text"
+                    value={searchedProjectOrder.address}
+                    onChange={(e) => handleEditProjectOrderChange(e, "address")}
+                  />
+                </div>
+                <div>
+                  <label>District:</label>
+                  <input
+                    type="text"
+                    value={searchedProjectOrder.district}
+                    onChange={(e) => handleEditProjectOrderChange(e, "district")}
+                  />
+                </div>
+                <div>
+                  <label>State:</label>
+                  <input
+                    type="text"
+                    value={searchedProjectOrder.state}
+                    onChange={(e) => handleEditProjectOrderChange(e, "state")}
+                  />
+                </div>
+                <div>
+                  <label>Pin Code:</label>
+                  <input
+                    type="text"
+                    value={searchedProjectOrder.pinCode}
+                    onChange={(e) => handleEditProjectOrderChange(e, "pinCode")}
+                  />
+                </div>
+                <div>
+                  <label>Email:</label>
+                  <input
+                    type="email"
+                    value={searchedProjectOrder.email}
+                    onChange={(e) => handleEditProjectOrderChange(e, "email")}
+                  />
+                </div>
+                <div>
+                  <label>Contact:</label>
+                  <input
+                    type="text"
+                    value={searchedProjectOrder.contact}
+                    onChange={(e) => handleEditProjectOrderChange(e, "contact")}
+                  />
+                </div>
+                <div>
+                  <label>GST Number:</label>
+                  <input
+                    type="text"
+                    value={searchedProjectOrder.gstNumber}
+                    onChange={(e) => handleEditProjectOrderChange(e, "gstNumber")}
+                  />
+                </div>
+              </div>
+              <div className="bill-to-section">
+                <h3>Bill to Address</h3>
+                <div>
+                  <label>Name:</label>
+                  <input
+                    type="text"
+                    value={searchedProjectOrder.billtoname}
+                    onChange={(e) => handleEditProjectOrderChange(e, "billtoname")}
+                  />
+                </div>
+                <div>
+                  <label>Contact Person:</label>
+                  <input
+                    type="text"
+                    value={searchedProjectOrder.billtocp}
+                    onChange={(e) => handleEditProjectOrderChange(e, "billtocp")}
+                  />
+                </div>
+                <div>
+                  <label>Address:</label>
+                  <input
+                    type="text"
+                    value={searchedProjectOrder.billToAddress}
+                    onChange={(e) => handleEditProjectOrderChange(e, "billToAddress")}
+                  />
+                </div>
+                <div>
+                  <label>District:</label>
+                  <input
+                    type="text"
+                    value={searchedProjectOrder.billToDistrict}
+                    onChange={(e) => handleEditProjectOrderChange(e, "billToDistrict")}
+                  />
+                </div>
+                <div>
+                  <label>State:</label>
+                  <input
+                    type="text"
+                    value={searchedProjectOrder.billToState}
+                    onChange={(e) => handleEditProjectOrderChange(e, "billToState")}
+                  />
+                </div>
+                <div>
+                  <label>Pin Code:</label>
+                  <input
+                    type="text"
+                    value={searchedProjectOrder.billToPinCode}
+                    onChange={(e) => handleEditProjectOrderChange(e, "billToPinCode")}
+                  />
+                </div>
+                <div>
+                  <label>Contact:</label>
+                  <input
+                    type="text"
+                    value={searchedProjectOrder.billToContact}
+                    onChange={(e) => handleEditProjectOrderChange(e, "billToContact")}
+                  />
+                </div>
+                <div>
+                  <label>Email:</label>
+                  <input
+                    type="email"
+                    value={searchedProjectOrder.billToEmail}
+                    onChange={(e) => handleEditProjectOrderChange(e, "billToEmail")}
+                  />
+                </div>
+                <div>
+                  <label>GST Number:</label>
+                  <input
+                    type="text"
+                    value={searchedProjectOrder.billToGstNumber}
+                    onChange={(e) => handleEditProjectOrderChange(e, "billToGstNumber")}
+                  />
+                </div>
+              </div>
+              <div className="delivery-section">
+                <h3>Delivery Details</h3>
+                <div>
+                  <label>Name:</label>
+                  <input
+                    type="text"
+                    value={searchedProjectOrder.deliveryName}
+                    onChange={(e) => handleEditProjectOrderChange(e, "deliveryName")}
+                  />
+                </div>
+                <div>
+                  <label>Contact Person:</label>
+                  <input
+                    type="text"
+                    value={searchedProjectOrder.delcp}
+                    onChange={(e) => handleEditProjectOrderChange(e, "delcp")}
+                  />
+                </div>
+                <div>
+                  <label>Address:</label>
+                  <input
+                    type="text"
+                    value={searchedProjectOrder.shippingAddress}
+                    onChange={(e) => handleEditProjectOrderChange(e, "shippingAddress")}
+                  />
+                </div>
+                <div>
+                  <label>District:</label>
+                  <input
+                    type="text"
+                    value={searchedProjectOrder.deliveryDistrict}
+                    onChange={(e) => handleEditProjectOrderChange(e, "deliveryDistrict")}
+                  />
+                </div>
+                <div>
+                  <label>State:</label>
+                  <input
+                    type="text"
+                    value={searchedProjectOrder.deliveryState}
+                    onChange={(e) => handleEditProjectOrderChange(e, "deliveryState")}
+                  />
+                </div>
+                <div>
+                  <label>Pin Code:</label>
+                  <input
+                    type="text"
+                    value={searchedProjectOrder.deliveryPinCode}
+                    onChange={(e) => handleEditProjectOrderChange(e, "deliveryPinCode")}
+                  />
+                </div>
+                <div>
+                  <label>Contact:</label>
+                  <input
+                    type="text"
+                    value={searchedProjectOrder.deliveryContact}
+                    onChange={(e) => handleEditProjectOrderChange(e, "deliveryContact")}
+                  />
+                </div>
+                <div>
+                  <label>Email:</label>
+                  <input
+                    type="email"
+                    value={searchedProjectOrder.deliveryEmail}
+                    onChange={(e) => handleEditProjectOrderChange(e, "deliveryEmail")}
+                  />
+                </div>
+                <div>
+                  <label>GST Number:</label>
+                  <input
+                    type="text"
+                    value={searchedProjectOrder.deliveryGstNumber}
+                    onChange={(e) => handleEditProjectOrderChange(e, "deliveryGstNumber")}
+                  />
+                </div>
+              </div>
             <div>
               <h3>Items</h3>
               {searchedProjectOrder.items.map((item, index) => (
@@ -487,10 +612,8 @@ const handleEditSubItemChange = (e, itemIndex, subIndex, field) => {
                     value={item.discount}
                     onChange={(e) => handleEditItemChange(e, index, "discount")}
                   />
-                    {/* <span>Item Amount: {(item.amount || 0).toFixed(2)}</span> */}
                     <span>Total Amount (including sub-items): {(item.totalAmount || 0).toFixed(2)}</span>
                   
-                  {/* Sub-items section */}
                   <div>
                     <h4>Sub-items</h4>
                     {item.subItems && item.subItems.map((subItem, subIndex) => (
@@ -541,133 +664,6 @@ const handleEditSubItemChange = (e, itemIndex, subIndex, field) => {
               />
             </div>
 
-            {/* <h3>Add New Item</h3>
-            <div className="item-fields">
-              <div className="item-field">
-                <label>Description:</label>
-                <input
-                  type="text"
-                  name="description"
-                  value={newItem.description}
-                  onChange={handleNewItemChange}
-                />
-              </div>
-              <div className="item-field">
-                <label>Unit:</label>
-                <select
-                  name="unit"
-                  value={newItem.unit}
-                  onChange={(e) => handleNewItemChange(e, "unit")}
-                >
-                  <option value="choose">Select One</option>
-                  <option value="kg">Kilogram (kg)</option>
-                  <option value="metricTon">Metric Ton</option>
-                  <option value="metre">Metre (m)</option>
-                  <option value="squareMetre">Square Metre (m²)</option>
-                  <option value="cubicMetre">Cubic Metre (m³)</option>
-                  <option value="litre">Litre (L)</option>
-                  <option value="gallon">Gallon</option>
-                  <option value="pcs">PCS</option>
-                  <option value="nos">Nos</option>
-                </select>
-              </div>
-              <div className="item-field">
-                <label>Quantity:</label>
-                <input
-                  type="number"
-                  name="quantity"
-                  value={newItem.quantity}
-                  onChange={handleNewItemChange}
-                />
-              </div>
-              <div className="item-field">
-                <label>Rate Per Unit:</label>
-                <input
-                  type="number"
-                  name="ratePerUnit"
-                  value={newItem.ratePerUnit}
-                  onChange={handleNewItemChange}
-                />
-              </div>
-              <div className="item-field">
-                <label>GST:</label>
-                <input
-                  type="text"
-                  name="gstPercentage"
-                  value={newItem.gstPercentage}
-                  onChange={handleNewItemChange}
-                />
-              </div>
-              <div className="item-field">
-                <label>Discount:</label>
-                <input
-                  type="text"
-                  name="discount"
-                  value={newItem.discount}
-                  onChange={handleNewItemChange}
-                />
-              </div>
-              <div className="item-field">
-                <label>Amount:</label>
-                <input
-                  type="number"
-                  name="amount"
-                  value={newItem.amount}
-                  readOnly
-                />
-              </div>
-              <button
-                type="button"
-            onClick={handleAddNewItem}
-          >
-            Add Item
-          </button>
-        </div>
-
-        <div className="sub-items-section">
-          <h4>Sub-Items</h4>
-          {newItem.subItems && newItem.subItems.length > 0 ? (
-            newItem.subItems.map((subItem, subIndex) => (
-              <div key={subIndex} className="sub-item-fields">
-                <div className="item-field">
-                  <label>Description:</label>
-                  <input
-                    type="text"
-                    name="description"
-                    value={subItem.description}
-                    onChange={(e) => handleEditSubItemChange(e, subIndex, "description")}
-                  />
-                </div>
-                <div className="item-field">
-                  <label>Quantity:</label>
-                  <input
-                    type="number"
-                    name="quantity"
-                    value={subItem.quantity}
-                    onChange={(e) => handleEditSubItemChange(e, subIndex, "quantity")}
-                  />
-                </div>
-                <div className="item-field">
-                  <label>Rate:</label>
-                  <input
-                    type="number"
-                    name="rate"
-                    value={subItem.rate}
-                    onChange={(e) => handleEditSubItemChange(e, subIndex, "rate")}
-                  />
-                </div>
-                <button type="button" onClick={() => handleDeleteSubItem(subIndex)}>
-                  Remove Sub-Item
-                </button>
-              </div>
-            ))
-          ) : (
-            <p>No sub-items added yet.</p>
-          )}
-          <button type="button" onClick={handleAddSubItem}>
-            Add Sub-Item
-          </button>
-        </div> */}
 
         <div className="custom-text-section">
           <label>Top Section:</label>

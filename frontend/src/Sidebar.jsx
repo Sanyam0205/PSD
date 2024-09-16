@@ -1,37 +1,23 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import axios from 'axios';
 import './Sidebar.css';
 
-function Sidebar({ role, onLogout, username, phoneNumber, email }) {
+function Sidebar({ role, onLogout, firstName = '', lastName = '' }) {
   const navigate = useNavigate();
-  const [isExpanded, setIsExpanded] = useState(false);
 
   const handleLogout = () => {
     onLogout();
-    localStorage.removeItem('userId');
-    localStorage.removeItem('userRole');
-    localStorage.removeItem('firstName');
-    localStorage.removeItem('lastName');
-    localStorage.removeItem('email');
-    localStorage.removeItem('phoneNumber');
-    localStorage.setItem('isAuthenticated', 'false');
+    localStorage.clear();
     navigate('/');
   };
 
 
+
   return (
     <div className="sidebar">
-    <div className="profile-section" onClick={() => setIsExpanded(!isExpanded)}>
-      <h3>Hello {username.charAt(0).toUpperCase() + username.slice(1).toLowerCase()}</h3>
-      {/* {isExpanded && (
-        <div className="user-details">
-          <p>Email: {email}</p>
-          <p>Phone: {phoneNumber}</p>
-          <p>Role: {role}</p>
-        </div>
-      )} */}
-    </div>
+      <div className="profile-section">
+        <h3>{firstName}</h3>
+      </div>
 
       <ul>
         {role === 'Creator' && (

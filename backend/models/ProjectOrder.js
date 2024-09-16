@@ -53,6 +53,7 @@ const projectOrderSchema = new mongoose.Schema({
   deliveryPinCode: String,
   deliveryContact: String,
   deliveryEmail: String,
+  deliveryGstNumber: String,
   poNumber: String,
   poDate: Date,
   podeliverydate: Date,

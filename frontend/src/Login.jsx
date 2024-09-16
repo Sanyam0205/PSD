@@ -15,13 +15,14 @@ function Login({ onLogin }) {
         try {
             const response = await axios.post('http://13.234.47.87:5000/api/login', { email, password });
 
-            const { role, firstName, id, phoneNumber, email: userEmail } = response.data; 
+            const { role, firstName, lastName, id, phoneNumber, email: userEmail } = response.data; 
             console.log('Login successful:', response.data);
 
             // Save the user information in localStorage
             localStorage.setItem('userId', id);
             localStorage.setItem('userRole', role);
             localStorage.setItem('username', firstName);
+            localStorage.setItem('lastName', lastName);
             localStorage.setItem('phoneNumber', phoneNumber);
             localStorage.setItem('email', userEmail);
 

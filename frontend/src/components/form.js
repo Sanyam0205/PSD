@@ -266,6 +266,7 @@ const Form = () => {
     setDeliveryPinCode('');
     setDeliveryContact('');
     setDeliveryEmail('');
+    setDeliveryGstNumber('');
   };
 
   const handleProjectOrderChange = (e) => {
@@ -348,6 +349,9 @@ const Form = () => {
         break;
       case 'deliveryEmail':
         setDeliveryEmail(value);
+        break;
+      case 'deliveryGstNumber':
+        setDeliveryGstNumber(value);
         break;
       case 'poNumber':
         setPoNumber(value);
