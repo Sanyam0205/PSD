@@ -4,7 +4,8 @@ const {
     loginUser,
     registerUser,
     getUsers,
-    updateUser
+    updateUser,
+    deleteUser // Import the deleteUser controller
 } = require('../controllers/userController');
 
 // Route for user login
@@ -18,5 +19,8 @@ router.get('/users', getUsers);
 
 // Route to update a user
 router.put('/users/:id', updateUser);
+
+// Route to delete a user
+router.delete('/users/:id', deleteUser);
 
 module.exports = router;

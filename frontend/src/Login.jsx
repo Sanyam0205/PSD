@@ -13,20 +13,19 @@ function Login({ onLogin }) {
         e.preventDefault();
     
         try {
-          const response = await axios.post('http://13.234.47.87:5000/api/login', { email, password });
-    
-          const { role, firstName, lastName, id, email: userEmail, phoneNumber } = response.data;
-          console.log('Login successful:', response.data);
-    
-          localStorage.setItem('userId', id);
-          localStorage.setItem('userRole', role);
-          localStorage.setItem('firstName', firstName);
-          localStorage.setItem('lastName', lastName);
-          localStorage.setItem('isAuthenticated', 'true');
-          localStorage.setItem('email', userEmail);
-          localStorage.setItem('phoneNumber', phoneNumber);
-    
-          onLogin(role, firstName);
+            const response = await axios.post('http://13.234.47.87:5000/api/login', { email, password });
+
+            const { role, firstName, id, phoneNumber, email: userEmail } = response.data; 
+            console.log('Login successful:', response.data);
+
+            // Save the user information in localStorage
+            localStorage.setItem('userId', id);
+            localStorage.setItem('userRole', role);
+            localStorage.setItem('username', firstName);
+            localStorage.setItem('phoneNumber', phoneNumber);
+            localStorage.setItem('email', userEmail);
+
+            onLogin(role, firstName, phoneNumber, userEmail);
 
             switch (role) {
                 case 'Creator':

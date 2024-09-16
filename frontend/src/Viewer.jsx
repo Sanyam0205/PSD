@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { PDFViewer } from "@react-pdf/renderer";
+import Select from 'react-select';
 import ProjectOrderPDF from "./components/ProjectOrderPdf.js"; // Ensure this path is correct
 
 const Viewer = () => {
@@ -46,10 +47,33 @@ const Viewer = () => {
     setSelectedPo(null);
   };
 
+  // Map POs for react-select
+  const poOptions = poList.map(po => ({
+    value: po,
+    label: `${po.poNumber} - ${po.name}`
+  }));
+
+  // Handle selection from dropdown
+  const handleSelectChange = (selectedOption) => {
+    if (selectedOption) {
+      handlePoClick(selectedOption.value);
+    }
+  };
+
   return (
     <div className="form-container">
       <h2>Approved Purchase Orders</h2>
-      <table>
+      
+      {/* PO Search Box */}
+      <Select
+        options={poOptions}
+        onChange={handleSelectChange}
+        placeholder="Search POs by Number or Name..."
+        isSearchable
+        className="po-search-box"
+      />
+      
+      {/* <table>
         <thead>
           <tr>
             <th>PO Number</th>
@@ -68,7 +92,7 @@ const Viewer = () => {
             </tr>
           ))}
         </tbody>
-      </table>
+      </table> */}
 
       {showPDFPreview && selectedPo && (
         <div className="pdf-preview">

@@ -40,4 +40,4 @@ app.use('/api/location', locationRoutes);
 app.use('/api/series', getNextSeriesPoNumber);
 app.use("/api", userRoutes);
 app.use('/api/project-orders', projectOrderRoutes);
-// app.use('/api/dashboard', dashboardRoutes);
+
