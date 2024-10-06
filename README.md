@@ -33,7 +33,7 @@ Installation
 
 	1.	Clone the repository:
 
-git clone https://github.com/yourusername/project-order-creation-tool.git
+[git clone https://github.com/yourusername/project-order-creation-tool.git](https://github.com/Sanyam0205/PSD.git)
 
 
 	2.	Navigate to the project directory:
